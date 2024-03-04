@@ -13,19 +13,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
+import com.mcgowanb.projects.refereescorekeeper.presentation.model.FaceQuarterModel
 
 @Composable
-fun FaceQuarter(msg: String) {
+fun FaceQuarter(model: FaceQuarterModel) {
     Text(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(end = 10.dp)
-            .wrapContentHeight(align = Alignment.Bottom),
-        textAlign = TextAlign.Right,
-        color = Color.White,
-        fontSize = 50.sp,
-        fontWeight = FontWeight.Bold,
-        text = msg
+        modifier = model.modifier,
+        textAlign = model.textAlign,
+        color = model.colour,
+        fontSize = model.fontSize,
+        fontWeight = model.fontWeight,
+        text = model.text
     )
 
 }
@@ -33,5 +31,5 @@ fun FaceQuarter(msg: String) {
 @Preview
 @Composable
 fun FaceQuarterPreview() {
-    FaceQuarter("30")
+//    FaceQuarter("30")
 }

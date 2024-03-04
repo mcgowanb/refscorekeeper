@@ -1,5 +1,7 @@
 package com.mcgowanb.projects.refereescorekeeper.presentation.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
+import com.mcgowanb.projects.refereescorekeeper.presentation.model.BoxModel
+import com.mcgowanb.projects.refereescorekeeper.presentation.model.FaceQuarterModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Watchface() {
     Column(
@@ -33,22 +38,50 @@ fun Watchface() {
                 .weight(.5f)
         ) {
             Row {
-                Box(
+                var bm = BoxModel(
                     modifier = Modifier
                         .weight(.5f)
                         .fillMaxHeight()
-                ) {
-                    Text(
+                        .combinedClickable(
+                            onClick = {
+                            },
+                            onLongClick = {
+//                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+//                                contextMenuPhotoId = photo.id
+                            },
+                        ),
+                    faceQuarterModel = FaceQuarterModel(
+                        text = "20",
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(end = 10.dp)
                             .wrapContentHeight(align = Alignment.Bottom),
-                        textAlign = TextAlign.Right,
-                        color = Color.White,
-                        fontSize = 50.sp,
-                        fontWeight = FontWeight.Bold,
-                        text = "20"
+                        textAlign = TextAlign.Right
                     )
+                )
+                Box(
+                    modifier = Modifier
+                        .weight(.5f)
+                        .fillMaxHeight()
+                        .combinedClickable(
+                            onClick = {
+                            },
+                            onLongClick = {
+//                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+//                                contextMenuPhotoId = photo.id
+                            },
+
+                            ),
+                ) {
+                    var fqm = FaceQuarterModel(
+                        text = "20",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(end = 10.dp)
+                            .wrapContentHeight(align = Alignment.Bottom),
+                        textAlign = TextAlign.Right
+                    )
+                    FaceQuarter(fqm)
                 }
                 Spacer(modifier = Modifier.width(5.dp))
                 Box(
@@ -56,17 +89,15 @@ fun Watchface() {
                         .weight(.5f)
                         .fillMaxHeight()
                 ) {
-                    Text(
+                    var fqm = FaceQuarterModel(
+                        text = "40",
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(start = 10.dp)
                             .wrapContentHeight(align = Alignment.Bottom),
-                        textAlign = TextAlign.Left,
-                        color = Color.White,
-                        fontSize = 50.sp,
-                        fontWeight = FontWeight.Bold,
-                        text = "40"
+                        textAlign = TextAlign.Left
                     )
+                    FaceQuarter(fqm)
                 }
             }
         }
@@ -82,17 +113,15 @@ fun Watchface() {
                         .weight(.5f)
                         .fillMaxHeight()
                 ) {
-                    Text(
+                    var fqm = FaceQuarterModel(
+                        text = "60",
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(end = 10.dp)
                             .wrapContentHeight(align = Alignment.Top),
-                        textAlign = TextAlign.Right,
-                        color = Color.White,
-                        fontSize = 50.sp,
-                        fontWeight = FontWeight.Bold,
-                        text = "60"
+                        textAlign = TextAlign.Right
                     )
+                    FaceQuarter(fqm)
                 }
                 Spacer(modifier = Modifier.width(5.dp))
                 Box(
@@ -100,17 +129,15 @@ fun Watchface() {
                         .weight(.5f)
                         .fillMaxHeight()
                 ) {
-                    Text(
+                    var fqm = FaceQuarterModel(
+                        text = "80",
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(start = 10.dp)
                             .wrapContentHeight(align = Alignment.Top),
-                        textAlign = TextAlign.Left,
-                        color = Color.White,
-                        fontSize = 50.sp,
-                        fontWeight = FontWeight.Bold,
-                        text = "80"
+                        textAlign = TextAlign.Left
                     )
+                    FaceQuarter(fqm)
                 }
             }
         }
