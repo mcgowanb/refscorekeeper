@@ -16,8 +16,11 @@ class RefScoreViewModel : ViewModel() {
             is ScoreAction.AddHomePoint -> addPoint(Team.HOME)
             is ScoreAction.SubtractHomePoint -> subtractPoint(Team.HOME)
             is ScoreAction.AddHomeGoal -> addGoal(Team.HOME)
+            is ScoreAction.SubtractHomeGoal -> subtractGoal(Team.HOME)
             is ScoreAction.AddAwayPoint -> addPoint(Team.AWAY)
+            is ScoreAction.SubtractAwayPoint -> subtractPoint(Team.AWAY)
             is ScoreAction.AddAwayGoal -> addGoal(Team.AWAY)
+            is ScoreAction.SubtractAwayGoal -> subtractGoal(Team.AWAY)
             is ScoreAction.Reset -> state = GameState()
         }
     }
