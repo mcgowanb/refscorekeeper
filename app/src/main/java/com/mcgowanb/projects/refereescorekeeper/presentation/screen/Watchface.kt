@@ -1,6 +1,7 @@
 package com.mcgowanb.projects.refereescorekeeper.presentation.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,24 +15,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.presentation.model.BoxModel
 import com.mcgowanb.projects.refereescorekeeper.presentation.model.FaceQuarterModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Watchface() {
-    Column(
-        modifier = Modifier
-    ) {
+    var points by remember {
+        mutableStateOf(0)
+    }
+    Column {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -47,11 +50,14 @@ fun Watchface() {
                             },
                             onLongClick = {
 //                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-//                                contextMenuPhotoId = photo.id
+                                points++
                             },
+                            onDoubleClick = {
+                                points--
+                            }
                         ),
                     faceQuarterModel = FaceQuarterModel(
-                        text = "20",
+                        text = points.toString(),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(end = 10.dp)
@@ -59,38 +65,28 @@ fun Watchface() {
                         textAlign = TextAlign.Right
                     )
                 )
-                Box(
-                    modifier = Modifier
-                        .weight(.5f)
-                        .fillMaxHeight()
-                        .combinedClickable(
-                            onClick = {
-                            },
-                            onLongClick = {
-//                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-//                                contextMenuPhotoId = photo.id
-                            },
+                FaceQuarterBox(boxModel = bm)
 
-                            ),
-                ) {
-                    var fqm = FaceQuarterModel(
-                        text = "20",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(end = 10.dp)
-                            .wrapContentHeight(align = Alignment.Bottom),
-                        textAlign = TextAlign.Right
-                    )
-                    FaceQuarter(fqm)
-                }
-                Spacer(modifier = Modifier.width(5.dp))
+                Spacer(modifier = Modifier
+                    .width(2.dp)
+                    .fillMaxSize()
+                )
+                Spacer(modifier = Modifier
+                    .width(1.dp)
+                    .fillMaxSize()
+                    .background(Color.White)
+                )
+                Spacer(modifier = Modifier
+                    .width(2.dp)
+                    .fillMaxSize()
+                )
                 Box(
                     modifier = Modifier
                         .weight(.5f)
                         .fillMaxHeight()
                 ) {
                     var fqm = FaceQuarterModel(
-                        text = "40",
+                        text = "4",
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(start = 10.dp)
@@ -114,7 +110,7 @@ fun Watchface() {
                         .fillMaxHeight()
                 ) {
                     var fqm = FaceQuarterModel(
-                        text = "60",
+                        text = "6",
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(end = 10.dp)
@@ -123,14 +119,17 @@ fun Watchface() {
                     )
                     FaceQuarter(fqm)
                 }
-                Spacer(modifier = Modifier.width(5.dp))
+                Spacer(modifier = Modifier
+                    .width(5.dp)
+                    .fillMaxSize()
+                    .background(Color.White))
                 Box(
                     modifier = Modifier
                         .weight(.5f)
                         .fillMaxHeight()
                 ) {
                     var fqm = FaceQuarterModel(
-                        text = "80",
+                        text = "8",
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(start = 10.dp)

@@ -6,7 +6,9 @@ import com.mcgowanb.projects.refereescorekeeper.presentation.model.BoxModel
 
 @Composable
 fun FaceQuarterBox(boxModel: BoxModel) {
-    Box(modifier = boxModel.modifier){
+    Box(
+        modifier = boxModel.modifier,
+        ) {
         FaceQuarter(model = boxModel.faceQuarterModel)
     }
 }

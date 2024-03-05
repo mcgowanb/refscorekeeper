@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.mcgowanb.projects.refereescorekeeper.presentation.screen.Watchface
+import com.mcgowanb.projects.refereescorekeeper.presentation.theme.RefereeScoreKeeperTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +19,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
-            Watchface()
+            RefereeScoreKeeperTheme {
+                Watchface()
+            }
         }
     }
 }
