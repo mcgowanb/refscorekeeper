@@ -4,14 +4,16 @@
  * changes to the libraries and their usages.
  */
 
-package com.mcgowanb.projects.refereescorekeeper.presentation
+package com.mcgowanb.projects.refereescorekeeper
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.mcgowanb.projects.refereescorekeeper.presentation.screen.Watchface
-import com.mcgowanb.projects.refereescorekeeper.presentation.theme.RefereeScoreKeeperTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mcgowanb.projects.refereescorekeeper.model.RefScoreViewModel
+import com.mcgowanb.projects.refereescorekeeper.screen.Watchface
+import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +22,12 @@ class MainActivity : ComponentActivity() {
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
             RefereeScoreKeeperTheme {
-                Watchface()
+                val viewModel = viewModel<RefScoreViewModel>()
+                val state = viewModel.state
+                Watchface(
+                    state = state,
+                    onAction = viewModel::onAction
+                )
             }
         }
     }

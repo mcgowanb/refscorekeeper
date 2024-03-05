@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.presentation.theme
+package com.mcgowanb.projects.refereescorekeeper.theme
 
 import androidx.compose.runtime.Composable
 import androidx.wear.compose.material.MaterialTheme

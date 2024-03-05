@@ -1,8 +1,8 @@
-package com.mcgowanb.projects.refereescorekeeper.presentation.screen
+package com.mcgowanb.projects.refereescorekeeper.screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import com.mcgowanb.projects.refereescorekeeper.presentation.model.BoxModel
+import com.mcgowanb.projects.refereescorekeeper.model.BoxModel
 
 @Composable
 fun FaceQuarterBox(boxModel: BoxModel) {

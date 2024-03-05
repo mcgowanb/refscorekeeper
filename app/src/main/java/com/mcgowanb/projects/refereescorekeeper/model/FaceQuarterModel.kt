@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.presentation.model
+package com.mcgowanb.projects.refereescorekeeper.model
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
