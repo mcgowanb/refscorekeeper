@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 
 @Composable
-fun ScoreDisplay(
+fun ScoreDisplayBox(
     text: String,
     verticalAlignment: Alignment
 ) {

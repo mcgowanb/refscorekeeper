@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ScoreBox(
+fun ScoreActionBox(
     modifier: Modifier,
     onDoubleClick: () -> Unit,
     onLongClick: () -> Unit
