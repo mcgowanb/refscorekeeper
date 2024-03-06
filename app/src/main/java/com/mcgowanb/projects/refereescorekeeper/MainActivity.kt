@@ -7,7 +7,6 @@
 package com.mcgowanb.projects.refereescorekeeper
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.unit.sp
@@ -19,14 +18,15 @@ import androidx.wear.compose.material.TimeTextDefaults
 import com.mcgowanb.projects.refereescorekeeper.model.RefScoreViewModel
 import com.mcgowanb.projects.refereescorekeeper.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
+import com.mcgowanb.projects.refereescorekeeper.utility.KeepScreenOn
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setTheme(android.R.style.Theme_DeviceDefault)
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContent {
+            KeepScreenOn()
             Scaffold(
                 timeText = {
                     TimeText(
