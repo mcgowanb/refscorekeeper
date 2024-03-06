@@ -41,15 +41,17 @@ fun Watchface(
                     modifier = Modifier
                         .weight(.5f)
                         .fillMaxHeight(),
-                    onDoubleClick = { onAction(ScoreAction.SubtractHomeGoal) },
-                    onLongClick = { onAction(ScoreAction.AddHomeGoal) }
+                    subtractScore = { onAction(ScoreAction.SubtractHomeGoal) },
+                    addScore = { onAction(ScoreAction.AddHomeGoal) },
+                    enableVibrate = state.hGoals != 0
                 )
                 ScoreActionBox(
                     modifier = Modifier
                         .weight(.5f)
                         .fillMaxHeight(),
-                    onDoubleClick = { onAction(ScoreAction.SubtractHomePoint) },
-                    onLongClick = { onAction(ScoreAction.AddHomePoint) }
+                    subtractScore = { onAction(ScoreAction.SubtractHomePoint) },
+                    addScore = { onAction(ScoreAction.AddHomePoint) },
+                    enableVibrate = state.hPoints != 0
                 )
             }
         }
@@ -75,15 +77,19 @@ fun Watchface(
                     modifier = Modifier
                         .weight(.5f)
                         .fillMaxHeight(),
-                    onDoubleClick = { onAction(ScoreAction.SubtractAwayGoal) },
-                    onLongClick = { onAction(ScoreAction.AddAwayGoal) }
+                    subtractScore = { onAction(ScoreAction.SubtractAwayGoal) },
+                    addScore = { onAction(ScoreAction.AddAwayGoal) },
+                    enableVibrate = state.aGoals != 0
+
                 )
                 ScoreActionBox(
                     modifier = Modifier
                         .weight(.5f)
                         .fillMaxHeight(),
-                    onDoubleClick = { onAction(ScoreAction.SubtractAwayPoint) },
-                    onLongClick = { onAction(ScoreAction.AddAwayPoint) }
+                    subtractScore = { onAction(ScoreAction.SubtractAwayPoint) },
+                    addScore = { onAction(ScoreAction.AddAwayPoint) },
+                    enableVibrate = state.aPoints != 0
+
                 )
             }
         }
