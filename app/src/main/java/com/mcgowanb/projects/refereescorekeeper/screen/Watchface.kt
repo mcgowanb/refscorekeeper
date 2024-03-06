@@ -1,5 +1,6 @@
 package com.mcgowanb.projects.refereescorekeeper.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,10 +25,11 @@ fun Watchface(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(.5f)
+                .background(state.homeColor.copy(alpha = 0.2f))
         ) {
             TotalPointsBox(
                 modifier = Modifier
-                    .padding(vertical = 20.dp),
+                    .padding(vertical = 24.dp),
                 totalPoints = state.totalHomeScore
             )
             ScoreDisplayBox(
@@ -56,6 +58,7 @@ fun Watchface(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(.5f)
+                .background(state.awayColor.copy(alpha = 0.2f))
         ) {
             TotalPointsBox(
                 modifier = Modifier
