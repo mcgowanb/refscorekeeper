@@ -16,3 +16,4 @@ idea/*
 .externalNativeBuild
 .cxx
 local.properties
+gradle/libs.versions.toml
