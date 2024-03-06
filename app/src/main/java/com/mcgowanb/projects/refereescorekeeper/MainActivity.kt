@@ -9,8 +9,12 @@ package com.mcgowanb.projects.refereescorekeeper
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.TimeText
+import androidx.wear.compose.material.TimeTextDefaults
 import com.mcgowanb.projects.refereescorekeeper.model.RefScoreViewModel
 import com.mcgowanb.projects.refereescorekeeper.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
@@ -21,13 +25,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
-            RefereeScoreKeeperTheme {
-                val viewModel = viewModel<RefScoreViewModel>()
-                val state = viewModel.state
-                Watchface(
-                    state = state,
-                    onAction = viewModel::onAction
-                )
+            Scaffold(
+                timeText = {
+                    TimeText(
+                        timeTextStyle = TimeTextDefaults
+                            .timeTextStyle(fontSize = 8.sp)
+                    )
+                },
+            ) {
+                RefereeScoreKeeperTheme {
+                    val viewModel = viewModel<RefScoreViewModel>()
+                    val state = viewModel.state
+                    Watchface(
+                        state = state,
+                        onAction = viewModel::onAction
+                    )
+                }
             }
         }
     }
