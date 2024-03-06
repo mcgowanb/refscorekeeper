@@ -38,14 +38,18 @@ class RefScoreViewModel : ViewModel() {
     }
 
     private fun subtractGoal(team: Team) {
-        state = if (team == Team.HOME) {
-            state.copy(
-                hGoals = state.hGoals - 1
-            )
+        if (team == Team.HOME) {
+            if (state.hGoals > 0) {
+                state = state.copy(
+                    hGoals = state.hGoals - 1
+                )
+            }
         } else {
-            state.copy(
-                aGoals = state.aGoals - 1
-            )
+            if (state.aGoals > 0) {
+                state = state.copy(
+                    aGoals = state.aGoals - 1
+                )
+            }
         }
     }
 
