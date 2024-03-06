@@ -28,7 +28,6 @@ fun Stopwatch() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Black)
         ) {
             Spacer(
                 modifier = Modifier

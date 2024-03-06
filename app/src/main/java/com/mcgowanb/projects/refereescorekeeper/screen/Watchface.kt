@@ -26,7 +26,8 @@ fun Watchface(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(.5f)
-                .background(state.homeColor.copy(alpha = 0.3f))
+                .padding(bottom = 5.dp)
+                .background(state.homeColor.copy(alpha = 0.2f))
         ) {
             TotalPointsBox(
                 modifier = Modifier
@@ -61,7 +62,8 @@ fun Watchface(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(.5f)
-                .background(state.awayColor.copy(alpha = 0.3f))
+                .padding(top = 5.dp)
+                .background(state.awayColor.copy(alpha = 0.2f))
         ) {
             TotalPointsBox(
                 modifier = Modifier
