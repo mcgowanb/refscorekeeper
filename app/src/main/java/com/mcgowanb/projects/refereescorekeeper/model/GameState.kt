@@ -14,8 +14,11 @@ data class GameState(
     val homeScore: String = "${hGoals.twoDigitFormat()}:${hPoints.twoDigitFormat()}"
     val awayScore: String = "${aGoals.twoDigitFormat()}:${aPoints.twoDigitFormat()}"
 
-    val totalHomeScore: String = "(${totalHomeScoreInt})"
-    val totalAwayScore: String = "(${totalAwayScoreInt})"
+    val totalHomeScore: String = "${totalHomeScoreInt}"
+    val totalAwayScore: String = "${totalAwayScoreInt}"
+
+    val homeDiff: String = "(${totalHomeScoreInt - totalAwayScoreInt})"
+    val awayDiff: String = "(${totalAwayScoreInt - totalHomeScoreInt})"
 
 
     val homeColor: Color

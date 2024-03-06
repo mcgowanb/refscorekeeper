@@ -20,6 +20,7 @@ fun Watchface(
     state: GameState,
     onAction: (ScoreAction) -> Unit
 ) {
+    Stopwatch()
     Column {
         Box(
             modifier = Modifier
@@ -30,7 +31,8 @@ fun Watchface(
             TotalPointsBox(
                 modifier = Modifier
                     .padding(vertical = 24.dp),
-                totalPoints = state.totalHomeScore
+                totalPoints = state.totalHomeScore,
+                diff = state.homeDiff
             )
             ScoreDisplayBox(
                 text = state.homeScore,
@@ -55,7 +57,6 @@ fun Watchface(
                 )
             }
         }
-        HorizontalSpacer(modifier = Modifier)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -66,7 +67,8 @@ fun Watchface(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(vertical = 20.dp),
-                totalPoints = state.totalAwayScore
+                totalPoints = state.totalAwayScore,
+                diff = state.awayDiff
             )
             ScoreDisplayBox(
                 text = state.awayScore,
