@@ -3,39 +3,35 @@ package com.mcgowanb.projects.refereescorekeeper.model
 import androidx.compose.ui.graphics.Color
 
 data class GameState(
-    var hPoints: Int = 0,
-    var hGoals: Int = 0,
-    var aPoints: Int = 0,
-    var aGoals: Int = 0
+    val hPoints: Int = 0,
+    val hGoals: Int = 0,
+    val aPoints: Int = 0,
+    val aGoals: Int = 0
 ) {
-    val homeScore: String = String.format("%02d", hGoals) + ":" + String.format("%02d", hPoints)
-    val awayScore: String = String.format("%02d", aGoals) + ":" + String.format("%02d", aPoints)
-
     private val totalHomeScoreInt: Int = (hGoals * 3) + hPoints
-    val totalAwayScoreInt: Int = (aGoals * 3) + aPoints
+    private val totalAwayScoreInt: Int = (aGoals * 3) + aPoints
 
-    val totalHomeScore: String = String.format("(%s)", totalHomeScoreInt)
-    val totalAwayScore: String = String.format("(%s)", totalAwayScoreInt)
+    val homeScore: String = "${hGoals.twoDigitFormat()}:${hPoints.twoDigitFormat()}"
+    val awayScore: String = "${aGoals.twoDigitFormat()}:${aPoints.twoDigitFormat()}"
+
+    val totalHomeScore: String = "(${totalHomeScoreInt})"
+    val totalAwayScore: String = "(${totalAwayScoreInt})"
+
 
     val homeColor: Color
-        get() {
-            if (totalHomeScore == totalAwayScore) {
-                return Color.Black
-            }
-            if (totalHomeScore > totalAwayScore) {
-                return Color.Green
-            }
-            return Color.Red
+        get() = when {
+            totalHomeScoreInt == totalAwayScoreInt -> Color.Black
+            totalHomeScoreInt > totalAwayScoreInt -> Color.Green
+            else -> Color.Red
         }
 
     val awayColor: Color
-        get() {
-            if (totalHomeScore == totalAwayScore) {
-                return Color.Black
-            }
-            if (totalHomeScore < totalAwayScore) {
-                return Color.Green
-            }
-            return Color.Red
+        get() = when {
+            totalHomeScoreInt == totalAwayScoreInt -> Color.Black
+            totalHomeScoreInt < totalAwayScoreInt -> Color.Green
+            else -> Color.Red
         }
+
+    private fun Int.twoDigitFormat(): String = "%02d".format(this)
+
 }
