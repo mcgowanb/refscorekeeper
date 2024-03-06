@@ -76,7 +76,7 @@ class RefScoreViewModel : ViewModel() {
         } else {
             if (state.aPoints > 0) {
                 state = state.copy(
-                    aPoints = state.aPoints + 1
+                    aPoints = state.aPoints - 1
                 )
             }
         }
