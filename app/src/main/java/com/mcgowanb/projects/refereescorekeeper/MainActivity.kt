@@ -15,7 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
-import com.mcgowanb.projects.refereescorekeeper.model.RefScoreViewModel
+import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
 import com.mcgowanb.projects.refereescorekeeper.utility.KeepScreenOn
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                 },
             ) {
                 RefereeScoreKeeperTheme {
-                    val viewModel = viewModel<RefScoreViewModel>()
+                    val viewModel = viewModel<GameViewModel>()
                     val state = viewModel.state
                     Watchface(
                         state = state,

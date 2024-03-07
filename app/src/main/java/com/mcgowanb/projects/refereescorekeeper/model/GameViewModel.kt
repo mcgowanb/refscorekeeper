@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.enums.Team
 
-class RefScoreViewModel : ViewModel() {
+class GameViewModel : ViewModel() {
     var state by mutableStateOf(GameState())
         private set
 
