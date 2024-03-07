@@ -8,30 +8,30 @@ data class GameState(
     val aPoints: Int = 0,
     val aGoals: Int = 0
 ) {
-    private val totalHomeScoreInt: Int = (hGoals * 3) + hPoints
-    private val totalAwayScoreInt: Int = (aGoals * 3) + aPoints
-
+    private val _totalHomeScoreInt: Int = (hGoals.times(3)) + hPoints
+    private val _totalAwayScoreInt: Int = (aGoals.times(3)) + aPoints
+    
     val homeScore: String = "${hGoals.twoDigitFormat()}:${hPoints.twoDigitFormat()}"
     val awayScore: String = "${aGoals.twoDigitFormat()}:${aPoints.twoDigitFormat()}"
 
-    val totalHomeScore: String = "${totalHomeScoreInt}"
-    val totalAwayScore: String = "${totalAwayScoreInt}"
+    val totalHomeScore: String = "$_totalHomeScoreInt"
+    val totalAwayScore: String = "$_totalAwayScoreInt"
 
-    val homeDiff: String = "(${totalHomeScoreInt - totalAwayScoreInt})"
-    val awayDiff: String = "(${totalAwayScoreInt - totalHomeScoreInt})"
+    val homeDiff: String = "(${_totalHomeScoreInt - _totalAwayScoreInt})"
+    val awayDiff: String = "(${_totalAwayScoreInt - _totalHomeScoreInt})"
 
 
     val homeColor: Color
         get() = when {
-            totalHomeScoreInt == totalAwayScoreInt -> Color.Black
-            totalHomeScoreInt > totalAwayScoreInt -> Color.Green
+            _totalHomeScoreInt == _totalAwayScoreInt -> Color.Black
+            _totalHomeScoreInt > _totalAwayScoreInt -> Color.Green
             else -> Color.Red
         }
 
     val awayColor: Color
         get() = when {
-            totalHomeScoreInt == totalAwayScoreInt -> Color.Black
-            totalHomeScoreInt < totalAwayScoreInt -> Color.Green
+            _totalHomeScoreInt == _totalAwayScoreInt -> Color.Black
+            _totalHomeScoreInt < _totalAwayScoreInt -> Color.Green
             else -> Color.Red
         }
 

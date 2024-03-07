@@ -1,15 +1,18 @@
 package com.mcgowanb.projects.refereescorekeeper.model
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.enums.Team
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class GameViewModel : ViewModel() {
-    var state by mutableStateOf(GameState())
-        private set
+
+    private val _uiState = MutableStateFlow(GameState())
+    val uiState: StateFlow<GameState> = _uiState.asStateFlow()
+
 
     fun onAction(action: ScoreAction) {
         when (action) {
@@ -21,64 +24,88 @@ class GameViewModel : ViewModel() {
             is ScoreAction.SubtractAwayPoint -> subtractPoint(Team.AWAY)
             is ScoreAction.AddAwayGoal -> addGoal(Team.AWAY)
             is ScoreAction.SubtractAwayGoal -> subtractGoal(Team.AWAY)
-            is ScoreAction.Reset -> state = GameState()
+            ScoreAction.Reset -> reset()
         }
     }
 
     private fun addGoal(team: Team) {
-        state = if (team == Team.HOME) {
-            state.copy(
-                hGoals = state.hGoals + 1
-            )
+        if (team == Team.HOME) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    hGoals = _uiState.value.hGoals.plus(1)
+                )
+            }
         } else {
-            state.copy(
-                aGoals = state.aGoals + 1
-            )
+            _uiState.update { currentState ->
+                currentState.copy(
+                    aGoals = _uiState.value.aGoals.plus(1)
+                )
+            }
+        }
+    }
+
+    private fun addPoint(team: Team) {
+        if (team == Team.HOME) {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    hPoints = _uiState.value.hPoints.plus(1)
+                )
+            }
+        } else {
+            _uiState.update { currentState ->
+                currentState.copy(
+                    aPoints = _uiState.value.aPoints.plus(1)
+                )
+            }
         }
     }
 
     private fun subtractGoal(team: Team) {
         if (team == Team.HOME) {
-            if (state.hGoals > 0) {
-                state = state.copy(
-                    hGoals = state.hGoals - 1
-                )
-            }
+            if (_uiState.value.hGoals > 0)
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        hGoals = _uiState.value.hGoals.minus(1)
+                    )
+                }
         } else {
-            if (state.aGoals > 0) {
-                state = state.copy(
-                    aGoals = state.aGoals - 1
-                )
-            }
+            if (_uiState.value.aGoals > 0)
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        aGoals = _uiState.value.hGoals.minus(1)
+                    )
+                }
         }
     }
 
-
-    private fun addPoint(team: Team) {
-        state = if (team == Team.HOME) {
-            state.copy(
-                hPoints = state.hPoints + 1
-            )
-        } else {
-            state.copy(
-                aPoints = state.aPoints + 1
-            )
-        }
-    }
 
     private fun subtractPoint(team: Team) {
         if (team == Team.HOME) {
-            if (state.hPoints > 0) {
-                state = state.copy(
-                    hPoints = state.hPoints - 1
-                )
-            }
+            if (_uiState.value.hPoints > 0)
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        hPoints = _uiState.value.hPoints.minus(1)
+                    )
+                }
         } else {
-            if (state.aPoints > 0) {
-                state = state.copy(
-                    aPoints = state.aPoints - 1
-                )
-            }
+            if (_uiState.value.aPoints > 0)
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        aPoints = _uiState.value.aPoints.minus(1)
+                    )
+                }
+        }
+    }
+
+    private fun reset() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                hPoints = 0,
+                hGoals = 0,
+                aPoints = 0,
+                aGoals = 0
+            )
+
         }
     }
 }
