@@ -2,6 +2,7 @@ package com.mcgowanb.projects.refereescorekeeper.model
 
 import androidx.compose.ui.graphics.Color
 
+//@Serializable
 data class GameState(
     val hPoints: Int = 0,
     val hGoals: Int = 0,
@@ -10,7 +11,7 @@ data class GameState(
 ) {
     private val _totalHomeScoreInt: Int = (hGoals.times(3)) + hPoints
     private val _totalAwayScoreInt: Int = (aGoals.times(3)) + aPoints
-    
+
     val homeScore: String = "${hGoals.twoDigitFormat()}:${hPoints.twoDigitFormat()}"
     val awayScore: String = "${aGoals.twoDigitFormat()}:${aPoints.twoDigitFormat()}"
 

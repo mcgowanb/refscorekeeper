@@ -21,6 +21,7 @@ import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 @Composable
 fun Watchface(gameViewModel: GameViewModel = viewModel()) {
     val gameUiState by gameViewModel.uiState.collectAsState()
+
     Stopwatch()
     Column {
         Box(
