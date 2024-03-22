@@ -60,10 +60,14 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.core.splashscreen)
     implementation(libs.lifecycle.viewmodel.compose)
+
+    implementation(libs.gson)
+
+    implementation(libs.wear.input)
+
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
-    implementation(libs.gson)
 }
