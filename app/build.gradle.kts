@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
 
-//    kotlin("plugin.serialization")
 }
 
 android {
@@ -66,9 +65,5 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
-//    implementation("androidx.datastore:datastore:1.0.0")
-//    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
-//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-//    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    implementation("com.google.code.gson:gson:2.8.8")
+    implementation(libs.gson)
 }

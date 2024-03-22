@@ -2,7 +2,6 @@ package com.mcgowanb.projects.refereescorekeeper.model
 
 import androidx.compose.ui.graphics.Color
 
-//@Serializable
 data class GameState(
     val hPoints: Int = 0,
     val hGoals: Int = 0,
