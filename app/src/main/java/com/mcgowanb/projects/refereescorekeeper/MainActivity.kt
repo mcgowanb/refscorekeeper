@@ -11,15 +11,27 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.ViewModelProvider
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
+import com.google.gson.GsonBuilder
+import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
 import com.mcgowanb.projects.refereescorekeeper.utility.KeepScreenOn
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val gson = GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create()
+
+        val mWordViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        mWordViewModel.init(this.application, gson)
+
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setTheme(android.R.style.Theme_DeviceDefault)

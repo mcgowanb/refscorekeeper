@@ -1,7 +1,7 @@
 package com.mcgowanb.projects.refereescorekeeper.model
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.content.Context
+import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.enums.Team
@@ -11,14 +11,21 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.io.File
 
-class GameViewModel(application: Application) : AndroidViewModel(application) {
+
+class GameViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(GameState())
     val uiState: StateFlow<GameState> = _uiState.asStateFlow()
 
     private val fileName = "game_state.json"
 
-    init {
+    private lateinit var context: Context
+
+    private lateinit var gson: Gson
+    fun init(context: Context, gson: Gson) {
+        this.context = context
+        this.gson = gson
+
         loadGameStateFromFile()
     }
 
@@ -124,10 +131,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun loadGameStateFromFile() {
-        val file = File(getApplication<Application>().filesDir, fileName)
+        val file = File(context.filesDir, fileName)
         if (file.exists()) {
             val jsonString = file.readText()
-            val gameState = Gson().fromJson(jsonString, GameState::class.java)
+            val gameState = gson.fromJson(jsonString, GameState::class.java)
             _uiState.value = gameState
         } else {
             reset()
@@ -135,8 +142,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun saveGameStateToFile(gameState: GameState) {
-        val jsonString = Gson().toJson(gameState)
-        val file = File(getApplication<Application>().filesDir, fileName)
+        val jsonString = gson.toJson(gameState)
+        val file = File(context.filesDir, fileName)
         file.writeText(jsonString)
     }
 }
