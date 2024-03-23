@@ -1,11 +1,16 @@
 package com.mcgowanb.projects.refereescorekeeper.model
 
 import androidx.compose.ui.graphics.Color
+import com.google.gson.annotations.Expose
 
 data class GameState(
+    @Expose
     val hPoints: Int = 0,
+    @Expose
     val hGoals: Int = 0,
+    @Expose
     val aPoints: Int = 0,
+    @Expose
     val aGoals: Int = 0
 ) {
     private val _totalHomeScoreInt: Int = (hGoals.times(3)) + hPoints
