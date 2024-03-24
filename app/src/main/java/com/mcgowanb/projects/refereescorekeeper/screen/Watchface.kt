@@ -48,7 +48,7 @@ fun Watchface(gameViewModel: GameViewModel = viewModel()) {
                         .fillMaxHeight(),
                     subtractScore = { gameViewModel.onAction(ScoreAction.SubtractHomeGoal) },
                     addScore = { gameViewModel.onAction(ScoreAction.AddHomeGoal) },
-                    enableVibrate = gameUiState.hGoals != 0
+                    shouldVibrate = gameUiState.hGoals != 0
                 )
                 ScoreActionBox(
                     modifier = Modifier
@@ -56,7 +56,7 @@ fun Watchface(gameViewModel: GameViewModel = viewModel()) {
                         .fillMaxHeight(),
                     subtractScore = { gameViewModel.onAction(ScoreAction.SubtractHomePoint) },
                     addScore = { gameViewModel.onAction(ScoreAction.AddHomePoint) },
-                    enableVibrate = gameUiState.hPoints != 0
+                    shouldVibrate = gameUiState.hPoints != 0
                 )
             }
         }
@@ -85,7 +85,7 @@ fun Watchface(gameViewModel: GameViewModel = viewModel()) {
                         .fillMaxHeight(),
                     subtractScore = { gameViewModel.onAction(ScoreAction.SubtractAwayGoal) },
                     addScore = { gameViewModel.onAction(ScoreAction.AddAwayGoal) },
-                    enableVibrate = gameUiState.aGoals != 0
+                    shouldVibrate = gameUiState.aGoals != 0
 
                 )
                 ScoreActionBox(
@@ -94,7 +94,7 @@ fun Watchface(gameViewModel: GameViewModel = viewModel()) {
                         .fillMaxHeight(),
                     subtractScore = { gameViewModel.onAction(ScoreAction.SubtractAwayPoint) },
                     addScore = { gameViewModel.onAction(ScoreAction.AddAwayPoint) },
-                    enableVibrate = gameUiState.aPoints != 0
+                    shouldVibrate = gameUiState.aPoints != 0
 
                 )
             }

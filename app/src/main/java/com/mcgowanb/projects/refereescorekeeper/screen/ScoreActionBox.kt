@@ -15,7 +15,7 @@ fun ScoreActionBox(
     modifier: Modifier,
     subtractScore: () -> Unit,
     addScore: () -> Unit,
-    enableVibrate: Boolean
+    shouldVibrate: Boolean
 ) {
     val context = LocalContext.current
     val vibrator = context.getSystemService(Vibrator::class.java)
@@ -25,19 +25,17 @@ fun ScoreActionBox(
                 onClick = {
                     addScore()
                     vibrator.vibrate(
-                        VibrationEffect.createOneShot(
-                            100,
-                            150
+                        VibrationEffect.createPredefined(
+                            VibrationEffect.EFFECT_CLICK
                         )
                     )
                 },
                 onLongClick = {
                     subtractScore()
-                    if (enableVibrate) {
+                    if (shouldVibrate) {
                         vibrator.vibrate(
-                            VibrationEffect.createOneShot(
-                                200,
-                                VibrationEffect.DEFAULT_AMPLITUDE
+                            VibrationEffect.createPredefined(
+                                VibrationEffect.EFFECT_DOUBLE_CLICK
                             )
                         )
                     }
