@@ -14,12 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 
 @Composable
-fun Watchface(gameViewModel: GameViewModel = viewModel()) {
+fun Watchface(gameViewModel: GameViewModel) {
     val gameUiState by gameViewModel.uiState.collectAsState()
 
     Stopwatch()

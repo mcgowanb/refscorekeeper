@@ -19,24 +19,22 @@ import com.google.gson.GsonBuilder
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
-import com.mcgowanb.projects.refereescorekeeper.utility.KeepScreenOn
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         val gson = GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .create()
 
-        val mWordViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
-        mWordViewModel.init(this.application, gson)
+        val gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
+        gameViewModel.init(this.application, gson)
 
         installSplashScreen()
-        super.onCreate(savedInstanceState)
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
-            KeepScreenOn()
             Scaffold(
                 timeText = {
                     TimeText(
@@ -46,7 +44,7 @@ class MainActivity : ComponentActivity() {
                 },
             ) {
                 RefereeScoreKeeperTheme {
-                    Watchface()
+                    Watchface(gameViewModel)
                 }
             }
         }

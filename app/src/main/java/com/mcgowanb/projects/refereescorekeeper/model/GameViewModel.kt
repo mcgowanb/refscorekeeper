@@ -2,6 +2,7 @@ package com.mcgowanb.projects.refereescorekeeper.model
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.enums.Team
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.File
 
 
@@ -25,8 +27,9 @@ class GameViewModel : ViewModel() {
     fun init(context: Context, gson: Gson) {
         this.context = context
         this.gson = gson
-
-        loadGameStateFromFile()
+        viewModelScope.launch {
+            _uiState.value = loadGameStateFromFile()
+        }
     }
 
     fun onAction(action: ScoreAction) {
@@ -44,100 +47,111 @@ class GameViewModel : ViewModel() {
     }
 
     private fun addGoal(team: Team) {
-        if (team == Team.HOME) {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    hGoals = _uiState.value.hGoals.plus(1)
-                )
+        viewModelScope.launch {
+            if (team == Team.HOME) {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        hGoals = _uiState.value.hGoals.plus(1)
+                    )
+                }
+                saveGameStateToFile(_uiState.value)
+            } else {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        aGoals = _uiState.value.aGoals.plus(1)
+                    )
+                }
+                saveGameStateToFile(_uiState.value)
             }
-            saveGameStateToFile(_uiState.value)
-        } else {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    aGoals = _uiState.value.aGoals.plus(1)
-                )
-            }
-            saveGameStateToFile(_uiState.value)
         }
     }
 
     private fun addPoint(team: Team) {
-        if (team == Team.HOME) {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    hPoints = _uiState.value.hPoints.plus(1)
-                )
+        viewModelScope.launch {
+            if (team == Team.HOME) {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        hPoints = _uiState.value.hPoints.plus(1)
+                    )
+                }
+                saveGameStateToFile(_uiState.value)
+            } else {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        aPoints = _uiState.value.aPoints.plus(1)
+                    )
+                }
+                saveGameStateToFile(_uiState.value)
             }
-            saveGameStateToFile(_uiState.value)
-        } else {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    aPoints = _uiState.value.aPoints.plus(1)
-                )
-            }
-            saveGameStateToFile(_uiState.value)
         }
     }
 
     private fun subtractGoal(team: Team) {
-        if (team == Team.HOME) {
-            if (_uiState.value.hGoals > 0) {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        hGoals = _uiState.value.hGoals.minus(1)
-                    )
+        viewModelScope.launch {
+            if (team == Team.HOME) {
+                if (_uiState.value.hGoals > 0) {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            hGoals = _uiState.value.hGoals.minus(1)
+                        )
+                    }
                 }
-            }
-            saveGameStateToFile(_uiState.value)
-        } else {
-//            viewModelScope.launch {
-            if (_uiState.value.aGoals > 0) {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        aGoals = _uiState.value.aGoals.minus(1)
-                    )
+                saveGameStateToFile(_uiState.value)
+            } else {
+                if (_uiState.value.aGoals > 0) {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            aGoals = _uiState.value.aGoals.minus(1)
+                        )
+                    }
                 }
+                saveGameStateToFile(_uiState.value)
             }
-            saveGameStateToFile(_uiState.value)
-//            }
         }
     }
 
 
     private fun subtractPoint(team: Team) {
-        if (team == Team.HOME) {
-            if (_uiState.value.hPoints > 0) {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        hPoints = _uiState.value.hPoints.minus(1)
-                    )
+        viewModelScope.launch {
+            if (team == Team.HOME) {
+                if (_uiState.value.hPoints > 0) {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            hPoints = _uiState.value.hPoints.minus(1)
+                        )
+                    }
+                    saveGameStateToFile(_uiState.value)
                 }
-                saveGameStateToFile(_uiState.value)
-            }
-        } else {
-            if (_uiState.value.aPoints > 0) {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        aPoints = _uiState.value.aPoints.minus(1)
-                    )
+            } else {
+                if (_uiState.value.aPoints > 0) {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            aPoints = _uiState.value.aPoints.minus(1)
+                        )
+                    }
+                    saveGameStateToFile(_uiState.value)
                 }
-                saveGameStateToFile(_uiState.value)
             }
         }
     }
 
-    private fun reset() {
-        _uiState.value = GameState()
+    private fun reset(): GameState {
+        val gameState = GameState()
+        _uiState.value = gameState
+        return gameState
+
     }
 
-    private fun loadGameStateFromFile() {
+    private fun loadGameStateFromFile(): GameState {
         val file = File(context.filesDir, fileName)
-        if (file.exists()) {
+        val gameState: GameState
+        return if (file.exists()) {
             val jsonString = file.readText()
-            val gameState = gson.fromJson(jsonString, GameState::class.java)
-            _uiState.value = gameState
+            gameState = gson.fromJson(jsonString, GameState::class.java)
+            gameState
         } else {
-            reset()
+//            reset()
+            GameState()
         }
     }
 
