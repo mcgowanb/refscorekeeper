@@ -62,7 +62,6 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
 
     implementation(libs.gson)
-
     implementation(libs.wear.input)
 
     androidTestImplementation(platform(libs.compose.bom))
