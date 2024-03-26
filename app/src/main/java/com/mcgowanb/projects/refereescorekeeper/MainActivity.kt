@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                 timeText = {
                     TimeText(
                         timeTextStyle = TimeTextDefaults
-                            .timeTextStyle(fontSize = 8.sp)
+                            .timeTextStyle(fontSize = 14.sp)
                     )
                 },
             ) {
@@ -55,10 +55,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private var lastPressTime: Long = 0
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            handleButtonPress(ButtonType.SINGLE)
-            return true
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastPressTime < 1000) {
+                // Double press detected
+                handleButtonPress(ButtonType.DOUBLE)
+                // Reset last press time
+                lastPressTime = 0
+            } else {
+                // Single press detected
+                handleButtonPress(ButtonType.SINGLE)
+                // Update last press time
+                lastPressTime = currentTime
+            }
         }
         // Handle other button presses if needed
         return super.onKeyDown(keyCode, event)

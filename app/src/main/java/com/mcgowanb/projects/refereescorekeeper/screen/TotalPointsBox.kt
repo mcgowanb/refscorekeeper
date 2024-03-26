@@ -29,7 +29,7 @@ fun TotalPointsBox(
                 .padding(end = 2.dp),
             text = totalPoints,
             textAlign = TextAlign.Right,
-            fontSize = 12.sp
+            fontSize = 16.sp
         )
         Text(
             modifier = Modifier
@@ -37,7 +37,7 @@ fun TotalPointsBox(
                 .padding(start = 2.dp),
             text = diff,
             textAlign = TextAlign.Left,
-            fontSize = 8.sp
+            fontSize = 12.sp
         )
     }
 }

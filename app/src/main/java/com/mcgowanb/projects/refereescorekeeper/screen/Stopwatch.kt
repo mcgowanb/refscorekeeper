@@ -38,10 +38,10 @@ fun Stopwatch() {
             )
             Text(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(2f)
                     .fillMaxWidth(),
-                fontSize = 10.sp,
-                text = "00:00:00",
+                fontSize = 16.sp,
+                text = "30:00:00",
                 textAlign = TextAlign.Center
             )
             Spacer(
