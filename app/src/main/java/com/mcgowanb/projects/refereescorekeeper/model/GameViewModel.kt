@@ -144,11 +144,8 @@ class GameViewModel : ViewModel() {
 
     private fun loadGameStateFromFile(): GameState {
         val file = File(context.filesDir, fileName)
-        val gameState: GameState
         return if (file.exists()) {
-            val jsonString = file.readText()
-            gameState = gson.fromJson(jsonString, GameState::class.java)
-            gameState
+            gson.fromJson(file.readText(), GameState::class.java)
         } else {
             GameState()
         }
