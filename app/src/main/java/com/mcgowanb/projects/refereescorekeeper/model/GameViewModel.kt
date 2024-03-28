@@ -135,11 +135,11 @@ class GameViewModel : ViewModel() {
         }
     }
 
-    private fun reset(): GameState {
-        val gameState = GameState()
-        _uiState.value = gameState
-        return gameState
-
+    private fun reset() {
+        viewModelScope.launch {
+            _uiState.value = GameState()
+            saveGameStateToFile(_uiState.value)
+        }
     }
 
     private fun loadGameStateFromFile(): GameState {
@@ -150,7 +150,6 @@ class GameViewModel : ViewModel() {
             gameState = gson.fromJson(jsonString, GameState::class.java)
             gameState
         } else {
-//            reset()
             GameState()
         }
     }
