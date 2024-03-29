@@ -6,10 +6,14 @@
 
 package com.mcgowanb.projects.refereescorekeeper
 
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.VibratorManager
 import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
@@ -18,15 +22,17 @@ import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
 import com.google.gson.GsonBuilder
-import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
+import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.S)
 class MainActivity : ComponentActivity() {
-
     private lateinit var gameViewModel: GameViewModel
+    private lateinit var gameTimerViewModel: GameTimeViewModel
+    private lateinit var vibratorManager: VibratorManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,9 +43,15 @@ class MainActivity : ComponentActivity() {
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
         gameViewModel.init(this.application, gson)
 
+        gameTimerViewModel = ViewModelProvider(this).get(GameTimeViewModel::class.java)
+        gameTimerViewModel.init()
+
+        vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
+
         installSplashScreen()
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
+
             Scaffold(
                 timeText = {
                     TimeText(
@@ -49,7 +61,7 @@ class MainActivity : ComponentActivity() {
                 },
             ) {
                 RefereeScoreKeeperTheme {
-                    Watchface(gameViewModel)
+                    Watchface(gameViewModel, gameTimerViewModel)
                 }
             }
         }
@@ -89,7 +101,9 @@ class MainActivity : ComponentActivity() {
 
     private fun handleButtonPress(buttonType: ButtonType) {
         lifecycleScope.launch {
-            gameViewModel.onAction(ScoreAction.Reset)
+//            gameViewModel.onAction(ScoreAction.Reset)
+            vibratorManager.defaultVibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+            gameTimerViewModel.toggleIsRunning()
         }
     }
 

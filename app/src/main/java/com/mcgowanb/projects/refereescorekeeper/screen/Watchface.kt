@@ -15,13 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
+import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 
 @Composable
-fun Watchface(gameViewModel: GameViewModel) {
+fun Watchface(
+    gameViewModel: GameViewModel,
+    timerViewModel: GameTimeViewModel
+) {
     val gameUiState by gameViewModel.uiState.collectAsState()
 
-    Stopwatch()
+    Stopwatch(
+        timerViewModel = timerViewModel
+    )
     Column {
         Box(
             modifier = Modifier
