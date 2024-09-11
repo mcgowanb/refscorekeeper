@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.VibratorManager
+import android.util.Log
 import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -70,6 +71,7 @@ class MainActivity : ComponentActivity() {
     private var lastPressTime: Long = 0
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        Log.d("MainActivity", "onKeyDown with keyCode ${keyCode}, event ${event}")
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastPressTime < 1000) {
@@ -89,14 +91,15 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-//        if (keyCode == KeyEvent.KEYCODE_STEM_1) {
-//            // Handle physical button release
-//            handleButtonRelease(ButtonType.SINGLE)
-//            return true
-//        }
+        Log.d("MainActivity", "onKeyUp with button ${keyCode}")
+        if (keyCode == KeyEvent.KEYCODE_STEM_1) {
+            // Handle physical button release
+            handleButtonRelease(ButtonType.SINGLE)
+            return true
+        }
         return false
         // Handle other button releases if needed
-//        return super.onKeyUp(keyCode, event)
+        return super.onKeyUp(keyCode, event)
     }
 
     private fun handleButtonPress(buttonType: ButtonType) {
