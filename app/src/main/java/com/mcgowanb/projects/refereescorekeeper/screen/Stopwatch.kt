@@ -22,9 +22,9 @@ import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 
 @Composable
 fun Stopwatch(
-    timerViewModel: GameTimeViewModel
+    gameTimerViewModel: GameTimeViewModel
 ) {
-    val stopWatchText by timerViewModel.stopWatchText.collectAsState()
+    val remainingTime by gameTimerViewModel.formattedTime.collectAsState()
 
     Box(
         modifier = Modifier
@@ -48,7 +48,7 @@ fun Stopwatch(
                     .weight(2f)
                     .fillMaxWidth(),
                 fontSize = 16.sp,
-                text = stopWatchText,
+                text = remainingTime.toString(),
                 textAlign = TextAlign.Center
             )
             Spacer(

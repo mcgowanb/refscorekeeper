@@ -1,83 +1,73 @@
 package com.mcgowanb.projects.refereescorekeeper.model
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mcgowanb.projects.refereescorekeeper.enums.TimerState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class GameTimeViewModel : ViewModel() {
-    private val _remainingTime = MutableStateFlow(1800000L)
-    private val _timerState = MutableStateFlow(TimerState.RESET)
-    val timerState = _timerState.asStateFlow()
+    private val _remainingTime = MutableStateFlow(30 * 60) // 30 minutes in seconds
+    val remainingTime: StateFlow<Int> = _remainingTime.asStateFlow()
 
-    private val formatter = DateTimeFormatter.ofPattern("mm:ss:SS")
+    private val _formattedTime = MutableStateFlow("30:00:00")
+    val formattedTime: StateFlow<String> = _formattedTime.asStateFlow()
 
-    val stopWatchText = _remainingTime.map { millis ->
-        LocalTime
-            .ofNanoOfDay(millis * 1_000_000)
-            .format(formatter)
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        "30:00:00"
-    )
+    private val _isRunning = MutableStateFlow(false)
+    val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
+
+    private var timerJob: Job? = null
 
     fun init() {
-        _timerState.flatMapLatest { timerState ->
-            getTimerFlow(
-                isRunning = timerState.equals(TimerState.RUNNING)
-            )
-        }
-            .onEach { timeDiff ->
-                _remainingTime.update { it - timeDiff }
-            }
-            .launchIn(viewModelScope)
+        // Initialize if needed
     }
 
     fun toggleIsRunning() {
-        when (timerState.value) {
-            TimerState.RUNNING -> _timerState.update { TimerState.PAUSED }
-            TimerState.PAUSED,
-            TimerState.RESET -> _timerState.update { TimerState.RUNNING }
-
+        if (_isRunning.value) {
+            stopTimer()
+        } else {
+            startTimer()
         }
+    }
+
+    private fun startTimer() {
+        if (timerJob?.isActive == true) return
+
+        _isRunning.value = true
+        timerJob = viewModelScope.launch {
+            val startTime = System.currentTimeMillis()
+            val initialRemainingTime = _remainingTime.value * 1000L // Convert to milliseconds
+            while (_remainingTime.value > 0) {
+                delay(10) // Update every 10ms for smoother countdown
+                val elapsedTime = System.currentTimeMillis() - startTime
+                val remainingMillis = (initialRemainingTime - elapsedTime).coerceAtLeast(0)
+                _remainingTime.value = (remainingMillis / 1000.0).roundToInt()
+                _formattedTime.value = formatTime(remainingMillis.toInt())
+            }
+            _isRunning.value = false
+        }
+    }
+
+    private fun stopTimer() {
+        timerJob?.cancel()
+        _isRunning.value = false
     }
 
     fun resetTimer() {
-        _timerState.update { TimerState.RESET }
-        _remainingTime.update { 0L }
+        stopTimer()
+        _remainingTime.value = 30 * 60 // Reset to 30 minutes
+        _formattedTime.value = "30:00:00"
     }
 
-    private fun getTimerFlow(isRunning: Boolean): Flow<Long> {
-        return flow {
-            var startTimeMillis = System.currentTimeMillis()
-
-            while (isRunning) {
-                val currentMillis = System.currentTimeMillis()
-                val timeDiff = if (currentMillis > startTimeMillis) {
-                    currentMillis - startTimeMillis
-                } else {
-                    0L
-                }
-                emit(timeDiff)
-                startTimeMillis = System.currentTimeMillis()
-                delay(10L)
-            }
-        }
+    private fun formatTime(timeInMillis: Int): String {
+        val minutes = timeInMillis / 60000
+        val seconds = (timeInMillis % 60000) / 1000
+        val centiseconds = (timeInMillis % 1000) / 10
+        return String.format("%02d:%02d:%02d", minutes, seconds, centiseconds)
     }
 }
