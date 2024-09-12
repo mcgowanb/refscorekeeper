@@ -1,5 +1,5 @@
 package com.mcgowanb.projects.refereescorekeeper.enums
 
-enum class TimerState {
+enum class ClockState {
     RUNNING, PAUSED, RESET
 }

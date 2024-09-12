@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
         gameViewModel.init(this.application, gson)
 
         gameTimerViewModel = ViewModelProvider(this).get(GameTimeViewModel::class.java)
-        gameTimerViewModel.init()
+        gameTimerViewModel.init(this.application, gson)
 
         vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
 
