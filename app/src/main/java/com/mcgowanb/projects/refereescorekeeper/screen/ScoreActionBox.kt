@@ -22,16 +22,16 @@ fun ScoreActionBox(
     Box(
         modifier = Modifier
             .combinedClickable(
-                onClick = {},
-                onLongClick = {
+                onDoubleClick = {},
+                onClick = {
                     addScore()
                     vibrator.vibrate(
                         VibrationEffect.createPredefined(
-                            VibrationEffect.EFFECT_CLICK
+                            VibrationEffect.EFFECT_HEAVY_CLICK
                         )
                     )
                 },
-                onDoubleClick = {
+                onLongClick = {
                     subtractScore()
                     if (shouldVibrate) {
                         vibrator.vibrate(
