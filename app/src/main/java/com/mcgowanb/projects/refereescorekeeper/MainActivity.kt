@@ -10,13 +10,14 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.VibratorManager
-import android.util.Log
 import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.Scaffold
@@ -27,6 +28,7 @@ import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
+import com.mcgowanb.projects.refereescorekeeper.utility.KeepScreenOn
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -34,6 +36,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var gameViewModel: GameViewModel
     private lateinit var gameTimerViewModel: GameTimeViewModel
     private lateinit var vibratorManager: VibratorManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,10 +52,17 @@ class MainActivity : ComponentActivity() {
 
         vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
 
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStop(owner: LifecycleOwner) {
+                // Prevent the app from fully stopping
+                moveTaskToBack(false)
+            }
+        })
+
         installSplashScreen()
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
-
+            KeepScreenOn()
             Scaffold(
                 timeText = {
                     TimeText(
@@ -68,55 +78,30 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private var lastPressTime: Long = 0
-
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        Log.d("MainActivity", "onKeyDown with keyCode ${keyCode}, event ${event}")
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastPressTime < 1000) {
-                // Double press detected
-                handleButtonPress(ButtonType.DOUBLE)
-                // Reset last press time
-                lastPressTime = 0
-            } else {
-                // Single press detected
-                handleButtonPress(ButtonType.SINGLE)
-                // Update last press time
-                lastPressTime = currentTime
-            }
-        }
-        // Handle other button presses if needed
-        return super.onKeyDown(keyCode, event)
+        return handlePhysicalButtonEvent(keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-        Log.d("MainActivity", "onKeyUp with button ${keyCode}")
-        if (keyCode == KeyEvent.KEYCODE_STEM_1) {
-            // Handle physical button release
-            handleButtonRelease(ButtonType.SINGLE)
-            return true
-        }
-        return false
-        // Handle other button releases if needed
-        return super.onKeyUp(keyCode, event)
+        return true
     }
 
-    private fun handleButtonPress(buttonType: ButtonType) {
+    private fun handlePhysicalButtonEvent(keyCode: Int, event: KeyEvent?): Boolean {
+
+        return when (keyCode) {
+            KeyEvent.KEYCODE_BACK -> toggleTimer()
+            else -> super.onKeyDown(keyCode, event)
+        }
+    }
+
+    private fun toggleTimer(): Boolean {
         lifecycleScope.launch {
-//            gameViewModel.onAction(ScoreAction.Reset)
-            vibratorManager.defaultVibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+            vibratorManager.defaultVibrator.vibrate(
+                VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
+            )
             gameTimerViewModel.toggleIsRunning()
         }
+        return true
     }
 
-    private fun handleButtonRelease(buttonType: ButtonType) {
-        // Handle button release actions here
-    }
-}
-
-enum class ButtonType {
-    SINGLE,
-    DOUBLE,
-    LONG
 }
