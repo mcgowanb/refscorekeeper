@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.screen
+package com.mcgowanb.projects.refereescorekeeper.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

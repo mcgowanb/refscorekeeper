@@ -15,8 +15,8 @@ import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
-import com.mcgowanb.projects.refereescorekeeper.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
+import com.mcgowanb.projects.refereescorekeeper.ui.screen.Watchface
 
 @Composable
 fun MainScreen(
