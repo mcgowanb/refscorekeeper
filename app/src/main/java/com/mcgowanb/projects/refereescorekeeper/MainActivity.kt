@@ -8,20 +8,15 @@ import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.wear.compose.material.Scaffold
-import androidx.wear.compose.material.TimeText
-import androidx.wear.compose.material.TimeTextDefaults
 import com.google.gson.GsonBuilder
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
-import com.mcgowanb.projects.refereescorekeeper.screen.Watchface
-import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
+import com.mcgowanb.projects.refereescorekeeper.ui.MainScreen
 import com.mcgowanb.projects.refereescorekeeper.utility.KeepScreenOn
 import kotlinx.coroutines.launch
 
@@ -57,18 +52,7 @@ class MainActivity : ComponentActivity() {
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
             KeepScreenOn()
-            Scaffold(
-                timeText = {
-                    TimeText(
-                        timeTextStyle = TimeTextDefaults
-                            .timeTextStyle(fontSize = 14.sp)
-                    )
-                },
-            ) {
-                RefereeScoreKeeperTheme {
-                    Watchface(gameViewModel, gameTimerViewModel)
-                }
-            }
+            MainScreen(gameTimerViewModel = gameTimerViewModel, gameViewModel = gameViewModel)
         }
     }
 
