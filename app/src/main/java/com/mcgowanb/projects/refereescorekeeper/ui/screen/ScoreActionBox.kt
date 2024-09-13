@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -27,14 +28,14 @@ fun ScoreActionBox(
                 onLongClick = {
                     addScore()
                     vibrator.vibrate(
-                        vibrationUtility.singleShot()
+                        vibrationUtility.getSingleShot()
                     )
                 },
                 onDoubleClick = {
                     subtractScore()
                     if (shouldVibrate) {
                         vibrator.vibrate(
-                            vibrationUtility.doubleClick()
+                            vibrationUtility.getMultiShot(VibrationType.SCORE)
                         )
                     }
                 }

@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
     private fun toggleTimer(): Boolean {
         lifecycleScope.launch {
             vibratorManager.defaultVibrator.vibrate(
-                vibrationUtility.getVibrationEffect(gameTimerViewModel.isRunning.value)
+                vibrationUtility.getTimerVibration(gameTimerViewModel.isRunning.value)
             )
             gameTimerViewModel.toggleIsRunning()
         }
