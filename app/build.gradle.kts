@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.core.splashscreen)
     implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.gson)
     implementation(libs.wear.input)

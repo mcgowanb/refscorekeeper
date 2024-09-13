@@ -112,9 +112,9 @@ fun Watchface(
     }
 }
 
-@Preview
+@Preview(device = "id:wearos_large_round")
 @Composable
 private fun WatchfacePreview() {
-//    Watchface()
+    Watchface(GameViewModel(), GameTimeViewModel(), VibrationUtility())
 
 }
