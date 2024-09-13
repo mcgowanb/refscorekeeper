@@ -17,11 +17,13 @@ import androidx.compose.ui.unit.dp
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
+import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
 @Composable
 fun Watchface(
     gameViewModel: GameViewModel,
-    gameTimerViewModel: GameTimeViewModel
+    gameTimerViewModel: GameTimeViewModel,
+    vibrationUtility: VibrationUtility
 ) {
     val gameUiState by gameViewModel.uiState.collectAsState()
 
@@ -53,7 +55,8 @@ fun Watchface(
                         .fillMaxHeight(),
                     subtractScore = { gameViewModel.onAction(ScoreAction.SubtractHomeGoal) },
                     addScore = { gameViewModel.onAction(ScoreAction.AddHomeGoal) },
-                    shouldVibrate = gameUiState.hGoals != 0
+                    shouldVibrate = gameUiState.hGoals != 0,
+                    vibrationUtility
                 )
                 ScoreActionBox(
                     modifier = Modifier
@@ -61,7 +64,8 @@ fun Watchface(
                         .fillMaxHeight(),
                     subtractScore = { gameViewModel.onAction(ScoreAction.SubtractHomePoint) },
                     addScore = { gameViewModel.onAction(ScoreAction.AddHomePoint) },
-                    shouldVibrate = gameUiState.hPoints != 0
+                    shouldVibrate = gameUiState.hPoints != 0,
+                    vibrationUtility
                 )
             }
         }
@@ -90,7 +94,8 @@ fun Watchface(
                         .fillMaxHeight(),
                     subtractScore = { gameViewModel.onAction(ScoreAction.SubtractAwayGoal) },
                     addScore = { gameViewModel.onAction(ScoreAction.AddAwayGoal) },
-                    shouldVibrate = gameUiState.aGoals != 0
+                    shouldVibrate = gameUiState.aGoals != 0,
+                    vibrationUtility
 
                 )
                 ScoreActionBox(
@@ -99,8 +104,8 @@ fun Watchface(
                         .fillMaxHeight(),
                     subtractScore = { gameViewModel.onAction(ScoreAction.SubtractAwayPoint) },
                     addScore = { gameViewModel.onAction(ScoreAction.AddAwayPoint) },
-                    shouldVibrate = gameUiState.aPoints != 0
-
+                    shouldVibrate = gameUiState.aPoints != 0,
+                    vibrationUtility
                 )
             }
         }

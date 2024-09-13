@@ -1,6 +1,5 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.screen
 
-import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -15,7 +15,8 @@ fun ScoreActionBox(
     modifier: Modifier,
     subtractScore: () -> Unit,
     addScore: () -> Unit,
-    shouldVibrate: Boolean
+    shouldVibrate: Boolean,
+    vibrationUtility: VibrationUtility
 ) {
     val context = LocalContext.current
     val vibrator = context.getSystemService(Vibrator::class.java)
@@ -26,18 +27,14 @@ fun ScoreActionBox(
                 onLongClick = {
                     addScore()
                     vibrator.vibrate(
-                        VibrationEffect.createPredefined(
-                            VibrationEffect.EFFECT_CLICK
-                        )
+                        vibrationUtility.singleShot()
                     )
                 },
                 onDoubleClick = {
                     subtractScore()
                     if (shouldVibrate) {
                         vibrator.vibrate(
-                            VibrationEffect.createPredefined(
-                                VibrationEffect.EFFECT_DOUBLE_CLICK
-                            )
+                            vibrationUtility.doubleClick()
                         )
                     }
                 }
