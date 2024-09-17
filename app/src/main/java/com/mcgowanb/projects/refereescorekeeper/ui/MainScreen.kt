@@ -2,6 +2,10 @@ package com.mcgowanb.projects.refereescorekeeper.ui
 
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Functions
+import androidx.compose.material.icons.rounded.HourglassEmpty
+import androidx.compose.material.icons.rounded.MoreTime
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,6 +19,7 @@ import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
+import com.mcgowanb.projects.refereescorekeeper.model.Setting
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
 import com.mcgowanb.projects.refereescorekeeper.ui.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
@@ -31,8 +36,9 @@ fun MainScreen(
         modifier = Modifier.pointerInput(Unit) {
             detectVerticalDragGestures { _, dragAmount ->
                 when {
-                    dragAmount < -50 && !showSettings && !gameTimerViewModel.isRunning.value ->
+                    dragAmount < -50 && !showSettings && !gameTimerViewModel.isRunning.value -> {
                         showSettings = true
+                    }
                 }
             }
         }

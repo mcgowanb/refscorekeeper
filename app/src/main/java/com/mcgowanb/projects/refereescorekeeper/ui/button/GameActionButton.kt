@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Functions
+import androidx.compose.material.icons.rounded.SportsScore
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Button
@@ -19,11 +20,11 @@ import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.model.Setting
 
 @Composable
-fun SettingsButton(
+fun GameActionButton(
     setting: Setting
 ) {
     Button(
-        onClick = {  },
+        onClick = { },
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp),
@@ -47,23 +48,18 @@ fun SettingsButton(
                 tint = Color.White
             )
             Text(
-                modifier = Modifier.weight(4f).padding(start = 10.dp),
+                modifier = Modifier
+                    .weight(4f)
+                    .padding(start = 25.dp),
                 text = setting.description,
                 color = Color.White
             )
-            if (setting.value >= 0) {
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = setting.value.toString(),
-                    color = Color.White
-                )
-            }
         }
     }
 }
 
 @Composable
 @Preview(device = "id:wearos_small_round")
-fun SettingsPreview() {
-    SettingsButton(Setting("periods", "Periods", Icons.Rounded.Functions, 2))
+fun GameActionButtonPreview() {
+    GameActionButton(Setting("finish", "End Game", Icons.Rounded.SportsScore, -1))
 }
