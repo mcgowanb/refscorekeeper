@@ -19,7 +19,6 @@ class GameTimeViewModel : ViewModel() {
     private val _gameLengthInSeconds = _gameLengthInMinutes * 60
 
     private val _remainingTime = MutableStateFlow(_gameLengthInSeconds)
-    val remainingTime: StateFlow<Int> = _remainingTime.asStateFlow()
 
     private val _formattedTime = MutableStateFlow(formatTime(_gameLengthInSeconds))
     val formattedTime: StateFlow<String> = _formattedTime.asStateFlow()
