@@ -3,9 +3,7 @@ package com.mcgowanb.projects.refereescorekeeper.ui
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Functions
-import androidx.compose.material.icons.rounded.HourglassEmpty
-import androidx.compose.material.icons.rounded.MoreTime
+import androidx.compose.material.icons.automirrored.rounded.RotateLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,9 +15,10 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
+import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
+import com.mcgowanb.projects.refereescorekeeper.model.GameAction
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
-import com.mcgowanb.projects.refereescorekeeper.model.Setting
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
 import com.mcgowanb.projects.refereescorekeeper.ui.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
@@ -57,11 +56,27 @@ fun MainScreen(
                     gameTimerViewModel,
                     vibrationUtility
                 )
-                if (showSettings) {
-                    SettingsOverlay(
+                if (gameViewModel.getGameStatus().equals(GameStatus.NOT_STARTED) && showSettings) {
+                    GameActionOverlay(
                         showSettings = showSettings,
-                        onClose = { showSettings = false }
-                    )
+                        onClose = { showSettings = false },
+                        settings = listOf(
+                            GameAction("Reset Game", Icons.AutoMirrored.Rounded.RotateLeft) {}
+                        ))
+//                    SettingsOverlay(
+//                        showSettings = showSettings,
+//                        onClose = { showSettings = false },
+//                        listOf(
+//                            Setting("periods", "Number of Periods", Icons.Rounded.Functions, 2),
+//                            Setting(
+//                                "periodDurationInMinutes",
+//                                "Period Duration",
+//                                Icons.Rounded.HourglassEmpty,
+//                                30
+//                            ),
+//                            Setting("periodsPlayed", "Periods Played", Icons.Rounded.MoreTime, 0)
+//                        )
+//                    )
                 }
             }
         }

@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.RotateLeft
+import androidx.compose.material.icons.rounded.RotateLeft
 import androidx.compose.material.icons.rounded.SportsScore
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,14 +19,15 @@ import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
+import com.mcgowanb.projects.refereescorekeeper.model.GameAction
 import com.mcgowanb.projects.refereescorekeeper.model.Setting
 
 @Composable
 fun GameActionButton(
-    setting: Setting
+    setting: GameAction
 ) {
     Button(
-        onClick = { },
+        onClick = setting.action,
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp),
@@ -61,5 +64,5 @@ fun GameActionButton(
 @Composable
 @Preview(device = "id:wearos_small_round")
 fun GameActionButtonPreview() {
-    GameActionButton(Setting("finish", "End Game", Icons.Rounded.SportsScore, -1))
+    GameActionButton(GameAction("Reset Game", Icons.AutoMirrored.Rounded.RotateLeft) {})
 }
