@@ -6,11 +6,12 @@ import android.os.VibrationEffect.createOneShot
 import android.os.VibrationEffect.createWaveform
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 
-class VibrationUtility() {
+class VibrationUtility {
 
     val amplitude = DEFAULT_AMPLITUDE
     val doubleBlip = longArrayOf(0, 50, 50, 50)
     val quadBlip = longArrayOf(0, 50, 50, 50, 50, 50, 50, 50, 50)
+    val resetBlip = longArrayOf(0, 50, 50, 50, 300, 50, 50, 50, 300, 50, 50, 50, 300, 50, 50, 50)
 
     fun getTimerVibration(isRunning: Boolean): VibrationEffect {
         return if (isRunning) {
@@ -21,8 +22,13 @@ class VibrationUtility() {
     }
 
     fun getMultiShot(type: VibrationType): VibrationEffect {
+        val blipType = when (type) {
+            VibrationType.SCORE -> doubleBlip
+            VibrationType.RESET -> resetBlip
+            else -> quadBlip
+        }
         return createWaveform(
-            if (type == VibrationType.SCORE) doubleBlip else quadBlip,
+            blipType,
             amplitude
         )
     }

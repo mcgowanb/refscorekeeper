@@ -58,7 +58,8 @@ fun MainScreen(
                         isVisible = showOverlay,
                         onClose = { showOverlay = false },
                         gameViewModel = gameViewModel,
-                        gameTimerViewModel = gameTimerViewModel
+                        gameTimerViewModel = gameTimerViewModel,
+                        vibrationUtility = vibrationUtility
                     )
 //                    SettingsOverlay(
 //                        showSettings = showSettings,
