@@ -29,14 +29,14 @@ fun MainScreen(
     gameViewModel: GameViewModel,
     vibrationUtility: VibrationUtility
 ) {
-    var showSettings by remember { mutableStateOf(false) }
+    var showOverlay by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.pointerInput(Unit) {
             detectVerticalDragGestures { _, dragAmount ->
                 when {
-                    dragAmount < -50 && !showSettings && !gameTimerViewModel.isRunning.value -> {
-                        showSettings = true
+                    dragAmount < -50 && !showOverlay && !gameTimerViewModel.isRunning.value -> {
+                        showOverlay = true
                     }
                 }
             }
@@ -56,10 +56,10 @@ fun MainScreen(
                     gameTimerViewModel,
                     vibrationUtility
                 )
-                if (gameViewModel.getGameStatus().equals(GameStatus.NOT_STARTED) && showSettings) {
+                if (gameViewModel.getGameStatus().equals(GameStatus.NOT_STARTED) && showOverlay) {
                     GameActionOverlay(
-                        showSettings = showSettings,
-                        onClose = { showSettings = false },
+                        isVisible = showOverlay,
+                        onClose = { showOverlay = false },
                         settings = listOf(
                             GameAction("Reset Game", Icons.AutoMirrored.Rounded.RotateLeft) {}
                         ))

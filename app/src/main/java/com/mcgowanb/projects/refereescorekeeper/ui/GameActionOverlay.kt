@@ -24,12 +24,12 @@ import com.mcgowanb.projects.refereescorekeeper.ui.button.GameActionButton
 
 @Composable
 fun GameActionOverlay(
-    showSettings: Boolean,
+    isVisible: Boolean,
     onClose: () -> Unit,
     settings: List<GameAction>
 ) {
     AnimatedVisibility(
-        visible = showSettings,
+        visible = isVisible,
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
