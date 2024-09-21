@@ -2,8 +2,6 @@ package com.mcgowanb.projects.refereescorekeeper.ui
 
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.RotateLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +14,6 @@ import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
-import com.mcgowanb.projects.refereescorekeeper.model.GameAction
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
@@ -56,13 +53,13 @@ fun MainScreen(
                     gameTimerViewModel,
                     vibrationUtility
                 )
-                if (gameViewModel.getGameStatus().equals(GameStatus.NOT_STARTED) && showOverlay) {
+                if (gameViewModel.getGameStatus() == GameStatus.NOT_STARTED && showOverlay) {
                     GameActionOverlay(
                         isVisible = showOverlay,
                         onClose = { showOverlay = false },
-                        settings = listOf(
-                            GameAction("Reset Game", Icons.AutoMirrored.Rounded.RotateLeft) {}
-                        ))
+                        gameViewModel = gameViewModel,
+                        gameTimerViewModel = gameTimerViewModel
+                    )
 //                    SettingsOverlay(
 //                        showSettings = showSettings,
 //                        onClose = { showSettings = false },
