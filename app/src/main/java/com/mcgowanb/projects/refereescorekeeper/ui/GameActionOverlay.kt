@@ -39,7 +39,6 @@ import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
 @Composable
 fun GameActionOverlay(
-    isVisible: Boolean,
     onClose: () -> Unit,
     gameViewModel: GameViewModel,
     gameTimerViewModel: GameTimeViewModel,
@@ -84,18 +83,18 @@ fun GameActionOverlay(
                     showConfirmationDialog = true
                 }
             )
-            SettingsButton(
-                setting = Setting(
-                    "mins",
-                    "Minutes",
-                    Icons.Rounded.AccessTime,
-                    gameTimerViewModel.gameLengthInMinutes
-                ),
-                {}
-            )
-            SettingsButton(
-                setting = Setting("periods", "Periods", Icons.Rounded.Functions, 2), {}
-            )
+//            SettingsButton(
+//                setting = Setting(
+//                    "mins",
+//                    "Minutes",
+//                    Icons.Rounded.AccessTime,
+//                    gameTimerViewModel.gameLengthInMinutes
+//                ),
+//                {}
+//            )
+//            SettingsButton(
+//                setting = Setting("periods", "Periods", Icons.Rounded.Functions, 2), {}
+//            )
             Spacer(modifier = Modifier.height(16.dp))
             GameActionButton(
                 setting = GameAction("Close", Icons.Rounded.HighlightOff, onClose)
@@ -122,7 +121,7 @@ fun GameActionOverlay(
 @Composable
 private fun GameActionOverlayPreview() {
     GameActionOverlay(
-        true, {},
+        {},
         GameViewModel(),
         GameTimeViewModel(),
         VibrationUtility()

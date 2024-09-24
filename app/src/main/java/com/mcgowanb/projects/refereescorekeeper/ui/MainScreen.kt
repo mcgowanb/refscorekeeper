@@ -55,26 +55,11 @@ fun MainScreen(
                 )
                 if (gameViewModel.getGameStatus() == GameStatus.NOT_STARTED && showOverlay) {
                     GameActionOverlay(
-                        isVisible = showOverlay,
                         onClose = { showOverlay = false },
                         gameViewModel = gameViewModel,
                         gameTimerViewModel = gameTimerViewModel,
                         vibrationUtility = vibrationUtility
                     )
-//                    SettingsOverlay(
-//                        showSettings = showSettings,
-//                        onClose = { showSettings = false },
-//                        listOf(
-//                            Setting("periods", "Number of Periods", Icons.Rounded.Functions, 2),
-//                            Setting(
-//                                "periodDurationInMinutes",
-//                                "Period Duration",
-//                                Icons.Rounded.HourglassEmpty,
-//                                30
-//                            ),
-//                            Setting("periodsPlayed", "Periods Played", Icons.Rounded.MoreTime, 0)
-//                        )
-//                    )
                 }
             }
         }
