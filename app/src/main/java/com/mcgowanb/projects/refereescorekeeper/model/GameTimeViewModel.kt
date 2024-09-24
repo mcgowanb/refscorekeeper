@@ -1,10 +1,13 @@
 package com.mcgowanb.projects.refereescorekeeper.model
 
 import android.content.Context
+import android.os.VibratorManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
+import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +18,8 @@ import java.io.File
 import kotlin.math.roundToInt
 
 class GameTimeViewModel : ViewModel() {
-    private val _gameLengthInMinutes = 30
-    private val _gameLengthInSeconds = _gameLengthInMinutes * 60
+    private var _gameLengthInMinutes = 30
+    private var _gameLengthInSeconds = _gameLengthInMinutes * 60
 
     private val _remainingTime = MutableStateFlow(_gameLengthInSeconds)
 
@@ -30,13 +33,23 @@ class GameTimeViewModel : ViewModel() {
     private val fileName = "timer_state.json"
 
     private lateinit var context: Context
+    private lateinit var vibrationUtility: VibrationUtility
+    private lateinit var vibratorManager: VibratorManager
     private lateinit var gson: Gson
     private var isInitialized = false
 
-    fun init(context: Context, gson: Gson) {
+
+    fun init(
+        context: Context,
+        gson: Gson,
+        vibrationUtility: VibrationUtility,
+        vibrationManager: VibratorManager
+    ) {
         if (!isInitialized) {
             this.context = context
             this.gson = gson
+            this.vibrationUtility = vibrationUtility
+            this.vibratorManager = vibrationManager
             loadTimerState()
             isInitialized = true
         }
@@ -67,7 +80,15 @@ class GameTimeViewModel : ViewModel() {
             }
             _isRunning.value = false
             saveTimerState()
+            onTimerFinished()
         }
+    }
+
+    private fun onTimerFinished() {
+        resetTimer()
+        vibratorManager.defaultVibrator.vibrate(
+            vibrationUtility.getMultiShot(VibrationType.HALF_TIME)
+        )
     }
 
     private fun stopTimer() {

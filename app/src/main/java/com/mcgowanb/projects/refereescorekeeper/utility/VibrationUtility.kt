@@ -12,6 +12,7 @@ class VibrationUtility {
     val doubleBlip = longArrayOf(0, 50, 50, 50)
     val quadBlip = longArrayOf(0, 50, 50, 50, 50, 50, 50, 50, 50)
     val resetBlip = longArrayOf(0, 50, 50, 50, 300, 50, 50, 50, 300, 50, 50, 50, 300, 50, 50, 50)
+    val halfTimeBlip = longArrayOf(0, 300, 900, 300, 900, 1200)
 
     fun getTimerVibration(isRunning: Boolean): VibrationEffect {
         return if (isRunning) {
@@ -25,6 +26,7 @@ class VibrationUtility {
         val blipType = when (type) {
             VibrationType.SCORE -> doubleBlip
             VibrationType.RESET -> resetBlip
+            VibrationType.HALF_TIME -> halfTimeBlip
             else -> quadBlip
         }
         return createWaveform(

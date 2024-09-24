@@ -33,14 +33,14 @@ class MainActivity : ComponentActivity() {
             .create()
 
         vibrationUtility = VibrationUtility()
+        vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
 
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
         gameViewModel.init(this.application, gson)
 
         gameTimerViewModel = ViewModelProvider(this).get(GameTimeViewModel::class.java)
-        gameTimerViewModel.init(this.application, gson)
+        gameTimerViewModel.init(this.application, gson, vibrationUtility, vibratorManager)
 
-        vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
 
         installSplashScreen()
         setTheme(android.R.style.Theme_DeviceDefault)
