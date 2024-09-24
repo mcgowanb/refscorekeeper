@@ -20,7 +20,8 @@ import com.mcgowanb.projects.refereescorekeeper.model.Setting
 
 @Composable
 fun SettingsButton(
-    setting: Setting
+    setting: Setting,
+    onClick: () -> Unit
 ) {
     Button(
         onClick = {  },
@@ -65,5 +66,8 @@ fun SettingsButton(
 @Composable
 @Preview(device = "id:wearos_small_round")
 fun SettingsPreview() {
-    SettingsButton(Setting("periods", "Periods", Icons.Rounded.Functions, 2))
+    SettingsButton(
+        Setting("periods", "Periods", Icons.Rounded.Functions, 2),
+        {}
+    )
 }
