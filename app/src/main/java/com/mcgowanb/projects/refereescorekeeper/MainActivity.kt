@@ -2,11 +2,14 @@ package com.mcgowanb.projects.refereescorekeeper
 
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.os.VibratorManager
 import android.view.KeyEvent
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.core.content.getSystemService
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -14,7 +17,6 @@ import com.google.gson.GsonBuilder
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.ui.MainScreen
-import com.mcgowanb.projects.refereescorekeeper.utility.KeepScreenOn
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 import kotlinx.coroutines.launch
 
@@ -24,6 +26,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var gameTimerViewModel: GameTimeViewModel
     private lateinit var vibratorManager: VibratorManager
     private lateinit var vibrationUtility: VibrationUtility
+    private lateinit var wakeLock: PowerManager.WakeLock
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,16 +44,31 @@ class MainActivity : ComponentActivity() {
         gameTimerViewModel = ViewModelProvider(this).get(GameTimeViewModel::class.java)
         gameTimerViewModel.init(this.application, gson, vibrationUtility, vibratorManager)
 
+        val powerManager = getSystemService<PowerManager>()!!
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp::MyWakelockTag")
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
 
         installSplashScreen()
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
-            KeepScreenOn()
             MainScreen(
                 gameTimerViewModel,
                 gameViewModel,
                 vibrationUtility
             )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        wakeLock.acquire(35 * 60 * 1000L) // 30 minutes
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (wakeLock.isHeld) {
+            wakeLock.release()
         }
     }
 
