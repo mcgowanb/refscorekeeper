@@ -44,6 +44,7 @@ class MainActivity : ComponentActivity() {
         gameTimerViewModel = ViewModelProvider(this).get(GameTimeViewModel::class.java)
         gameTimerViewModel.init(this.application, gson, vibrationUtility, vibratorManager)
 
+
         val powerManager = getSystemService<PowerManager>()!!
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp::MyWakelockTag")
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -67,6 +68,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
+        if (wakeLock.isHeld) {
+            wakeLock.release()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         if (wakeLock.isHeld) {
             wakeLock.release()
         }
