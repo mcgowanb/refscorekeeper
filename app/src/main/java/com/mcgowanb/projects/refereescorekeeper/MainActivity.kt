@@ -28,6 +28,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var vibrationUtility: VibrationUtility
     private lateinit var wakeLock: PowerManager.WakeLock
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,11 +45,9 @@ class MainActivity : ComponentActivity() {
         gameTimerViewModel = ViewModelProvider(this).get(GameTimeViewModel::class.java)
         gameTimerViewModel.init(this.application, gson, vibrationUtility, vibratorManager)
 
-
         val powerManager = getSystemService<PowerManager>()!!
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp::MyWakelockTag")
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
 
         installSplashScreen()
         setTheme(android.R.style.Theme_DeviceDefault)
@@ -63,7 +62,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        wakeLock.acquire(35 * 60 * 1000L) // 30 minutes
+        wakeLock.acquire(35 * 60 * 1000L)
     }
 
     override fun onPause() {
@@ -79,6 +78,7 @@ class MainActivity : ComponentActivity() {
             wakeLock.release()
         }
     }
+
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return handlePhysicalButtonEvent(keyCode, event)
