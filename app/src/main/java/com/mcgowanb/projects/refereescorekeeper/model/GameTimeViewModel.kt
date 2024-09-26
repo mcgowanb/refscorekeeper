@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.mcgowanb.projects.refereescorekeeper.R
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
-import com.mcgowanb.projects.refereescorekeeper.utility.SoundUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -38,7 +36,6 @@ class GameTimeViewModel : ViewModel() {
     private lateinit var vibrationUtility: VibrationUtility
     private lateinit var vibratorManager: VibratorManager
     private lateinit var gson: Gson
-    private lateinit var soundUtility: SoundUtility
     private var isInitialized = false
 
     fun init(
@@ -54,7 +51,6 @@ class GameTimeViewModel : ViewModel() {
             this.vibratorManager = vibrationManager
             loadTimerState()
             isInitialized = true
-            soundUtility = SoundUtility(context)
         }
     }
 
@@ -92,7 +88,6 @@ class GameTimeViewModel : ViewModel() {
         vibratorManager.defaultVibrator.vibrate(
             vibrationUtility.getMultiShot(VibrationType.HALF_TIME)
         )
-        soundUtility.playSound(R.raw.whistle)
     }
 
     private fun stopTimer() {
