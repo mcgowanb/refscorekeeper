@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.core.splashscreen)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.material3)
 
     implementation(libs.gson)
     implementation(libs.wear.input)
