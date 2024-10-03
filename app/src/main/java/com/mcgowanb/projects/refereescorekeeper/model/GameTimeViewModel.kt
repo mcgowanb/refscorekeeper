@@ -2,7 +2,7 @@ package com.mcgowanb.projects.refereescorekeeper.model
 
 import android.content.Context
 import android.os.Build
-import android.os.VibratorManager
+import android.os.VibrationEffect
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,7 +39,6 @@ class GameTimeViewModel : ViewModel() {
 
     private lateinit var context: Context
     private lateinit var vibrationUtility: VibrationUtility
-    private lateinit var vibratorManager: VibratorManager
     private lateinit var gson: Gson
     private lateinit var soundUtility: SoundUtility
     private var isInitialized = false
@@ -47,14 +46,12 @@ class GameTimeViewModel : ViewModel() {
     fun init(
         context: Context,
         gson: Gson,
-        vibrationUtility: VibrationUtility,
-        vibrationManager: VibratorManager
+        vibrationUtility: VibrationUtility
     ) {
         if (!isInitialized) {
             this.context = context
             this.gson = gson
             this.vibrationUtility = vibrationUtility
-            this.vibratorManager = vibrationManager
             loadTimerState()
             soundUtility = SoundUtility(context)
             isInitialized = true
@@ -92,8 +89,9 @@ class GameTimeViewModel : ViewModel() {
 
     private fun onTimerFinished() {
         resetTimer()
-        vibratorManager.defaultVibrator.vibrate(
-            vibrationUtility.getMultiShot(VibrationType.HALF_TIME)
+        vibrationUtility.vibrateMultiple(
+            VibrationType.HALF_TIME,
+            VibrationEffect.DEFAULT_AMPLITUDE
         )
 //        soundUtility.playSound(R.raw.whistle)
     }
@@ -110,8 +108,10 @@ class GameTimeViewModel : ViewModel() {
         _remainingTime.value = _gameLengthInSeconds
         _formattedTime.value = formatTime(_gameLengthInSeconds)
         saveTimerState()
-        vibratorManager.defaultVibrator.vibrate(
-            vibrationUtility.getMultiShot(VibrationType.RESET)
+
+        vibrationUtility.vibrateMultiple(
+            VibrationType.RESET,
+            VibrationEffect.DEFAULT_AMPLITUDE
         )
     }
 

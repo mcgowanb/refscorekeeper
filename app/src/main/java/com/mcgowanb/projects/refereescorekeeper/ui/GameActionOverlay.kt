@@ -1,7 +1,6 @@
 package com.mcgowanb.projects.refereescorekeeper.ui
 
 import android.os.Build
-import android.os.Vibrator
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,12 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
-import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 import com.mcgowanb.projects.refereescorekeeper.model.GameAction
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
@@ -49,8 +46,6 @@ fun GameActionOverlay(
 ) {
     var showConfirmationDialog by remember { mutableStateOf(false) }
     var showNumberInput by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    val vibrator = context.getSystemService(Vibrator::class.java)
 
     var confirmationTitle by remember { mutableStateOf("") }
     var confirmationAction by remember { mutableStateOf({}) }
@@ -62,9 +57,9 @@ fun GameActionOverlay(
     }
 
     val endGame: () -> Unit = {
+        //todo - reset game
         gameViewModel.updateGameState(GameStatus.COMPLETED)
         onClose()
-        vibrator.vibrate(vibrationUtility.getMultiShot(VibrationType.RESET))
     }
     Box(
         modifier = Modifier
@@ -116,6 +111,7 @@ fun GameActionOverlay(
     if (showNumberInput) {
         MinutePicker(
             minutes = gameTimerViewModel.getPeriodLength(),
+            vibrationUtility = vibrationUtility,
             onConfirm = { selectedMinutes ->
                 showNumberInput = false
                 //confirmation dialog
@@ -140,7 +136,7 @@ private fun GameActionOverlayPreview() {
         {},
         GameViewModel(),
         GameTimeViewModel(),
-        VibrationUtility()
+        VibrationUtility(null)
     )
 
 }

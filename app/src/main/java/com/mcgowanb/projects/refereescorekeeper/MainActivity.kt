@@ -35,14 +35,14 @@ class MainActivity : ComponentActivity() {
             .excludeFieldsWithoutExposeAnnotation()
             .create()
 
-        vibrationUtility = VibrationUtility()
         vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
+        vibrationUtility = VibrationUtility(vibratorManager)
 
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
         gameViewModel.init(this.application, gson)
 
         gameTimerViewModel = ViewModelProvider(this).get(GameTimeViewModel::class.java)
-        gameTimerViewModel.init(this.application, gson, vibrationUtility, vibratorManager)
+        gameTimerViewModel.init(this.application, gson, vibrationUtility)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
@@ -75,10 +75,8 @@ class MainActivity : ComponentActivity() {
 
     private fun toggleTimer(): Boolean {
         lifecycleScope.launch {
-            vibratorManager.defaultVibrator.vibrate(
-                vibrationUtility.getTimerVibration(gameTimerViewModel.isRunning.value)
-            )
             gameTimerViewModel.toggleIsRunning()
+            vibrationUtility.toggleTimer(gameTimerViewModel.isRunning.value)
         }
         return true
     }

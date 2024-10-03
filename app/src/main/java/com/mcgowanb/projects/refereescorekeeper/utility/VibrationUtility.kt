@@ -21,15 +21,7 @@ class VibrationUtility(
     val resetBlip = longArrayOf(0, 50, 50, 50, 300, 50, 50, 50, 300, 50, 50, 50, 300, 50, 50, 50)
     val halfTimeBlip = longArrayOf(0, 300, 900, 300, 900, 1200)
 
-    fun getTimerVibration(isRunning: Boolean): VibrationEffect {
-        return if (isRunning) {
-            getMultiShot(VibrationType.TIME)
-        } else {
-            getSingleShot()
-        }
-    }
-
-    fun getMultiShot(type: VibrationType): VibrationEffect {
+    private fun getMultiShot(type: VibrationType): VibrationEffect {
         val blipType = when (type) {
             VibrationType.SCORE -> doubleBlip
             VibrationType.RESET -> resetBlip
@@ -42,7 +34,7 @@ class VibrationUtility(
         )
     }
 
-    fun getSingleShot(): VibrationEffect {
+    private fun getSingleShot(): VibrationEffect {
         return createOneShot(
             50,
             DEFAULT_AMPLITUDE
@@ -57,5 +49,32 @@ class VibrationUtility(
             )
         )
     }
+
+    fun vibrateMultiple(type: VibrationType, amplitude: Int) {
+        val blipType = when (type) {
+            VibrationType.SCORE -> doubleBlip
+            VibrationType.RESET -> resetBlip
+            VibrationType.HALF_TIME -> halfTimeBlip
+            else -> quadBlip
+        }
+        vibrator?.vibrate(
+            createWaveform(
+                blipType,
+                amplitude
+            )
+        )
+    }
+
+    fun toggleTimer(isStarting: Boolean) {
+        vibrator?.vibrate(
+            if (isStarting) {
+                getSingleShot()
+            } else {
+                getMultiShot(VibrationType.TIME)
+
+            }
+        )
+    }
+
 
 }

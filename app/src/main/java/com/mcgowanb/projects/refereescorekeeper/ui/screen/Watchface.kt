@@ -119,8 +119,8 @@ fun Watchface(
 @Composable
 private fun WatchfacePreview() {
     Watchface(
-        gameViewModel =  GameViewModel(),
+        gameViewModel = GameViewModel(),
         gameTimerViewModel = GameTimeViewModel(),
-        vibrationUtility =  VibrationUtility()
+        vibrationUtility = VibrationUtility(null)
     )
 }
