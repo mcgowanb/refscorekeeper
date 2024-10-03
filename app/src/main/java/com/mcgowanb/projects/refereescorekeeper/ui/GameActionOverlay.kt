@@ -59,7 +59,6 @@ fun GameActionOverlay(
         gameViewModel.onAction(ScoreAction.Reset)
         gameTimerViewModel.resetTimer()
         onClose()
-        vibrator.vibrate(vibrationUtility.getMultiShot(VibrationType.RESET))
     }
 
     val endGame: () -> Unit = {
@@ -122,6 +121,7 @@ fun GameActionOverlay(
                 //confirmation dialog
                 //show toast
                 gameTimerViewModel.setPeriodLength(selectedMinutes)
+                resetGame()
                 onClose()
             },
             onDismiss = {

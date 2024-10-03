@@ -1,12 +1,13 @@
 package com.mcgowanb.projects.refereescorekeeper.model
 
 import android.content.Context
+import android.os.Build
 import android.os.VibratorManager
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.mcgowanb.projects.refereescorekeeper.R
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 import com.mcgowanb.projects.refereescorekeeper.utility.SoundUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
@@ -19,9 +20,11 @@ import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.math.roundToInt
 
+@RequiresApi(Build.VERSION_CODES.S)
 class GameTimeViewModel : ViewModel() {
-    private var _gameLengthInMinutes = 30
-    private var _gameLengthInSeconds = _gameLengthInMinutes * 60
+    private val _defaualtGameLengthInMinutes = 30
+    private var _mutableGameLength = _defaualtGameLengthInMinutes
+    private var _gameLengthInSeconds = _mutableGameLength * 60
 
     private val _remainingTime = MutableStateFlow(_gameLengthInSeconds)
 
@@ -53,8 +56,8 @@ class GameTimeViewModel : ViewModel() {
             this.vibrationUtility = vibrationUtility
             this.vibratorManager = vibrationManager
             loadTimerState()
-            isInitialized = true
             soundUtility = SoundUtility(context)
+            isInitialized = true
         }
     }
 
@@ -92,7 +95,7 @@ class GameTimeViewModel : ViewModel() {
         vibratorManager.defaultVibrator.vibrate(
             vibrationUtility.getMultiShot(VibrationType.HALF_TIME)
         )
-        soundUtility.playSound(R.raw.whistle)
+//        soundUtility.playSound(R.raw.whistle)
     }
 
     private fun stopTimer() {
@@ -103,9 +106,13 @@ class GameTimeViewModel : ViewModel() {
 
     fun resetTimer() {
         stopTimer()
+        _gameLengthInSeconds = _mutableGameLength * 60
         _remainingTime.value = _gameLengthInSeconds
         _formattedTime.value = formatTime(_gameLengthInSeconds)
         saveTimerState()
+        vibratorManager.defaultVibrator.vibrate(
+            vibrationUtility.getMultiShot(VibrationType.RESET)
+        )
     }
 
     private fun formatTime(timeInSeconds: Int): String {
@@ -118,7 +125,8 @@ class GameTimeViewModel : ViewModel() {
         val timerState = TimerState(
             remainingTime = _remainingTime.value,
             isRunning = _isRunning.value,
-            lastPausedTime = System.currentTimeMillis()
+            lastPausedTime = System.currentTimeMillis(),
+            defaultMinutes = _mutableGameLength
         )
         val jsonString = gson.toJson(timerState)
         val file = File(context.filesDir, fileName)
@@ -132,8 +140,12 @@ class GameTimeViewModel : ViewModel() {
                 val jsonString = file.readText()
                 val timerState = gson.fromJson(jsonString, TimerState::class.java)
 
+                // Always load the persisted game length
+                _mutableGameLength = timerState.defaultMinutes
+                _gameLengthInSeconds = _mutableGameLength * 60
+
                 // Check if the loaded state is valid
-                if (timerState.remainingTime > 0) {
+                if (timerState.remainingTime > 0 && timerState.remainingTime <= _gameLengthInSeconds) {
                     _remainingTime.value = timerState.remainingTime
                     _formattedTime.value = formatTime(timerState.remainingTime)
                     _isRunning.value = timerState.isRunning
@@ -146,19 +158,40 @@ class GameTimeViewModel : ViewModel() {
                         startTimer()
                     }
                 } else {
-                    // If the remaining time is 0 or negative, reset to default state
-                    resetTimer()
+                    // If the remaining time is invalid, reset to the full game length
+                    _remainingTime.value = _gameLengthInSeconds
+                    _formattedTime.value = formatTime(_gameLengthInSeconds)
+                    _isRunning.value = false
                 }
             } catch (e: JsonSyntaxException) {
                 // If there's an error parsing the JSON, reset to default state
-                resetTimer()
+                initializeDefaultGame()
             } catch (e: Exception) {
                 // If there's any other error reading the file, reset to default state
-                resetTimer()
+                initializeDefaultGame()
             }
         } else {
             // If no saved state exists, set to default state
-            resetTimer()
+            initializeDefaultGame()
         }
+    }
+
+    private fun initializeDefaultGame() {
+        _mutableGameLength = _defaualtGameLengthInMinutes
+        _gameLengthInSeconds = _mutableGameLength * 60
+        _remainingTime.value = _gameLengthInSeconds
+        _formattedTime.value = formatTime(_gameLengthInSeconds)
+        _isRunning.value = false
+    }
+
+    fun getPeriodLength(): Int {
+        return _mutableGameLength
+    }
+
+    fun setPeriodLength(periodLength: Int) {
+        _mutableGameLength = periodLength
+        _gameLengthInSeconds = _mutableGameLength * 60
+        saveTimerState()
+        resetTimer()
     }
 }
