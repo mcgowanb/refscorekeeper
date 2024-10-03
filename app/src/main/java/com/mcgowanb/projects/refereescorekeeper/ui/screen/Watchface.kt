@@ -1,5 +1,7 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -112,9 +114,13 @@ fun Watchface(
     }
 }
 
-@Preview(device = "id:wearos_large_round")
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview(device = "id:wearos_small_round", showSystemUi = true)
 @Composable
 private fun WatchfacePreview() {
-    Watchface(GameViewModel(), GameTimeViewModel(), VibrationUtility())
-
+    Watchface(
+        gameViewModel =  GameViewModel(),
+        gameTimerViewModel = GameTimeViewModel(),
+        vibrationUtility =  VibrationUtility()
+    )
 }

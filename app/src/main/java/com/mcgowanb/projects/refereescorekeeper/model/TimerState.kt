@@ -8,5 +8,7 @@ data class TimerState(
     @Expose
     val isRunning: Boolean,
     @Expose
-    val lastPausedTime: Long = 0
+    val lastPausedTime: Long = 0,
+    @Expose
+    val defaultMinutes: Int
 )

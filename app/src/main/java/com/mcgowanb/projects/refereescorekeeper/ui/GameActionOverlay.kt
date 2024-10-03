@@ -1,6 +1,8 @@
 package com.mcgowanb.projects.refereescorekeeper.ui
 
+import android.os.Build
 import android.os.Vibrator
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccessTime
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Functions
 import androidx.compose.material.icons.rounded.HighlightOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,8 +36,10 @@ import com.mcgowanb.projects.refereescorekeeper.model.Setting
 import com.mcgowanb.projects.refereescorekeeper.ui.button.GameActionButton
 import com.mcgowanb.projects.refereescorekeeper.ui.button.SettingsButton
 import com.mcgowanb.projects.refereescorekeeper.ui.dialog.ConfirmationDialog
+import com.mcgowanb.projects.refereescorekeeper.ui.input.MinutePicker
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun GameActionOverlay(
     onClose: () -> Unit,
@@ -45,11 +48,12 @@ fun GameActionOverlay(
     vibrationUtility: VibrationUtility
 ) {
     var showConfirmationDialog by remember { mutableStateOf(false) }
+    var showNumberInput by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val vibrator = context.getSystemService(Vibrator::class.java)
 
     var confirmationTitle by remember { mutableStateOf("") }
-    var confirmationAction by remember { mutableStateOf<() -> Unit>({}) }
+    var confirmationAction by remember { mutableStateOf({}) }
 
     val resetGame: () -> Unit = {
         gameViewModel.onAction(ScoreAction.Reset)
@@ -63,13 +67,12 @@ fun GameActionOverlay(
         onClose()
         vibrator.vibrate(vibrationUtility.getMultiShot(VibrationType.RESET))
     }
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -83,18 +86,15 @@ fun GameActionOverlay(
                     showConfirmationDialog = true
                 }
             )
-//            SettingsButton(
-//                setting = Setting(
-//                    "mins",
-//                    "Minutes",
-//                    Icons.Rounded.AccessTime,
-//                    gameTimerViewModel.gameLengthInMinutes
-//                ),
-//                {}
-//            )
-//            SettingsButton(
-//                setting = Setting("periods", "Periods", Icons.Rounded.Functions, 2), {}
-//            )
+            SettingsButton(
+                setting = Setting(
+                    "mins",
+                    "Period time",
+                    Icons.Rounded.AccessTime,
+                    gameTimerViewModel.getPeriodLength()
+                ),
+                onClick = { showNumberInput = true }
+            )
             Spacer(modifier = Modifier.height(16.dp))
             GameActionButton(
                 setting = GameAction("Close", Icons.Rounded.HighlightOff, onClose)
@@ -114,10 +114,26 @@ fun GameActionOverlay(
             onDismiss = { showConfirmationDialog = false }
         )
     }
+    if (showNumberInput) {
+        MinutePicker(
+            minutes = gameTimerViewModel.getPeriodLength(),
+            onConfirm = { selectedMinutes ->
+                showNumberInput = false
+                //confirmation dialog
+                //show toast
+                gameTimerViewModel.setPeriodLength(selectedMinutes)
+                onClose()
+            },
+            onDismiss = {
+                showNumberInput = false
+            }
+        )
+    }
 }
 
 
-@Preview(device = "id:wearos_small_round")
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview(device = "id:wearos_small_round", showSystemUi = true)
 @Composable
 private fun GameActionOverlayPreview() {
     GameActionOverlay(
