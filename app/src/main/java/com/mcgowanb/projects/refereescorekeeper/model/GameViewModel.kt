@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
+import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.enums.Team
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -115,5 +116,9 @@ class GameViewModel : ViewModel() {
             val file = File(context.filesDir, fileName)
             file.writeText(jsonString)
         }
+    }
+
+    fun getGameStatus(): GameStatus {
+        return _uiState.value.status
     }
 }
