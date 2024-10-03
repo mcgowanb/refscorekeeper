@@ -36,9 +36,10 @@ import androidx.wear.compose.material.Text
 @Composable
 fun MinutePicker(
     onDismiss: () -> Unit,
-    onConfirm: (Int) -> Unit
+    onConfirm: (Int) -> Unit,
+    minutes: Int
 ) {
-    var minutes by remember { mutableStateOf(0) }
+    var minutes by remember { mutableStateOf(minutes) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -50,8 +51,17 @@ fun MinutePicker(
             verticalArrangement = Arrangement.Center
         ) {
             Row(
+            ) {
+                Text(
+                    text = "Mins",
+                    fontSize = 14.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 16.dp)
+                modifier = Modifier.padding(vertical = 0.dp)
             ) {
                 Chip(
                     onClick = {
@@ -71,12 +81,6 @@ fun MinutePicker(
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Mins",
-                        fontSize = 14.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                    Text(
                         text = minutes.toString().padStart(2, '0'),
                         fontSize = 36.sp,
                         fontWeight = FontWeight.Bold,
@@ -93,7 +97,7 @@ fun MinutePicker(
                     icon = {
                         Icon(
                             imageVector = Icons.Rounded.KeyboardArrowUp,
-                            contentDescription = "Decrease",
+                            contentDescription = "Increase",
                             tint = Color.White,
                             modifier = Modifier.size(35.dp)
                         )
@@ -110,7 +114,7 @@ fun MinutePicker(
                 IconButton(
                     onClick = onDismiss,
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(35.dp)
                         .background(color = Color.DarkGray, shape = CircleShape)
                 ) {
                     Icon(
@@ -123,7 +127,7 @@ fun MinutePicker(
                 IconButton(
                     onClick = { onConfirm(minutes) },
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(35.dp)
                         .background(color = Color(0xFF3D84FF), shape = CircleShape)
                 ) {
                     Icon(
@@ -138,11 +142,12 @@ fun MinutePicker(
     }
 }
 
-@Preview(device = "id:wearos_small_round")
+@Preview(device = "id:wearos_small_round", showSystemUi = true)
 @Composable
 fun MinutePickerPreview() {
     MinutePicker(
         onConfirm = {},
-        onDismiss = {}
+        onDismiss = {},
+        minutes = 25
     )
 }
