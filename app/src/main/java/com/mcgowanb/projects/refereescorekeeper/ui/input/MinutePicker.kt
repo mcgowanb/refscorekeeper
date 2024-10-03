@@ -1,5 +1,8 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.input
 
+import android.os.Build
+import android.os.VibrationEffect
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,14 +35,22 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
+import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun MinutePicker(
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit,
-    minutes: Int
+    minutes: Int,
+    vibrationUtility: VibrationUtility
 ) {
     var minutes by remember { mutableStateOf(minutes) }
+
+    fun vibrate() {
+        vibrationUtility.vibrateOnce(5, VibrationEffect.DEFAULT_AMPLITUDE)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -66,6 +77,7 @@ fun MinutePicker(
                 Chip(
                     onClick = {
                         if (minutes > 0) minutes-- else minutes = 30
+                        vibrate()
                     },
                     colors = ChipDefaults.chipColors(backgroundColor = Color.Transparent),
                     label = { Text("") },
@@ -91,6 +103,7 @@ fun MinutePicker(
                 Chip(
                     onClick = {
                         if (minutes < 30) minutes++ else minutes = 0
+                        vibrate()
                     },
                     colors = ChipDefaults.chipColors(backgroundColor = Color.Transparent),
                     label = { Text("") },
@@ -142,12 +155,14 @@ fun MinutePicker(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Preview(device = "id:wearos_small_round", showSystemUi = true)
 @Composable
 fun MinutePickerPreview() {
     MinutePicker(
         onConfirm = {},
         onDismiss = {},
-        minutes = 25
+        minutes = 25,
+        vibrationUtility = VibrationUtility(null)
     )
 }

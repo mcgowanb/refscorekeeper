@@ -1,13 +1,20 @@
 package com.mcgowanb.projects.refereescorekeeper.utility
 
+import android.os.Build
 import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.VibrationEffect.createOneShot
 import android.os.VibrationEffect.createWaveform
+import android.os.Vibrator
+import android.os.VibratorManager
+import androidx.annotation.RequiresApi
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 
-class VibrationUtility {
-
+@RequiresApi(Build.VERSION_CODES.S)
+class VibrationUtility(
+    vibratorManager: VibratorManager?
+) {
+    private val vibrator: Vibrator? = vibratorManager?.defaultVibrator
     val amplitude = DEFAULT_AMPLITUDE
     val doubleBlip = longArrayOf(0, 50, 50, 50)
     val quadBlip = longArrayOf(0, 50, 50, 50, 50, 50, 50, 50, 50)
@@ -41,4 +48,14 @@ class VibrationUtility {
             DEFAULT_AMPLITUDE
         )
     }
+
+    fun vibrateOnce(length: Long, amplitude: Int) {
+        vibrator?.vibrate(
+            createOneShot(
+                length,
+                amplitude
+            )
+        )
+    }
+
 }
