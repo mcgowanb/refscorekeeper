@@ -24,7 +24,7 @@ fun SettingsButton(
     onClick: () -> Unit
 ) {
     Button(
-        onClick = {  },
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp),
@@ -48,7 +48,9 @@ fun SettingsButton(
                 tint = Color.White
             )
             Text(
-                modifier = Modifier.weight(4f).padding(start = 10.dp),
+                modifier = Modifier
+                    .weight(4f)
+                    .padding(start = 10.dp),
                 text = setting.description,
                 color = Color.White
             )
