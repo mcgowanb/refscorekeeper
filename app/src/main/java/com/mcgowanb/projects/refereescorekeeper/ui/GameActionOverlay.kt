@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
-import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.model.GameAction
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
@@ -58,7 +57,7 @@ fun GameActionOverlay(
 
     val endGame: () -> Unit = {
         //todo - reset game
-        gameViewModel.updateGameState(GameStatus.COMPLETED)
+//        gameViewModel.updateGameState(GameStatus.COMPLETED)
         onClose()
     }
     Box(
