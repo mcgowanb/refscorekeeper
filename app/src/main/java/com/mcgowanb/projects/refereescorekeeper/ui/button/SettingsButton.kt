@@ -26,7 +26,7 @@ fun SettingsButton(
     Button(
         onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(0.9f)
             .padding(5.dp),
         shape = RoundedCornerShape(15.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray)

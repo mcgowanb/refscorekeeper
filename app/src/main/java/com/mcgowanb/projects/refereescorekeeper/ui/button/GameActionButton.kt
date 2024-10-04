@@ -39,7 +39,7 @@ fun GameActionButton(
     Button(
         onClick = action,
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(0.9f)
             .padding(5.dp),
         shape = RoundedCornerShape(15.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor)
@@ -74,7 +74,7 @@ fun GameActionButton(
 }
 
 @Composable
-@Preview(device = "id:wearos_small_round")
+@Preview(device = "id:wearos_small_round", showSystemUi = true)
 fun GameActionButtonPreview() {
     GameActionButton(
         title = "Reset Game",
