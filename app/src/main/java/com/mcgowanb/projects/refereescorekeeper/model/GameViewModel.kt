@@ -48,7 +48,7 @@ class GameViewModel(
             is ScoreAction.SubtractAwayPoint -> subtractPoint(Team.AWAY)
             is ScoreAction.AddAwayGoal -> addGoal(Team.AWAY)
             is ScoreAction.SubtractAwayGoal -> subtractGoal(Team.AWAY)
-            ScoreAction.Reset -> reset()
+            ScoreAction.Reset -> resetGameScores()
         }
     }
 
@@ -92,7 +92,7 @@ class GameViewModel(
         saveGameStateToFile(_uiState.value)
     }
 
-    private fun reset() {
+    private fun resetGameScores() {
         _uiState.value = GameState()
         saveGameStateToFile(_uiState.value)
     }

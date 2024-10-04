@@ -94,11 +94,6 @@ class GameTimeViewModel(
         _remainingTime.value = _gameLengthInSeconds
         _formattedTime.value = formatTime(_gameLengthInSeconds)
         saveTimerState()
-
-        vibrationUtility?.vibrateMultiple(
-            VibrationType.RESET,
-            VibrationEffect.DEFAULT_AMPLITUDE
-        )
     }
 
     private fun formatTime(timeInSeconds: Int): String {

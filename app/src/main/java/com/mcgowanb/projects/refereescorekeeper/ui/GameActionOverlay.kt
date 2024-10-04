@@ -1,6 +1,7 @@
 package com.mcgowanb.projects.refereescorekeeper.ui
 
 import android.os.Build
+import android.os.VibrationEffect
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
+import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 import com.mcgowanb.projects.refereescorekeeper.model.GameAction
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
@@ -52,7 +54,20 @@ fun GameActionOverlay(
     val resetGame: () -> Unit = {
         gameViewModel.onAction(ScoreAction.Reset)
         gameTimerViewModel.resetTimer()
+        vibrationUtility.vibrateMultiple(
+            VibrationType.RESET,
+            VibrationEffect.DEFAULT_AMPLITUDE
+        )
         onClose()
+    }
+
+    val resetClock: (Int) -> Unit = { selectedMinutes ->
+        onClose()
+        gameTimerViewModel.setPeriodLength(selectedMinutes)
+        vibrationUtility.vibrateMultiple(
+            VibrationType.RESET,
+            VibrationEffect.DEFAULT_AMPLITUDE
+        )
     }
 
     val endGame: () -> Unit = {
@@ -112,12 +127,8 @@ fun GameActionOverlay(
             minutes = gameTimerViewModel.getPeriodLength(),
             vibrationUtility = vibrationUtility,
             onConfirm = { selectedMinutes ->
+                resetClock(selectedMinutes)
                 showNumberInput = false
-                //confirmation dialog
-                //show toast
-                gameTimerViewModel.setPeriodLength(selectedMinutes)
-                resetGame()
-                onClose()
             },
             onDismiss = {
                 showNumberInput = false
