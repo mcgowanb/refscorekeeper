@@ -1,7 +1,10 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.input
 
+import android.content.Context.VIBRATOR_MANAGER_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
+import android.os.VibrationEffect.DEFAULT_AMPLITUDE
+import android.os.VibratorManager
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
@@ -48,7 +52,7 @@ fun MinutePicker(
     var minutes by remember { mutableStateOf(minutes) }
 
     fun vibrate() {
-        vibrationUtility.vibrateOnce(5, VibrationEffect.DEFAULT_AMPLITUDE)
+        vibrationUtility.vibrateOnce(5, DEFAULT_AMPLITUDE)
     }
 
     Box(

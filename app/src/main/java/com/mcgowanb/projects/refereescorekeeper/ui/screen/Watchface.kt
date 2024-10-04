@@ -21,6 +21,7 @@ import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun Watchface(
     gameViewModel: GameViewModel,

@@ -137,5 +137,4 @@ private fun GameActionOverlayPreview() {
         GameTimeViewModel(),
         VibrationUtility(null)
     )
-
 }
