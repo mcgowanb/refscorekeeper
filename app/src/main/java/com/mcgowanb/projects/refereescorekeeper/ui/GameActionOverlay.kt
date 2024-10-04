@@ -124,7 +124,8 @@ fun GameActionOverlay(
     }
     if (showNumberInput) {
         MinutePicker(
-            minutes = gameTimerViewModel.getPeriodLength(),
+            initialMinutes = gameTimerViewModel.getPeriodLength(),
+            range = 1..30,
             vibrationUtility = vibrationUtility,
             onConfirm = { selectedMinutes ->
                 resetClock(selectedMinutes)

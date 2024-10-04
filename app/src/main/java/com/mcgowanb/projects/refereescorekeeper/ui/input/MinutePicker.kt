@@ -1,10 +1,7 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.input
 
-import android.content.Context.VIBRATOR_MANAGER_SERVICE
 import android.os.Build
-import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
-import android.os.VibratorManager
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,11 +31,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
+import com.mcgowanb.projects.refereescorekeeper.enums.Direction
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -46,14 +43,30 @@ import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 fun MinutePicker(
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit,
-    minutes: Int,
+    initialMinutes: Int,
+    range: IntRange,
     vibrationUtility: VibrationUtility
 ) {
-    var minutes by remember { mutableStateOf(minutes) }
+    var minutes by remember { mutableStateOf(initialMinutes.coerceIn(range)) }
 
     fun vibrate() {
         vibrationUtility.vibrateOnce(5, DEFAULT_AMPLITUDE)
     }
+
+    fun changeMinutes(direction: Direction) {
+        minutes = when (direction) {
+            Direction.INCREMENT -> when {
+                minutes < range.last -> minutes + 1
+                else -> range.first
+            }
+            Direction.DECREMENT -> when {
+                minutes > range.first -> minutes - 1
+                else -> range.last
+            }
+        }
+        vibrate()
+    }
+
 
     Box(
         modifier = Modifier
@@ -79,10 +92,7 @@ fun MinutePicker(
                 modifier = Modifier.padding(vertical = 0.dp)
             ) {
                 Chip(
-                    onClick = {
-                        if (minutes > 0) minutes-- else minutes = 30
-                        vibrate()
-                    },
+                    onClick = { changeMinutes(Direction.DECREMENT) },
                     colors = ChipDefaults.chipColors(backgroundColor = Color.Transparent),
                     label = { Text("") },
                     icon = {
@@ -90,7 +100,7 @@ fun MinutePicker(
                             imageVector = Icons.Rounded.KeyboardArrowDown,
                             contentDescription = "Decrease",
                             tint = Color.White,
-                            modifier = Modifier.size(35.dp)
+                            modifier = Modifier.size(45.dp)
                         )
                     }
                 )
@@ -105,10 +115,7 @@ fun MinutePicker(
                 }
 
                 Chip(
-                    onClick = {
-                        if (minutes < 30) minutes++ else minutes = 0
-                        vibrate()
-                    },
+                    onClick = { changeMinutes(Direction.INCREMENT) },
                     colors = ChipDefaults.chipColors(backgroundColor = Color.Transparent),
                     label = { Text("") },
                     icon = {
@@ -116,7 +123,7 @@ fun MinutePicker(
                             imageVector = Icons.Rounded.KeyboardArrowUp,
                             contentDescription = "Increase",
                             tint = Color.White,
-                            modifier = Modifier.size(35.dp)
+                            modifier = Modifier.size(55.dp)
                         )
                     }
                 )
@@ -166,7 +173,8 @@ fun MinutePickerPreview() {
     MinutePicker(
         onConfirm = {},
         onDismiss = {},
-        minutes = 25,
+        initialMinutes = 25,
+        range = 1..30,
         vibrationUtility = VibrationUtility(null)
     )
 }
