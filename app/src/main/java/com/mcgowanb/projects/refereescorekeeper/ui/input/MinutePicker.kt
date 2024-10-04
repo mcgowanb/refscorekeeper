@@ -35,6 +35,7 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
+import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.enums.Direction
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
@@ -139,7 +140,7 @@ fun MinutePicker(
                     onClick = onDismiss,
                     modifier = Modifier
                         .size(35.dp)
-                        .background(color = Color.DarkGray, shape = CircleShape)
+                        .background(color = WearColors.DismissRed, shape = CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Close,
@@ -152,7 +153,7 @@ fun MinutePicker(
                     onClick = { onConfirm(minutes) },
                     modifier = Modifier
                         .size(35.dp)
-                        .background(color = Color(0xFF3D84FF), shape = CircleShape)
+                        .background(color = WearColors.ConfirmGreen, shape = CircleShape)
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Done,

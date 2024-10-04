@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccessTime
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.HighlightOff
+import androidx.compose.material.icons.rounded.HourglassEmpty
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,8 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
+import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
-import com.mcgowanb.projects.refereescorekeeper.model.GameAction
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.Setting
@@ -61,6 +61,12 @@ fun GameActionOverlay(
         onClose()
     }
 
+    val confirmNewGame: () -> Unit = {
+        confirmationTitle = "New Game"
+        confirmationAction = resetGame
+        showConfirmationDialog = true
+    }
+
     val resetClock: (Int) -> Unit = { selectedMinutes ->
         onClose()
         gameTimerViewModel.setPeriodLength(selectedMinutes)
@@ -80,7 +86,6 @@ fun GameActionOverlay(
             .fillMaxSize()
             .background(Color.Black)
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -88,24 +93,28 @@ fun GameActionOverlay(
                 .verticalScroll(rememberScrollState())
         ) {
             GameActionButton(
-                setting = GameAction("New Game", Icons.Rounded.Add) {
-                    confirmationTitle = "Start New Game?"
-                    confirmationAction = resetGame
-                    showConfirmationDialog = true
-                }
+                title = "New Game",
+                icon = Icons.Rounded.Star,
+                action = confirmNewGame,
+                iconColor = WearColors.White,
+                backgroundColor = WearColors.DarkGray
             )
             SettingsButton(
                 setting = Setting(
                     "mins",
                     "Period time",
-                    Icons.Rounded.AccessTime,
+                    Icons.Rounded.HourglassEmpty,
                     gameTimerViewModel.getPeriodLength()
                 ),
                 onClick = { showNumberInput = true }
             )
             Spacer(modifier = Modifier.height(16.dp))
             GameActionButton(
-                setting = GameAction("Close", Icons.Rounded.HighlightOff, onClose)
+                title = "Close",
+                icon = Icons.Rounded.HighlightOff,
+                action = onClose,
+                iconColor = WearColors.White,
+                backgroundColor = WearColors.DismissRed
             )
             Spacer(modifier = Modifier.height(26.dp))
         }

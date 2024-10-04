@@ -3,6 +3,10 @@ package com.mcgowanb.projects.refereescorekeeper.ui.dialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -10,11 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.wear.compose.material.*
-import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
-import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
-import com.mcgowanb.projects.refereescorekeeper.ui.GameActionOverlay
+import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 
 @Composable
 fun ConfirmationDialog(
@@ -43,31 +44,43 @@ fun ConfirmationDialog(
             )
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
             ) {
-                Button(
+                IconButton(
                     onClick = onDismiss,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray),
-                    shape = CircleShape,
-                    modifier = Modifier.size(60.dp)
+                    modifier = Modifier
+                        .size(35.dp)
+                        .background(color = WearColors.DismissRed, shape = CircleShape)
                 ) {
-                    Text("No", color = Color.White)
+                    Icon(
+                        imageVector = Icons.Rounded.Close,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(35.dp)
+                    )
                 }
-                Button(
+                IconButton(
                     onClick = onConfirm,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF3D84FF)),
-                    shape = CircleShape,
-                    modifier = Modifier.size(60.dp)
+                    modifier = Modifier
+                        .size(35.dp)
+                        .background(color = WearColors.ConfirmGreen, shape = CircleShape)
                 ) {
-                    Text("Yes", color = Color.White)
+                    Icon(
+                        imageVector = Icons.Rounded.Done,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(35.dp)
+                    )
                 }
             }
         }
     }
 }
 
-@Preview(device = "id:wearos_small_round")
+@Preview(device = "id:wearos_small_round", showSystemUi = true)
 @Composable
 private fun ConfirmationDialogPreview() {
     ConfirmationDialog(
