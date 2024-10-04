@@ -1,22 +1,22 @@
 package com.mcgowanb.projects.refereescorekeeper.model
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.enums.Team
+import com.mcgowanb.projects.refereescorekeeper.utility.FileHandlerUtility
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 
-class GameViewModel : ViewModel() {
+class GameViewModel(
+    private val fileHandler: FileHandlerUtility
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GameState())
     val uiState: StateFlow<GameState> = _uiState.stateIn(
@@ -27,18 +27,14 @@ class GameViewModel : ViewModel() {
 
     private val fileName = "game_state.json"
 
-    private lateinit var context: Context
-    private lateinit var gson: Gson
 
-    fun init(context: Context, gson: Gson) {
-        this.context = context
-        this.gson = gson
+    init {
         viewModelScope.launch {
             val loadedState = loadGameStateFromFile()
-            _uiState.value = loadedState
+            _uiState.value = loadedState ?: GameState()
             // Force a re-emission of the state
             _uiState.value = _uiState.value.copy()
-            Log.i("GameViewModel", "Initial state loaded and updated: $loadedState")
+            Log.i("GameViewModel", "Initial state loaded and updated: ${_uiState.value}")
         }
     }
 
@@ -101,20 +97,13 @@ class GameViewModel : ViewModel() {
         saveGameStateToFile(_uiState.value)
     }
 
-    private fun loadGameStateFromFile(): GameState {
-        val file = File(context.filesDir, fileName)
-        return if (file.exists()) {
-            gson.fromJson(file.readText(), GameState::class.java)
-        } else {
-            GameState()
-        }
+    private fun loadGameStateFromFile(): GameState? {
+        return fileHandler.loadState(fileName, GameState::class.java)
     }
 
     private fun saveGameStateToFile(gameState: GameState) {
         viewModelScope.launch {
-            val jsonString = gson.toJson(gameState)
-            val file = File(context.filesDir, fileName)
-            file.writeText(jsonString)
+            fileHandler.saveState(gameState, fileName)
         }
     }
 

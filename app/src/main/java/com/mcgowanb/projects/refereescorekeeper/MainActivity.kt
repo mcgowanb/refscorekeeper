@@ -13,10 +13,12 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.gson.GsonBuilder
-import com.mcgowanb.projects.refereescorekeeper.factory.GameTimeViewModelFactory
+import com.mcgowanb.projects.refereescorekeeper.factory.ViewModelFactory
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.ui.MainScreen
+import com.mcgowanb.projects.refereescorekeeper.utility.FileHandlerUtility
+import com.mcgowanb.projects.refereescorekeeper.utility.SoundUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 import kotlinx.coroutines.launch
 
@@ -37,13 +39,12 @@ class MainActivity : ComponentActivity() {
 
         vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
         vibrationUtility = VibrationUtility(vibratorManager)
+        val soundUtility = SoundUtility(this.applicationContext)
+        val fileHandlerUtility = FileHandlerUtility(this.applicationContext, gson)
 
-        gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
-        gameViewModel.init(this.application, gson)
-
-        // Use GameTimeViewModelFactory to create GameTimeViewModel
-        val factory = GameTimeViewModelFactory(this.applicationContext, gson, vibrationUtility)
+        val factory = ViewModelFactory(fileHandlerUtility, vibrationUtility, soundUtility)
         gameTimerViewModel = ViewModelProvider(this, factory)[GameTimeViewModel::class.java]
+        gameViewModel = ViewModelProvider(this, factory)[GameViewModel::class.java]
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
