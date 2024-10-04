@@ -75,8 +75,8 @@ fun MainScreen(
 @Composable
 private fun MainScreenPreview() {
     MainScreen(
-        gameViewModel = GameViewModel(),
-        gameTimerViewModel = GameTimeViewModel(),
+        gameViewModel = GameViewModel(null),
+        gameTimerViewModel = GameTimeViewModel(null, null, null),
         vibrationUtility = VibrationUtility(null)
     )
 

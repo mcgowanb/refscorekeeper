@@ -19,9 +19,9 @@ import kotlin.math.roundToInt
 
 @RequiresApi(Build.VERSION_CODES.S)
 class GameTimeViewModel(
-    private val fileHandler: FileHandlerUtility,
-    private val vibrationUtility: VibrationUtility,
-    private val soundUtility: SoundUtility
+    private val fileHandler: FileHandlerUtility?,
+    private val vibrationUtility: VibrationUtility?,
+    private val soundUtility: SoundUtility?
 ) : ViewModel() {
     private val _defaultGameLengthInMinutes = 30
     private var _mutableGameLength = _defaultGameLengthInMinutes
@@ -75,7 +75,7 @@ class GameTimeViewModel(
 
     private fun onTimerFinished() {
         resetTimer()
-        vibrationUtility.vibrateMultiple(
+        vibrationUtility?.vibrateMultiple(
             VibrationType.HALF_TIME,
             VibrationEffect.DEFAULT_AMPLITUDE
         )
@@ -95,7 +95,7 @@ class GameTimeViewModel(
         _formattedTime.value = formatTime(_gameLengthInSeconds)
         saveTimerState()
 
-        vibrationUtility.vibrateMultiple(
+        vibrationUtility?.vibrateMultiple(
             VibrationType.RESET,
             VibrationEffect.DEFAULT_AMPLITUDE
         )
@@ -114,11 +114,11 @@ class GameTimeViewModel(
             lastPausedTime = System.currentTimeMillis(),
             defaultMinutes = _mutableGameLength
         )
-        fileHandler.saveState(timerState, _fileName)
+        fileHandler?.saveState(timerState, _fileName)
     }
 
     private fun loadTimerState() {
-        val timerState = fileHandler.loadState(_fileName, TimerState::class.java)
+        val timerState = fileHandler?.loadState(_fileName, TimerState::class.java)
         if (timerState != null) {
             _mutableGameLength = timerState.defaultMinutes
             _gameLengthInSeconds = _mutableGameLength * 60

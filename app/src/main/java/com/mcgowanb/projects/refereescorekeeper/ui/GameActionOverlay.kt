@@ -132,9 +132,9 @@ fun GameActionOverlay(
 @Composable
 private fun GameActionOverlayPreview() {
     GameActionOverlay(
-        {},
-        GameViewModel(),
-        GameTimeViewModel(),
-        VibrationUtility(null)
+        onClose = {},
+        gameViewModel = GameViewModel(null),
+        gameTimerViewModel = GameTimeViewModel(null, null, null),
+        vibrationUtility = VibrationUtility(null)
     )
 }

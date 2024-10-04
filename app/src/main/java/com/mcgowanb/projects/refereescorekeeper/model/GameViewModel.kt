@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class GameViewModel(
-    private val fileHandler: FileHandlerUtility
+    private val fileHandler: FileHandlerUtility?
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GameState())
@@ -98,12 +98,12 @@ class GameViewModel(
     }
 
     private fun loadGameStateFromFile(): GameState? {
-        return fileHandler.loadState(fileName, GameState::class.java)
+        return fileHandler?.loadState(fileName, GameState::class.java)
     }
 
     private fun saveGameStateToFile(gameState: GameState) {
         viewModelScope.launch {
-            fileHandler.saveState(gameState, fileName)
+            fileHandler?.saveState(gameState, fileName)
         }
     }
 
