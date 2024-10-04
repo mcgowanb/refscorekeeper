@@ -2,22 +2,19 @@ package com.mcgowanb.projects.refereescorekeeper.utility
 
 import android.content.Context
 import com.google.gson.Gson
-import com.mcgowanb.projects.refereescorekeeper.model.TimerState
 
 class FileHandlerUtility(private val context: Context, private val gson: Gson) {
-    private val fileName = "timer_state.json"
-
-    fun saveTimerState(timerState: TimerState) {
-        val jsonString = gson.toJson(timerState)
+    fun <T> saveState(state: T, fileName: String) {
+        val jsonString = gson.toJson(state)
         context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
             it.write(jsonString.toByteArray())
         }
     }
 
-    fun loadTimerState(): TimerState? {
+    fun <T> loadState(fileName: String, classOfT: Class<T>): T? {
         return try {
             context.openFileInput(fileName).bufferedReader().use {
-                gson.fromJson(it, TimerState::class.java)
+                gson.fromJson(it, classOfT)
             }
         } catch (e: Exception) {
             null

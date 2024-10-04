@@ -37,6 +37,9 @@ class GameTimeViewModel(
 
     private var timerJob: Job? = null
 
+    private val _fileName = "timer_state.json"
+
+
     init {
         loadTimerState()
     }
@@ -111,11 +114,11 @@ class GameTimeViewModel(
             lastPausedTime = System.currentTimeMillis(),
             defaultMinutes = _mutableGameLength
         )
-        fileHandler.saveTimerState(timerState)
+        fileHandler.saveState(timerState, _fileName)
     }
 
     private fun loadTimerState() {
-        val timerState = fileHandler.loadTimerState()
+        val timerState = fileHandler.loadState(_fileName, TimerState::class.java)
         if (timerState != null) {
             _mutableGameLength = timerState.defaultMinutes
             _gameLengthInSeconds = _mutableGameLength * 60
