@@ -13,6 +13,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.gson.GsonBuilder
+import com.mcgowanb.projects.refereescorekeeper.factory.GameTimeViewModelFactory
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.ui.MainScreen
@@ -27,7 +28,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var vibrationUtility: VibrationUtility
     private lateinit var wakeLock: PowerManager.WakeLock
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,8 +41,9 @@ class MainActivity : ComponentActivity() {
         gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
         gameViewModel.init(this.application, gson)
 
-        gameTimerViewModel = ViewModelProvider(this).get(GameTimeViewModel::class.java)
-        gameTimerViewModel.init(this.application, gson, vibrationUtility)
+        // Use GameTimeViewModelFactory to create GameTimeViewModel
+        val factory = GameTimeViewModelFactory(this.applicationContext, gson, vibrationUtility)
+        gameTimerViewModel = ViewModelProvider(this, factory)[GameTimeViewModel::class.java]
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
@@ -66,7 +67,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handlePhysicalButtonEvent(keyCode: Int, event: KeyEvent?): Boolean {
-
         return when (keyCode) {
             KeyEvent.KEYCODE_BACK -> toggleTimer()
             else -> super.onKeyDown(keyCode, event)
@@ -80,5 +80,4 @@ class MainActivity : ComponentActivity() {
         }
         return true
     }
-
 }

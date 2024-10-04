@@ -1,14 +1,12 @@
 package com.mcgowanb.projects.refereescorekeeper.model
 
-import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
+import com.mcgowanb.projects.refereescorekeeper.utility.FileHandlerUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.SoundUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 import kotlinx.coroutines.Job
@@ -17,13 +15,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.io.File
 import kotlin.math.roundToInt
 
 @RequiresApi(Build.VERSION_CODES.S)
-class GameTimeViewModel : ViewModel() {
-    private val _defaualtGameLengthInMinutes = 30
-    private var _mutableGameLength = _defaualtGameLengthInMinutes
+class GameTimeViewModel(
+    private val fileHandler: FileHandlerUtility,
+    private val vibrationUtility: VibrationUtility,
+    private val soundUtility: SoundUtility
+) : ViewModel() {
+    private val _defaultGameLengthInMinutes = 30
+    private var _mutableGameLength = _defaultGameLengthInMinutes
     private var _gameLengthInSeconds = _mutableGameLength * 60
 
     private val _remainingTime = MutableStateFlow(_gameLengthInSeconds)
@@ -35,27 +36,9 @@ class GameTimeViewModel : ViewModel() {
     val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
 
     private var timerJob: Job? = null
-    private val fileName = "timer_state.json"
 
-    private lateinit var context: Context
-    private lateinit var vibrationUtility: VibrationUtility
-    private lateinit var gson: Gson
-    private lateinit var soundUtility: SoundUtility
-    private var isInitialized = false
-
-    fun init(
-        context: Context,
-        gson: Gson,
-        vibrationUtility: VibrationUtility
-    ) {
-        if (!isInitialized) {
-            this.context = context
-            this.gson = gson
-            this.vibrationUtility = vibrationUtility
-            loadTimerState()
-            soundUtility = SoundUtility(context)
-            isInitialized = true
-        }
+    init {
+        loadTimerState()
     }
 
     fun toggleIsRunning() {
@@ -128,56 +111,37 @@ class GameTimeViewModel : ViewModel() {
             lastPausedTime = System.currentTimeMillis(),
             defaultMinutes = _mutableGameLength
         )
-        val jsonString = gson.toJson(timerState)
-        val file = File(context.filesDir, fileName)
-        file.writeText(jsonString)
+        fileHandler.saveTimerState(timerState)
     }
 
     private fun loadTimerState() {
-        val file = File(context.filesDir, fileName)
-        if (file.exists()) {
-            try {
-                val jsonString = file.readText()
-                val timerState = gson.fromJson(jsonString, TimerState::class.java)
+        val timerState = fileHandler.loadTimerState()
+        if (timerState != null) {
+            _mutableGameLength = timerState.defaultMinutes
+            _gameLengthInSeconds = _mutableGameLength * 60
 
-                // Always load the persisted game length
-                _mutableGameLength = timerState.defaultMinutes
-                _gameLengthInSeconds = _mutableGameLength * 60
+            if (timerState.remainingTime > 0 && timerState.remainingTime <= _gameLengthInSeconds) {
+                _remainingTime.value = timerState.remainingTime
+                _formattedTime.value = formatTime(timerState.remainingTime)
+                _isRunning.value = timerState.isRunning
 
-                // Check if the loaded state is valid
-                if (timerState.remainingTime > 0 && timerState.remainingTime <= _gameLengthInSeconds) {
-                    _remainingTime.value = timerState.remainingTime
-                    _formattedTime.value = formatTime(timerState.remainingTime)
-                    _isRunning.value = timerState.isRunning
-
-                    if (timerState.isRunning) {
-                        val elapsedTime =
-                            (System.currentTimeMillis() - timerState.lastPausedTime) / 1000
-                        _remainingTime.value =
-                            (timerState.remainingTime - elapsedTime).coerceAtLeast(0).toInt()
-                        startTimer()
-                    }
-                } else {
-                    // If the remaining time is invalid, reset to the full game length
-                    _remainingTime.value = _gameLengthInSeconds
-                    _formattedTime.value = formatTime(_gameLengthInSeconds)
-                    _isRunning.value = false
+                if (timerState.isRunning) {
+                    val elapsedTime =
+                        (System.currentTimeMillis() - timerState.lastPausedTime) / 1000
+                    _remainingTime.value =
+                        (timerState.remainingTime - elapsedTime).coerceAtLeast(0).toInt()
+                    startTimer()
                 }
-            } catch (e: JsonSyntaxException) {
-                // If there's an error parsing the JSON, reset to default state
-                initializeDefaultGame()
-            } catch (e: Exception) {
-                // If there's any other error reading the file, reset to default state
+            } else {
                 initializeDefaultGame()
             }
         } else {
-            // If no saved state exists, set to default state
             initializeDefaultGame()
         }
     }
 
     private fun initializeDefaultGame() {
-        _mutableGameLength = _defaualtGameLengthInMinutes
+        _mutableGameLength = _defaultGameLengthInMinutes
         _gameLengthInSeconds = _mutableGameLength * 60
         _remainingTime.value = _gameLengthInSeconds
         _formattedTime.value = formatTime(_gameLengthInSeconds)
