@@ -32,7 +32,6 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
-import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
@@ -67,7 +66,7 @@ fun GameActionOverlay(
     val confirmNewGame: () -> Unit = {
         confirmationTitle = "New Game"
         confirmationAction = resetGame
-        showConfirmationDialog = true
+        showConfirmationDialog = !showConfirmationDialog
     }
 
     val resetClock: (Int) -> Unit = { selectedMinutes ->
@@ -109,7 +108,7 @@ fun GameActionOverlay(
                     Chip(
                         modifier = Modifier.fillMaxWidth(0.9f),
                         label = { Text("Period time: ${gameTimerViewModel.getPeriodLength()} mins") },
-                        onClick = { showNumberInput = true },
+                        onClick = { showNumberInput = !showNumberInput },
                         colors = ChipDefaults.secondaryChipColors(),
                         icon = { Icon(Icons.Rounded.Timer, contentDescription = "Set period time") }
                     )

@@ -59,7 +59,7 @@ fun MainScreen(
                 )
                 if (gameViewModel.getGameStatus() == GameStatus.NOT_STARTED && showOverlay) {
                     GameActionOverlay(
-                        onClose = { showOverlay = false },
+                        onClose = { showOverlay = !showOverlay },
                         gameViewModel = gameViewModel,
                         gameTimerViewModel = gameTimerViewModel,
                         vibrationUtility = vibrationUtility
