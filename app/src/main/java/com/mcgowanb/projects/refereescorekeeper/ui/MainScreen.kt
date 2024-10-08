@@ -61,7 +61,7 @@ fun MainScreen(
                     GameActionOverlay(
                         onClose = { showOverlay = !showOverlay },
                         gameViewModel = gameViewModel,
-                        gameTimerViewModel = gameTimerViewModel,
+                        gameTimeViewModel = gameTimerViewModel,
                         vibrationUtility = vibrationUtility
                     )
                 }

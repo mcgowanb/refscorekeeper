@@ -26,6 +26,7 @@ class GameTimeViewModel(
     private val _defaultGameLengthInMinutes = 30
     private var _mutableGameLength = _defaultGameLengthInMinutes
     private var _gameLengthInSeconds = _mutableGameLength * 60
+    private var _etLength = 10
 
     private val _remainingTime = MutableStateFlow(_gameLengthInSeconds)
 
@@ -148,6 +149,10 @@ class GameTimeViewModel(
 
     fun getPeriodLength(): Int {
         return _mutableGameLength
+    }
+
+    fun getExtraTimeLength(): Int{
+        return _etLength
     }
 
     fun setPeriodLength(periodLength: Int) {

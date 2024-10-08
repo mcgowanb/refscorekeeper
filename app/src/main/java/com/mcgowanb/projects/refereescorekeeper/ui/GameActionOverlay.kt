@@ -6,13 +6,13 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ViewList
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,7 +31,10 @@ import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.Switch
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.ToggleChip
+import androidx.wear.compose.material.ToggleChipDefaults
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
@@ -48,7 +51,7 @@ import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 fun GameActionOverlay(
     onClose: () -> Unit,
     gameViewModel: GameViewModel,
-    gameTimerViewModel: GameTimeViewModel,
+    gameTimeViewModel: GameTimeViewModel,
     vibrationUtility: VibrationUtility
 ) {
     var showConfirmationDialog by remember { mutableStateOf(false) }
@@ -56,9 +59,13 @@ fun GameActionOverlay(
     var confirmationTitle by remember { mutableStateOf("") }
     var confirmationAction by remember { mutableStateOf({}) }
 
+    val chipModifier = Modifier
+        .fillMaxWidth(0.9f)
+        .padding(vertical = 2.dp)
+
     val resetGame: () -> Unit = {
         gameViewModel.onAction(ScoreAction.Reset)
-        gameTimerViewModel.resetTimer()
+        gameTimeViewModel.resetTimer()
         vibrationUtility.vibrateMultiple(VibrationType.RESET, VibrationEffect.DEFAULT_AMPLITUDE)
         onClose()
     }
@@ -71,7 +78,7 @@ fun GameActionOverlay(
 
     val resetClock: (Int) -> Unit = { selectedMinutes ->
         onClose()
-        gameTimerViewModel.setPeriodLength(selectedMinutes)
+        gameTimeViewModel.setPeriodLength(selectedMinutes)
         vibrationUtility.vibrateMultiple(VibrationType.RESET, VibrationEffect.DEFAULT_AMPLITUDE)
     }
 
@@ -85,7 +92,7 @@ fun GameActionOverlay(
                 .background(Color.Black)
         ) {
             ScalingLazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 contentPadding = PaddingValues(
                     top = 40.dp,
@@ -96,30 +103,71 @@ fun GameActionOverlay(
             ) {
                 item {
                     Chip(
-                        modifier = Modifier.fillMaxWidth(0.9f),
+                        modifier = chipModifier,
                         label = { Text("New Game") },
                         onClick = confirmNewGame,
-                        colors = ChipDefaults.primaryChipColors(),
-                        icon = { Icon(Icons.Rounded.Star, contentDescription = "New Game") }
+                        colors = ChipDefaults.secondaryChipColors(),
+                        icon = { Icon(Icons.Rounded.Add, contentDescription = "New Game") }
                     )
                 }
-                item { Spacer(modifier = Modifier.height(8.dp)) }
                 item {
                     Chip(
-                        modifier = Modifier.fillMaxWidth(0.9f),
-                        label = { Text("Period time: ${gameTimerViewModel.getPeriodLength()} mins") },
+                        modifier = chipModifier,
+                        label = { Text("Mins: ${gameTimeViewModel.getPeriodLength()}") },
                         onClick = { showNumberInput = !showNumberInput },
                         colors = ChipDefaults.secondaryChipColors(),
                         icon = { Icon(Icons.Rounded.Timer, contentDescription = "Set period time") }
                     )
                 }
-                item { Spacer(modifier = Modifier.height(8.dp)) }
                 item {
                     Chip(
-                        modifier = Modifier.fillMaxWidth(0.9f),
+                        modifier = chipModifier,
+                        label = { Text("Periods: ${gameTimeViewModel.getPeriodLength()}") },
+                        onClick = { },
+                        colors = ChipDefaults.secondaryChipColors(),
+                        icon = {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.ViewList,
+                                contentDescription = "Set period time"
+                            )
+                        }
+                    )
+                }
+                item {
+                    Chip(
+                        modifier = chipModifier,
+                        label = { Text("ET: ${gameTimeViewModel.getExtraTimeLength()}") },
+                        onClick = { },
+                        colors = ChipDefaults.secondaryChipColors(),
+                        icon = {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.ViewList,
+                                contentDescription = "Set period time"
+                            )
+                        }
+                    )
+                }
+                item {
+                    ToggleChip(
+                        modifier = chipModifier,
+                        checked = false,
+                        onCheckedChange = { },
+                        label = { Text("Screen on") },
+                        colors = ToggleChipDefaults.toggleChipColors(),
+                        toggleControl = {
+                            Switch(
+                                checked = true,
+                                onCheckedChange = null
+                            )
+                        }
+                    )
+                }
+                item {
+                    Chip(
+                        modifier = chipModifier,
                         label = { Text("Close") },
                         onClick = onClose,
-                        colors = ChipDefaults.secondaryChipColors(
+                        colors = ChipDefaults.primaryChipColors(
                             backgroundColor = WearColors.DismissRed
                         ),
                         icon = { Icon(Icons.Rounded.Close, contentDescription = "Close") }
@@ -142,7 +190,7 @@ fun GameActionOverlay(
 
     if (showNumberInput) {
         MinutePicker(
-            initialMinutes = gameTimerViewModel.getPeriodLength(),
+            initialMinutes = gameTimeViewModel.getPeriodLength(),
             range = 1..30,
             vibrationUtility = vibrationUtility,
             onConfirm = { selectedMinutes ->
@@ -161,7 +209,7 @@ private fun GameActionOverlayPreview() {
     GameActionOverlay(
         onClose = {},
         gameViewModel = GameViewModel(null),
-        gameTimerViewModel = GameTimeViewModel(null, null, null),
+        gameTimeViewModel = GameTimeViewModel(null, null, null),
         vibrationUtility = VibrationUtility(null)
     )
 }
