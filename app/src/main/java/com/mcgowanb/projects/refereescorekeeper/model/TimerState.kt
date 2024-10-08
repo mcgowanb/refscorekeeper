@@ -10,5 +10,9 @@ data class TimerState(
     @Expose
     val lastPausedTime: Long = 0,
     @Expose
-    val defaultMinutes: Int
+    val defaultMinutes: Int,
+    @Expose
+    val isOvertime: Boolean,
+    @Expose
+    val overtimeSeconds: Int
 )

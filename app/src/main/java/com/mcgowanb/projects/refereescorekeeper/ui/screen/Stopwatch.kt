@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
+import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -28,6 +29,7 @@ fun Stopwatch(
     gameTimerViewModel: GameTimeViewModel
 ) {
     val remainingTime by gameTimerViewModel.formattedTime.collectAsState()
+    val isOvertime by gameTimerViewModel.isOvertime.collectAsState()
 
     Box(
         modifier = Modifier
@@ -52,7 +54,8 @@ fun Stopwatch(
                     .fillMaxWidth(),
                 fontSize = 16.sp,
                 text = remainingTime,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = if (isOvertime) WearColors.DismissRed else Color.White
             )
             Spacer(
                 modifier = Modifier
