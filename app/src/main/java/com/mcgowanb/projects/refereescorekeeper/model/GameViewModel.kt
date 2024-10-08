@@ -1,6 +1,5 @@
 package com.mcgowanb.projects.refereescorekeeper.model
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
@@ -8,106 +7,67 @@ import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.enums.Team
 import com.mcgowanb.projects.refereescorekeeper.utility.FileHandlerUtility
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class GameViewModel(
-    private val fileHandler: FileHandlerUtility?
-) : ViewModel() {
+class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GameState())
-    val uiState: StateFlow<GameState> = _uiState.stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        GameState()
-    )
+    val uiState: StateFlow<GameState> = _uiState.asStateFlow()
 
     private val fileName = "game_state.json"
-
 
     init {
         viewModelScope.launch {
             val loadedState = loadGameStateFromFile()
             _uiState.value = loadedState ?: GameState()
-            // Force a re-emission of the state
-            _uiState.value = _uiState.value.copy()
-            Log.i("GameViewModel", "Initial state loaded and updated: ${_uiState.value}")
         }
     }
 
     fun onAction(action: ScoreAction) {
         when (action) {
-            is ScoreAction.AddHomePoint -> addPoint(Team.HOME)
-            is ScoreAction.SubtractHomePoint -> subtractPoint(Team.HOME)
-            is ScoreAction.AddHomeGoal -> addGoal(Team.HOME)
-            is ScoreAction.SubtractHomeGoal -> subtractGoal(Team.HOME)
-            is ScoreAction.AddAwayPoint -> addPoint(Team.AWAY)
-            is ScoreAction.SubtractAwayPoint -> subtractPoint(Team.AWAY)
-            is ScoreAction.AddAwayGoal -> addGoal(Team.AWAY)
-            is ScoreAction.SubtractAwayGoal -> subtractGoal(Team.AWAY)
+            is ScoreAction.AddHomePoint -> updateScore(Team.HOME, points = 1)
+            is ScoreAction.SubtractHomePoint -> updateScore(Team.HOME, points = -1)
+            is ScoreAction.AddHomeGoal -> updateScore(Team.HOME, goals = 1)
+            is ScoreAction.SubtractHomeGoal -> updateScore(Team.HOME, goals = -1)
+            is ScoreAction.AddAwayPoint -> updateScore(Team.AWAY, points = 1)
+            is ScoreAction.SubtractAwayPoint -> updateScore(Team.AWAY, points = -1)
+            is ScoreAction.AddAwayGoal -> updateScore(Team.AWAY, goals = 1)
+            is ScoreAction.SubtractAwayGoal -> updateScore(Team.AWAY, goals = -1)
             ScoreAction.Reset -> resetGameScores()
         }
     }
 
-    private fun addGoal(team: Team) {
-        _uiState.update { currentState ->
-            when (team) {
-                Team.HOME -> currentState.copy(hGoals = currentState.hGoals + 1)
-                Team.AWAY -> currentState.copy(aGoals = currentState.aGoals + 1)
-            }
-        }
-        saveGameStateToFile(_uiState.value)
-    }
+    private fun updateScore(team: Team, points: Int = 0, goals: Int = 0) {
+        _uiState.value = when (team) {
+            Team.HOME -> _uiState.value.copy(
+                hPoints = (_uiState.value.hPoints + points).coerceAtLeast(0),
+                hGoals = (_uiState.value.hGoals + goals).coerceAtLeast(0)
+            )
 
-    private fun addPoint(team: Team) {
-        _uiState.update { currentState ->
-            when (team) {
-                Team.HOME -> currentState.copy(hPoints = currentState.hPoints + 1)
-                Team.AWAY -> currentState.copy(aPoints = currentState.aPoints + 1)
-            }
+            Team.AWAY -> _uiState.value.copy(
+                aPoints = (_uiState.value.aPoints + points).coerceAtLeast(0),
+                aGoals = (_uiState.value.aGoals + goals).coerceAtLeast(0)
+            )
         }
-        saveGameStateToFile(_uiState.value)
-    }
-
-    private fun subtractGoal(team: Team) {
-        _uiState.update { currentState ->
-            when (team) {
-                Team.HOME -> currentState.copy(hGoals = (currentState.hGoals - 1).coerceAtLeast(0))
-                Team.AWAY -> currentState.copy(aGoals = (currentState.aGoals - 1).coerceAtLeast(0))
-            }
-        }
-        saveGameStateToFile(_uiState.value)
-    }
-
-    private fun subtractPoint(team: Team) {
-        _uiState.update { currentState ->
-            when (team) {
-                Team.HOME -> currentState.copy(hPoints = (currentState.hPoints - 1).coerceAtLeast(0))
-                Team.AWAY -> currentState.copy(aPoints = (currentState.aPoints - 1).coerceAtLeast(0))
-            }
-        }
-        saveGameStateToFile(_uiState.value)
+        saveGameStateToFile()
     }
 
     private fun resetGameScores() {
         _uiState.value = GameState()
-        saveGameStateToFile(_uiState.value)
+        saveGameStateToFile()
     }
 
     private fun loadGameStateFromFile(): GameState? {
         return fileHandler?.loadState(fileName, GameState::class.java)
     }
 
-    private fun saveGameStateToFile(gameState: GameState) {
+    private fun saveGameStateToFile() {
         viewModelScope.launch {
-            fileHandler?.saveState(gameState, fileName)
+            fileHandler?.saveState(_uiState.value, fileName)
         }
     }
 
-    fun getGameStatus(): GameStatus {
-        return _uiState.value.status
-    }
+    fun getGameStatus(): GameStatus = _uiState.value.status
 }
