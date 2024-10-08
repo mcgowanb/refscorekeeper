@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -42,6 +43,7 @@ import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
+import com.mcgowanb.projects.refereescorekeeper.ui.button.MenuItem
 import com.mcgowanb.projects.refereescorekeeper.ui.dialog.ConfirmationDialog
 import com.mcgowanb.projects.refereescorekeeper.ui.input.MinutePicker
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
@@ -58,6 +60,8 @@ fun GameActionOverlay(
     var showNumberInput by remember { mutableStateOf(false) }
     var confirmationTitle by remember { mutableStateOf("") }
     var confirmationAction by remember { mutableStateOf({}) }
+
+    val listState = rememberScalingLazyListState()
 
     val chipModifier = Modifier
         .fillMaxWidth(0.9f)
@@ -84,7 +88,11 @@ fun GameActionOverlay(
 
     Scaffold(
         vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
-        positionIndicator = { PositionIndicator(scalingLazyListState = rememberScalingLazyListState()) }
+        positionIndicator = {
+            PositionIndicator(
+                scalingLazyListState = listState
+            )
+        }
     ) {
         Box(
             modifier = Modifier
@@ -94,6 +102,7 @@ fun GameActionOverlay(
             ScalingLazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                state = listState,
                 contentPadding = PaddingValues(
                     top = 40.dp,
                     start = 10.dp,
@@ -111,46 +120,52 @@ fun GameActionOverlay(
                     )
                 }
                 item {
-                    Chip(
-                        modifier = chipModifier,
-                        label = { Text("Mins: ${gameTimeViewModel.getPeriodLength()}") },
+                    MenuItem(
+                        label = "Minutes",
+                        value = "${gameTimeViewModel.getPeriodLength()}",
                         onClick = { showNumberInput = !showNumberInput },
-                        colors = ChipDefaults.secondaryChipColors(),
-                        icon = { Icon(Icons.Rounded.Timer, contentDescription = "Set period time") }
+                        icon = {
+                            Icon(
+                                Icons.Rounded.Timer,
+                                contentDescription = "Set period time"
+                            )
+                        },
+                        modifier = chipModifier
                     )
                 }
                 item {
-                    Chip(
-                        modifier = chipModifier,
-                        label = { Text("Periods: ${gameTimeViewModel.getPeriodLength()}") },
+                    MenuItem(
+                        label = "Periods",
+                        value = "2",
                         onClick = { },
-                        colors = ChipDefaults.secondaryChipColors(),
                         icon = {
                             Icon(
                                 Icons.AutoMirrored.Rounded.ViewList,
                                 contentDescription = "Set period time"
                             )
-                        }
+                        },
+                        modifier = chipModifier
                     )
                 }
                 item {
-                    Chip(
-                        modifier = chipModifier,
-                        label = { Text("ET: ${gameTimeViewModel.getExtraTimeLength()}") },
+                    MenuItem(
+                        label = "Extra Time",
+                        value = "${gameTimeViewModel.getExtraTimeLength()}",
                         onClick = { },
-                        colors = ChipDefaults.secondaryChipColors(),
                         icon = {
                             Icon(
                                 Icons.AutoMirrored.Rounded.ViewList,
                                 contentDescription = "Set period time"
                             )
-                        }
+                        },
+                        modifier = chipModifier
                     )
                 }
                 item {
                     ToggleChip(
                         modifier = chipModifier,
                         checked = false,
+                        secondaryLabel = { Text("Fuck you") },
                         onCheckedChange = { },
                         label = { Text("Screen on") },
                         colors = ToggleChipDefaults.toggleChipColors(),
