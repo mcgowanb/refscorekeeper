@@ -1,5 +1,7 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -20,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun Stopwatch(
     gameTimerViewModel: GameTimeViewModel
@@ -48,7 +51,7 @@ fun Stopwatch(
                     .weight(2f)
                     .fillMaxWidth(),
                 fontSize = 16.sp,
-                text = remainingTime.toString(),
+                text = remainingTime,
                 textAlign = TextAlign.Center
             )
             Spacer(
