@@ -1,5 +1,5 @@
 package com.mcgowanb.projects.refereescorekeeper.enums
 
 enum class VibrationType {
-    SCORE, TIME, RESET, HALF_TIME
+    ADD_SCORE, SUBTRACT_SCORE, RESET, HALF_TIME, TIME, CRESCENDO, SOS, HEARTBEAT, CUSTOM, CONTINUOUS
 }

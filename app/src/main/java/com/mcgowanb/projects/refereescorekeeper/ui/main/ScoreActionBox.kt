@@ -1,7 +1,6 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.main
 
 import android.os.Build
-import android.os.VibrationEffect
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -28,15 +27,12 @@ fun ScoreActionBox(
                 onClick = {},
                 onLongClick = {
                     addScore()
-                    vibrationUtility.vibrateOnce(50, VibrationEffect.DEFAULT_AMPLITUDE)
+                    vibrationUtility.vibrateMultiple(VibrationType.ADD_SCORE)
                 },
                 onDoubleClick = {
                     subtractScore()
                     if (shouldVibrate) {
-                        vibrationUtility.vibrateMultiple(
-                            VibrationType.SCORE,
-                            VibrationEffect.DEFAULT_AMPLITUDE
-                        )
+                        vibrationUtility.vibrateMultiple(VibrationType.SUBTRACT_SCORE)
                     }
                 }
             )

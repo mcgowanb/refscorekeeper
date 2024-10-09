@@ -51,10 +51,6 @@ fun MinutePicker(
 ) {
     var minutes by remember { mutableStateOf(initialMinutes.coerceIn(range)) }
 
-    fun vibrate() {
-        vibrationUtility.vibrateOnce(5, DEFAULT_AMPLITUDE)
-    }
-
     fun changeMinutes(direction: Direction) {
         minutes = when (direction) {
             Direction.INCREMENT -> when {
@@ -66,7 +62,7 @@ fun MinutePicker(
                 else -> range.last
             }
         }
-        vibrate()
+        vibrationUtility.click()
     }
 
 

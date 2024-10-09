@@ -84,7 +84,7 @@ fun GameActionOverlay(
     val resetGame: () -> Unit = {
         gameViewModel.onAction(ScoreAction.Reset)
         gameTimeViewModel.resetTimer()
-        vibrationUtility.vibrateMultiple(VibrationType.RESET, VibrationEffect.DEFAULT_AMPLITUDE)
+        vibrationUtility.vibrateMultiple(VibrationType.CRESCENDO)
         onClose()
     }
 
