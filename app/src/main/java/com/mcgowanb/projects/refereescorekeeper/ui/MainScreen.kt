@@ -2,6 +2,9 @@ package com.mcgowanb.projects.refereescorekeeper.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
@@ -20,6 +23,7 @@ import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
+import com.mcgowanb.projects.refereescorekeeper.ui.screen.GameActionOverlay
 import com.mcgowanb.projects.refereescorekeeper.ui.screen.Watchface
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
@@ -57,7 +61,11 @@ fun MainScreen(
                     gameTimerViewModel,
                     vibrationUtility
                 )
-                if (gameViewModel.getGameStatus() == GameStatus.NOT_STARTED && showOverlay) {
+                AnimatedVisibility(
+                    visible = gameViewModel.getGameStatus() == GameStatus.NOT_STARTED && showOverlay,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
                     GameActionOverlay(
                         onClose = { showOverlay = !showOverlay },
                         gameViewModel = gameViewModel,

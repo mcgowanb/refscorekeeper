@@ -46,7 +46,8 @@ fun MinutePicker(
     onConfirm: (Int) -> Unit,
     initialMinutes: Int,
     range: IntRange,
-    vibrationUtility: VibrationUtility
+    vibrationUtility: VibrationUtility,
+    title: String
 ) {
     var minutes by remember { mutableStateOf(initialMinutes.coerceIn(range)) }
 
@@ -82,7 +83,7 @@ fun MinutePicker(
             Row(
             ) {
                 Text(
-                    text = "Mins",
+                    text = title,
                     fontSize = 14.sp,
                     color = Color.White,
                     modifier = Modifier.padding(top = 4.dp)
@@ -176,6 +177,7 @@ fun MinutePickerPreview() {
         onDismiss = {},
         initialMinutes = 25,
         range = 1..30,
-        vibrationUtility = VibrationUtility(null)
+        vibrationUtility = VibrationUtility(null),
+        title = "Mins"
     )
 }
