@@ -19,6 +19,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,6 +72,8 @@ fun GameActionOverlay(
     var numberPickerInitialValue by remember { mutableStateOf(0) }
     var numberPickerRange by remember { mutableStateOf(1..30) }
     var numberPickerOnConfirm by remember { mutableStateOf<(Int) -> Unit>({}) }
+
+    val gameState by gameViewModel.uiState.collectAsState()
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -180,9 +183,9 @@ fun GameActionOverlay(
                 item {
                     MenuItem(
                         label = "Periods",
-                        value = "${gameViewModel.getPeriods()}",
+                        value = "${gameState.periods}",
                         onClick = {
-                            numberPickerInitialValue = gameViewModel.getPeriods()
+                            numberPickerInitialValue = gameState.periods
                             numberPickerRange = 2..4
                             numberPickerOnConfirm = updatePeriods
                             showNumberInput = true

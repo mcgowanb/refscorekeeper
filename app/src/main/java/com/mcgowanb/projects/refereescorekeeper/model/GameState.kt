@@ -10,6 +10,7 @@ data class GameState(
     @Expose val aPoints: Int = 0,
     @Expose val aGoals: Int = 0,
     @Expose val periods: Int = 2,
+    @Expose val elapsedPeriods: Int = 0,
     @Expose val status: GameStatus = GameStatus.NOT_STARTED
 ) {
     val totalHomeScoreInt: Int get() = (hGoals * 3) + hPoints

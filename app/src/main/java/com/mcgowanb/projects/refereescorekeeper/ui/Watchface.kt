@@ -35,7 +35,8 @@ fun Watchface(
     val gameUiState by gameViewModel.uiState.collectAsState()
 
     Stopwatch(
-        gameTimerViewModel = gameTimerViewModel
+        gameTimeViewModel = gameTimerViewModel,
+        gameViewModel = gameViewModel
     )
     Column {
         Box(

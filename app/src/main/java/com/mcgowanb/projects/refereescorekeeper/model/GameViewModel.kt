@@ -72,13 +72,17 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
 
     fun getGameStatus(): GameStatus = _uiState.value.status
 
-    fun getPeriods(): Int {
-        return _uiState.value.periods
-    }
 
     fun setPeriods(newPeriods: Int) {
         _uiState.update { currentState ->
             currentState.copy(periods = newPeriods)
+        }
+        saveGameStateToFile()
+    }
+
+    fun setElapsedPeriods(elapsed: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(elapsedPeriods = elapsed)
         }
         saveGameStateToFile()
     }

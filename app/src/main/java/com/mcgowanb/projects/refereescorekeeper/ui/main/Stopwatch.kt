@@ -17,19 +17,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
+import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun Stopwatch(
-    gameTimerViewModel: GameTimeViewModel
+    gameTimeViewModel: GameTimeViewModel,
+    gameViewModel: GameViewModel
 ) {
-    val remainingTime by gameTimerViewModel.formattedTime.collectAsState()
-    val isOvertime by gameTimerViewModel.isOvertime.collectAsState()
+    val remainingTime by gameTimeViewModel.formattedTime.collectAsState()
+    val isOvertime by gameTimeViewModel.isOvertime.collectAsState()
+    val gameState by gameViewModel.uiState.collectAsState()
 
     Box(
         modifier = Modifier
@@ -41,13 +45,21 @@ fun Stopwatch(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Spacer(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(4.dp)
-                    .align(Alignment.CenterVertically)
-                    .background(Color.White)
-            )
+            repeat(2) { index ->
+                Spacer(
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .height(4.dp)
+                        .align(Alignment.CenterVertically)
+                        .background(
+                            when {
+                                gameState.periods == 2 && gameState.elapsedPeriods > 0 -> WearColors.ConfirmGreen
+                                gameState.periods == 4 && index < gameState.elapsedPeriods -> WearColors.ConfirmGreen
+                                else -> WearColors.White
+                            }
+                        )
+                )
+            }
             Text(
                 modifier = Modifier
                     .weight(2f)
@@ -57,14 +69,36 @@ fun Stopwatch(
                 textAlign = TextAlign.Center,
                 color = if (isOvertime) WearColors.DismissRed else Color.White
             )
-            Spacer(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(4.dp)
-                    .align(Alignment.CenterVertically)
-                    .background(Color.White)
-            )
+            repeat(2) { index ->
+                Spacer(
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .height(4.dp)
+                        .align(Alignment.CenterVertically)
+                        .background(
+                            when {
+                                gameState.periods == 2 && gameState.elapsedPeriods == 2 -> WearColors.ConfirmGreen
+                                gameState.periods == 4 && index + 2 < gameState.elapsedPeriods -> WearColors.ConfirmGreen
+                                else -> WearColors.White
+                            }
+                        )
+                )
+            }
         }
     }
+}
 
+@RequiresApi(Build.VERSION_CODES.S)
+@Preview(device = "id:wearos_small_round", showSystemUi = true)
+@Composable
+fun StopWatchPreview() {
+    val gvm = GameViewModel(null)
+    gvm.setPeriods(2)
+    gvm.setElapsedPeriods(2)
+    Stopwatch(
+        gameTimeViewModel = GameTimeViewModel(
+            null, null, null
+        ),
+        gameViewModel = gvm
+    )
 }
