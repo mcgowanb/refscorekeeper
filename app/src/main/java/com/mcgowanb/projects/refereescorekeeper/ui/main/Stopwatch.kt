@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.ui.screen
+package com.mcgowanb.projects.refereescorekeeper.ui.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi

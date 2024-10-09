@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.ui.screen
+package com.mcgowanb.projects.refereescorekeeper.ui.main
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

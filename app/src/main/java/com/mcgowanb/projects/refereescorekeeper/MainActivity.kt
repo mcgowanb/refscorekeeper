@@ -16,7 +16,7 @@ import com.google.gson.GsonBuilder
 import com.mcgowanb.projects.refereescorekeeper.factory.ViewModelFactory
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
-import com.mcgowanb.projects.refereescorekeeper.ui.MainScreen
+import com.mcgowanb.projects.refereescorekeeper.ui.main.MainScreen
 import com.mcgowanb.projects.refereescorekeeper.utility.FileHandlerUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.SoundUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
