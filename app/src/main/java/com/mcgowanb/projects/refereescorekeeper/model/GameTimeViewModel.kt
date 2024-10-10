@@ -64,6 +64,12 @@ class GameTimeViewModel(
         }
     }
 
+    fun zeroClock() {
+        stopTimer()
+        _formattedTime.value = formatTime(0)
+        saveTimerState()
+    }
+
     fun setOnPeriodEndCallback(callback: () -> Unit) {
         onPeriodEndCallback = callback
     }

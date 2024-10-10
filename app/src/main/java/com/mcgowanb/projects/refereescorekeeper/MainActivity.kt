@@ -106,6 +106,12 @@ class MainActivity : ComponentActivity() {
                     gameTimerViewModel.toggleIsRunning()
                 }
 
+                currentGameStatus == GameStatus.F_T -> {
+                    if (gameTimerViewModel.isRunning.value) {
+                        gameTimerViewModel.zeroClock()
+                    }
+                }
+
                 !isRunning && gameTimerViewModel.isOvertime.first() -> {
                     gameViewModel.incrementElapsedPeriod()
                 }
@@ -122,6 +128,13 @@ class MainActivity : ComponentActivity() {
 
     private suspend fun handlePeriodEnd() {
         gameViewModel.setHalfTime()
+        val periods = gameViewModel.getPeriods();
+        val elapsedPeriods = gameViewModel.getElapsedPeriods()
+        if (elapsedPeriods == periods) {
+            gameViewModel.setStatus(GameStatus.F_T)
+        } else {
+            gameViewModel.setStatus(GameStatus.H_T)
+        }
     }
 
 }

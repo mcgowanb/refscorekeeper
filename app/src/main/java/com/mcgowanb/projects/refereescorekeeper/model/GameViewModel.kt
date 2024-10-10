@@ -125,9 +125,9 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
         saveGameStateToFile()
     }
 
-    fun setHalfTime() {
+    fun setStatus(newStatus: GameStatus) {
         _uiState.update { currentState ->
-            currentState.copy(status = GameStatus.H_T)
+            currentState.copy(status = newStatus)
         }
         saveGameStateToFile()
     }
