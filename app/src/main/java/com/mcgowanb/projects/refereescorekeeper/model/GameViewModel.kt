@@ -56,7 +56,12 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
     }
 
     private fun resetGame() {
-        _uiState.value = GameState()
+        _uiState.update { currentState ->
+            GameState(
+                showAdditionalInfo = currentState.showAdditionalInfo,
+                periods = currentState.periods
+            )
+        }
         saveGameStateToFile()
     }
 
