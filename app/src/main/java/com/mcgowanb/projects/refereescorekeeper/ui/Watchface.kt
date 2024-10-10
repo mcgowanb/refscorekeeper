@@ -124,8 +124,10 @@ fun Watchface(
 @Preview(device = "id:wearos_small_round", showSystemUi = true)
 @Composable
 private fun WatchfacePreview() {
+    val gameViewModel = GameViewModel(null)
+    gameViewModel.onAction(ScoreAction.AddAwayPoint)
     Watchface(
-        gameViewModel = GameViewModel(null),
+        gameViewModel = gameViewModel,
         gameTimerViewModel = GameTimeViewModel(null, null, null),
         vibrationUtility = VibrationUtility(null)
     )
