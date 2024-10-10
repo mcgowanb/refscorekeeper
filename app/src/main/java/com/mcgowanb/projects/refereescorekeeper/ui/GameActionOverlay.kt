@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
-import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
@@ -63,7 +63,8 @@ fun GameActionOverlay(
     onClose: () -> Unit,
     gameViewModel: GameViewModel,
     gameTimeViewModel: GameTimeViewModel,
-    vibrationUtility: VibrationUtility
+    vibrationUtility: VibrationUtility,
+    scalingLazyListState: ScalingLazyListState
 ) {
     var showConfirmationDialog by remember { mutableStateOf(false) }
     var showNumberInput by remember { mutableStateOf(false) }
@@ -79,8 +80,6 @@ fun GameActionOverlay(
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-
-    val listState = rememberScalingLazyListState()
 
     val chipModifier = Modifier
         .fillMaxWidth(0.9f)
@@ -133,7 +132,7 @@ fun GameActionOverlay(
         vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
         positionIndicator = {
             PositionIndicator(
-                scalingLazyListState = listState
+                scalingLazyListState = scalingLazyListState
             )
         }
     ) {
@@ -145,7 +144,7 @@ fun GameActionOverlay(
             ScalingLazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                state = listState,
+                state = scalingLazyListState,
                 contentPadding = PaddingValues(
                     top = 40.dp,
                     start = 10.dp,
@@ -330,6 +329,7 @@ private fun GameActionOverlayPreview() {
         onClose = {},
         gameViewModel = GameViewModel(null),
         gameTimeViewModel = GameTimeViewModel(null, null, null),
-        vibrationUtility = VibrationUtility(null)
+        vibrationUtility = VibrationUtility(null),
+        scalingLazyListState = ScalingLazyListState()
     )
 }
