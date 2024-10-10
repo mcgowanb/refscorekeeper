@@ -2,6 +2,7 @@ package com.mcgowanb.projects.refereescorekeeper.model
 
 import androidx.compose.ui.graphics.Color
 import com.google.gson.annotations.Expose
+import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 
 data class GameState(
@@ -28,15 +29,15 @@ data class GameState(
     val homeColor: Color
         get() = when {
             totalHomeScoreInt == totalAwayScoreInt -> Color.Black
-            totalHomeScoreInt > totalAwayScoreInt -> Color.Green
-            else -> Color.Red
+            totalHomeScoreInt > totalAwayScoreInt -> WearColors.ConfirmGreen
+            else -> WearColors.DismissRed
         }
 
     val awayColor: Color
         get() = when {
             totalHomeScoreInt == totalAwayScoreInt -> Color.Black
-            totalHomeScoreInt < totalAwayScoreInt -> Color.Green
-            else -> Color.Red
+            totalHomeScoreInt < totalAwayScoreInt -> WearColors.ConfirmGreen
+            else -> WearColors.DismissRed
         }
 
     private fun Int.twoDigitFormat(): String = "%02d".format(this)

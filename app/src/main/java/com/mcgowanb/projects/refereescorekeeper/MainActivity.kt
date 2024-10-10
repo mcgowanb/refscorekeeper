@@ -13,6 +13,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.gson.GsonBuilder
+import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.factory.ViewModelFactory
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
@@ -20,6 +21,7 @@ import com.mcgowanb.projects.refereescorekeeper.ui.main.MainScreen
 import com.mcgowanb.projects.refereescorekeeper.utility.FileHandlerUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.SoundUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -47,6 +49,12 @@ class MainActivity : ComponentActivity() {
         gameViewModel = ViewModelProvider(this, factory)[GameViewModel::class.java]
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        gameTimerViewModel.setOnPeriodEndCallback {
+            lifecycleScope.launch {
+                handlePeriodEnd()
+            }
+        }
 
         installSplashScreen()
         setTheme(android.R.style.Theme_DeviceDefault)
@@ -76,9 +84,44 @@ class MainActivity : ComponentActivity() {
 
     private fun toggleTimer(): Boolean {
         lifecycleScope.launch {
-            gameTimerViewModel.toggleIsRunning()
-            vibrationUtility.toggleTimer(gameTimerViewModel.isRunning.value)
+            val currentGameStatus = gameViewModel.getGameStatus()
+            val isRunning = gameTimerViewModel.isRunning.first()
+
+            when {
+                currentGameStatus == GameStatus.NOT_STARTED -> {
+                    gameViewModel.startGame()
+                    gameTimerViewModel.toggleIsRunning()
+                }
+
+                currentGameStatus == GameStatus.PAUSED -> {
+                    gameTimerViewModel.toggleIsRunning()
+                    gameViewModel.toggleGameStatus()
+                }
+
+                currentGameStatus == GameStatus.H_T -> {
+                    if (!gameTimerViewModel.isRunning.value) {
+                        gameViewModel.toggleGameStatus()
+                        gameViewModel.incrementElapsedPeriod()
+                    }
+                    gameTimerViewModel.toggleIsRunning()
+                }
+
+                !isRunning && gameTimerViewModel.isOvertime.first() -> {
+                    gameViewModel.incrementElapsedPeriod()
+                }
+
+                else -> {
+                    gameTimerViewModel.toggleIsRunning()
+                    gameViewModel.toggleGameStatus()
+                }
+            }
+            vibrationUtility.toggleTimer(gameTimerViewModel.isRunning.first())
         }
         return true
     }
+
+    private suspend fun handlePeriodEnd() {
+        gameViewModel.setHalfTime()
+    }
+
 }

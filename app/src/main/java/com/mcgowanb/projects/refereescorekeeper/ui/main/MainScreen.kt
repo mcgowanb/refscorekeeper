@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
-import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
@@ -62,7 +61,7 @@ fun MainScreen(
                     vibrationUtility
                 )
                 AnimatedVisibility(
-                    visible = gameViewModel.getGameStatus() == GameStatus.NOT_STARTED && showOverlay,
+                    visible = showOverlay,
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {

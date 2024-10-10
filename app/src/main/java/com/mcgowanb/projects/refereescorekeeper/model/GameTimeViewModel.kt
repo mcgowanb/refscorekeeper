@@ -45,6 +45,8 @@ class GameTimeViewModel(
 
     private val _overtimeSeconds = MutableStateFlow(0)
 
+    private var onPeriodEndCallback: (() -> Unit)? = null
+
 
     init {
         loadTimerState()
@@ -60,6 +62,10 @@ class GameTimeViewModel(
                 startTimer()
             }
         }
+    }
+
+    fun setOnPeriodEndCallback(callback: () -> Unit) {
+        onPeriodEndCallback = callback
     }
 
     private fun startTimer() {
@@ -80,6 +86,7 @@ class GameTimeViewModel(
                     if (_remainingTime.value <= 0) {
                         _isOvertime.value = true
                         onRegularTimeFinished()
+                        onPeriodEndCallback?.invoke()
                     }
                 } else {
                     _overtimeSeconds.value =

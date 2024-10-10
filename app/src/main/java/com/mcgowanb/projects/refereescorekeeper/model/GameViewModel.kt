@@ -36,7 +36,7 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
             is ScoreAction.SubtractAwayPoint -> updateScore(Team.AWAY, points = -1)
             is ScoreAction.AddAwayGoal -> updateScore(Team.AWAY, goals = 1)
             is ScoreAction.SubtractAwayGoal -> updateScore(Team.AWAY, goals = -1)
-            ScoreAction.Reset -> resetGameScores()
+            ScoreAction.Reset -> resetGame()
         }
     }
 
@@ -55,7 +55,7 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
         saveGameStateToFile()
     }
 
-    private fun resetGameScores() {
+    private fun resetGame() {
         _uiState.value = GameState()
         saveGameStateToFile()
     }
@@ -80,10 +80,59 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
         saveGameStateToFile()
     }
 
+    fun getPeriods(): Int {
+        return _uiState.value.periods
+    }
+
+    fun getElapsedPeriods(): Int {
+        return _uiState.value.elapsedPeriods
+    }
+
     fun setElapsedPeriods(elapsed: Int) {
         _uiState.update { currentState ->
             currentState.copy(elapsedPeriods = elapsed)
         }
         saveGameStateToFile()
+    }
+
+    fun startGame() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                status = GameStatus.IN_PROGRESS,
+                elapsedPeriods = currentState.elapsedPeriods + 1
+            )
+        }
+        saveGameStateToFile()
+    }
+
+    fun toggleGameStatus() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                status = if (currentState.status == GameStatus.IN_PROGRESS) GameStatus.PAUSED else GameStatus.IN_PROGRESS,
+            )
+        }
+        saveGameStateToFile()
+    }
+
+    fun incrementElapsedPeriod() {
+        _uiState.update { currentState ->
+            if (currentState.elapsedPeriods < currentState.periods) {
+                currentState.copy(elapsedPeriods = currentState.elapsedPeriods + 1)
+            } else {
+                currentState
+            }
+        }
+        saveGameStateToFile()
+    }
+
+    fun setHalfTime() {
+        _uiState.update { currentState ->
+            currentState.copy(status = GameStatus.H_T)
+        }
+        saveGameStateToFile()
+    }
+
+    fun isGameComplete(): Boolean {
+        return _uiState.value.status == GameStatus.COMPLETED
     }
 }
