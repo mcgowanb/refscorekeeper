@@ -127,7 +127,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun handlePeriodEnd() {
-        gameViewModel.setHalfTime()
         val periods = gameViewModel.getPeriods();
         val elapsedPeriods = gameViewModel.getElapsedPeriods()
         if (elapsedPeriods == periods) {

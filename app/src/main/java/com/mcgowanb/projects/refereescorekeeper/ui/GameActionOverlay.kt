@@ -29,8 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Chip
@@ -217,14 +219,54 @@ fun GameActionOverlay(
                 item {
                     ToggleChip(
                         modifier = chipModifier,
-                        checked = false,
-                        secondaryLabel = { Text("Fuck you") },
-                        onCheckedChange = { },
-                        label = { Text("Screen on") },
+                        checked = gameState.showAdditionalInfo,
+                        onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
+                        label = {
+                            Text(
+                                "Extra Info",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                        },
+                        secondaryLabel = {
+                            Text(
+                                "Beside clock",
+                                fontSize = 10.sp,
+                                color = Color.LightGray
+                            )
+                        },
                         colors = ToggleChipDefaults.toggleChipColors(),
                         toggleControl = {
                             Switch(
-                                checked = true,
+                                checked = gameState.showAdditionalInfo,
+                                onCheckedChange = null
+                            )
+                        }
+                    )
+                }
+                item {
+                    ToggleChip(
+                        modifier = chipModifier,
+                        checked = false,
+                        label = {
+                            Text(
+                                "Keep screen on",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                        },
+                        secondaryLabel = {
+                            Text(
+                                "While game is running",
+                                fontSize = 10.sp,
+                                color = Color.LightGray
+                            )
+                        },
+                        onCheckedChange = { },
+                        colors = ToggleChipDefaults.toggleChipColors(),
+                        toggleControl = {
+                            Switch(
+                                checked = false,
                                 onCheckedChange = null
                             )
                         }

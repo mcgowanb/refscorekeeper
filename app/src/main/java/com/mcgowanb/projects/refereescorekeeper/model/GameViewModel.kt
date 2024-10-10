@@ -132,6 +132,16 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
         saveGameStateToFile()
     }
 
+    fun toggleShowAdditionalInfo() {
+        _uiState.update { it.copy(showAdditionalInfo = !it.showAdditionalInfo) }
+            .also { saveGameStateToFile() }
+    }
+
+    fun showAdditionalInfo(show: Boolean) {
+        _uiState.update { it.copy(showAdditionalInfo = show) }
+            .also { saveGameStateToFile() }
+    }
+
     fun isGameComplete(): Boolean {
         return _uiState.value.status == GameStatus.COMPLETED
     }
