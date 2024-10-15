@@ -19,7 +19,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
@@ -77,11 +76,11 @@ fun MainScreen(
         Scaffold(
             timeText = {
                 AnimatedVisibility(
-                    visible = !scalingLazyListState.isScrollInProgress && scalingLazyListState.centerItemIndex == 0,
+                    visible = scalingLazyListState.centerItemIndex == 0,
                     enter = fadeIn(),
                     exit = fadeOut()
-                ){
-                TimeText(
+                ) {
+                    TimeText(
                         timeTextStyle = TimeTextDefaults.timeTextStyle(fontSize = 12.sp),
                         endLinearContent = {
                             if (gameState.showAdditionalInfo) {
