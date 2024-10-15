@@ -17,18 +17,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Scaffold
-import androidx.wear.compose.material.Text
-import androidx.wear.compose.material.TimeText
-import androidx.wear.compose.material.TimeTextDefaults
-import androidx.wear.compose.material.curvedText
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
-import com.mcgowanb.projects.refereescorekeeper.model.GameState
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
@@ -50,7 +43,7 @@ fun MainScreen(
     val scalingLazyListState = rememberScalingLazyListState()
 
     Box(modifier = Modifier.verticalDragHandler { showOverlay = true }) {
-        Scaffold(timeText = { CustomTimeText(gameState, scalingLazyListState) }) {
+        Scaffold(timeText = { TimeInfo(gameState, scalingLazyListState) }) {
             RefereeScoreKeeperTheme {
                 Watchface(gameViewModel, gameTimerViewModel, vibrationUtility)
                 GameActionOverlayWrapper(
@@ -94,69 +87,10 @@ private fun BoxScope.GameActionOverlayWrapper(
     }
 }
 
-@Composable
-private fun CustomTimeText(
-    gameState: GameState,
-    scalingLazyListState: ScalingLazyListState
-) {
-    AnimatedVisibility(
-        visible = scalingLazyListState.centerItemIndex == 0,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        TimeText(
-            timeTextStyle = TimeTextDefaults.timeTextStyle(fontSize = 12.sp),
-            startLinearContent = { AdditionalInfoText(gameState.showAdditionalInfo) { formatState(gameState.status) } },
-            startCurvedContent = {
-                if (gameState.showAdditionalInfo) {
-                    curvedText(
-                        text = formatState(gameState.status),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Light
-                    )
-                }
-            },
-            endLinearContent = { AdditionalInfoText(gameState.showAdditionalInfo) { formatIntervals(gameState) } },
-            endCurvedContent = {
-                if (gameState.showAdditionalInfo) {
-                    curvedText(
-                        text = formatIntervals(gameState),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Light
-                    )
-                }
-            }
-        )
-    }
-}
-
-@Composable
-private fun AdditionalInfoText(showAdditionalInfo: Boolean, content: () -> String) {
-    if (showAdditionalInfo) {
-        Text(
-            text = content(),
-            fontSize = 10.sp,
-            fontWeight = FontWeight.Light
-        )
-    }
-}
-
 private fun Modifier.verticalDragHandler(onDragUp: () -> Unit): Modifier = pointerInput(Unit) {
     detectVerticalDragGestures { _, dragAmount ->
         if (dragAmount < -50) onDragUp()
     }
-}
-
-private fun formatIntervals(gameState: GameState): String =
-    "${gameState.elapsedPeriods}/${gameState.periods}"
-
-private fun formatState(status: GameStatus): String = when (status) {
-    GameStatus.NOT_STARTED -> "N/S"
-    GameStatus.IN_PROGRESS -> "I/P"
-    GameStatus.PAUSED -> "P/S"
-    GameStatus.H_T -> "H/T"
-    GameStatus.F_T -> "F/T"
-    else -> ""
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
