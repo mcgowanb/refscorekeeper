@@ -2,6 +2,21 @@ package com.mcgowanb.projects.refereescorekeeper.ui.button
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,36 +45,49 @@ fun ToggleButton(
     title: String,
     secondaryText: String,
     isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    visible: Boolean
 ) {
-    ToggleChip(
-        modifier = Modifier
-            .fillMaxWidth(0.9f)
-            .padding(vertical = 2.dp),
-        checked = isChecked,
-        onCheckedChange = onCheckedChange,
-        label = {
-            Text(
-                title,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal
-            )
-        },
-        secondaryLabel = {
-            Text(
-                secondaryText,
-                fontSize = 10.sp,
-                color = Color.LightGray
-            )
-        },
-        colors = ToggleChipDefaults.toggleChipColors(),
-        toggleControl = {
-            Switch(
-                checked = isChecked,
-                onCheckedChange = null
-            )
-        }
-    )
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInHorizontally(
+            initialOffsetX = { fullWidth -> fullWidth },
+            animationSpec = tween(durationMillis = 300, easing = EaseInOut)
+        ),
+        exit = slideOutHorizontally(
+            targetOffsetX = { fullWidth -> fullWidth },
+            animationSpec = tween(durationMillis = 300, easing = EaseInOut)
+        )
+    ) {
+        ToggleChip(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .padding(vertical = 2.dp),
+            checked = isChecked,
+            onCheckedChange = onCheckedChange,
+            label = {
+                Text(
+                    title,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            },
+            secondaryLabel = {
+                Text(
+                    secondaryText,
+                    fontSize = 10.sp,
+                    color = Color.LightGray
+                )
+            },
+            colors = ToggleChipDefaults.toggleChipColors(),
+            toggleControl = {
+                Switch(
+                    checked = isChecked,
+                    onCheckedChange = null
+                )
+            }
+        )
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -75,8 +103,9 @@ private fun ToggleButtonPreview() {
         ToggleButton(
             title = "Show Clock",
             secondaryText = "main clock",
-            isChecked = true
-        ) {
-        }
+            isChecked = true,
+            onCheckedChange = {},
+            visible = true
+        )
     }
 }

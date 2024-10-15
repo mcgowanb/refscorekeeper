@@ -218,7 +218,8 @@ fun GameActionOverlay(
                         title = "Show Clock",
                         secondaryText = "",
                         isChecked = gameState.showClock,
-                        onCheckedChange = { gameViewModel.toggleShowClock() }
+                        onCheckedChange = { gameViewModel.toggleShowClock() },
+                        visible = true
                     )
                 }
                 item {
@@ -226,7 +227,8 @@ fun GameActionOverlay(
                         title = "Extra Info",
                         secondaryText = "Beside clock",
                         isChecked = gameState.showAdditionalInfo,
-                        onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() }
+                        onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
+                        visible = gameState.showClock
                     )
                 }
                 item {
@@ -234,7 +236,8 @@ fun GameActionOverlay(
                         title = "Keep screen on",
                         secondaryText = "While game is running",
                         isChecked = false,
-                        onCheckedChange = { }
+                        onCheckedChange = { },
+                        visible = true
                     )
                 }
                 item { Separator() }
