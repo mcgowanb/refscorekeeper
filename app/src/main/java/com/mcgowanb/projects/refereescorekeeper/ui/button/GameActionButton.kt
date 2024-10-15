@@ -1,5 +1,7 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.button
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -76,11 +78,18 @@ fun GameActionButton(
 @Composable
 @Preview(device = "id:wearos_small_round", showSystemUi = true)
 fun GameActionButtonPreview() {
-    GameActionButton(
-        title = "Reset Game",
-        icon = Icons.Rounded.Star,
-        action = {},
-        iconColor =  WearColors.White,
-        backgroundColor =  WearColors.DismissRed
-    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+        contentAlignment = Alignment.Center
+    ) {
+        GameActionButton(
+            title = "Reset Game",
+            icon = Icons.Rounded.Star,
+            action = {},
+            iconColor = WearColors.White,
+            backgroundColor = WearColors.DismissRed
+        )
+    }
 }

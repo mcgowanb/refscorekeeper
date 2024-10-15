@@ -1,6 +1,9 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.button
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -68,8 +71,15 @@ fun SettingsButton(
 @Composable
 @Preview(device = "id:wearos_small_round")
 fun SettingsPreview() {
-    SettingsButton(
-        Setting("periods", "Periods", Icons.Rounded.Functions, 2),
-        {}
-    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+        contentAlignment = Alignment.Center
+    ) {
+        SettingsButton(
+            Setting("periods", "Periods", Icons.Rounded.Functions, 2),
+            {}
+        )
+    }
 }

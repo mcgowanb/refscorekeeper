@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ViewList
@@ -29,10 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.material.Chip
@@ -40,10 +39,7 @@ import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
-import androidx.wear.compose.material.Switch
 import androidx.wear.compose.material.Text
-import androidx.wear.compose.material.ToggleChip
-import androidx.wear.compose.material.ToggleChipDefaults
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
@@ -52,6 +48,7 @@ import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.ui.button.MenuItem
+import com.mcgowanb.projects.refereescorekeeper.ui.button.ToggleButton
 import com.mcgowanb.projects.refereescorekeeper.ui.dialog.ConfirmationDialog
 import com.mcgowanb.projects.refereescorekeeper.ui.input.MinutePicker
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
@@ -215,62 +212,32 @@ fun GameActionOverlay(
                         modifier = chipModifier
                     )
                 }
+                item { Separator() }
                 item {
-                    ToggleChip(
-                        modifier = chipModifier,
-                        checked = gameState.showAdditionalInfo,
-                        onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
-                        label = {
-                            Text(
-                                "Extra Info",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Normal
-                            )
-                        },
-                        secondaryLabel = {
-                            Text(
-                                "Beside clock",
-                                fontSize = 10.sp,
-                                color = Color.LightGray
-                            )
-                        },
-                        colors = ToggleChipDefaults.toggleChipColors(),
-                        toggleControl = {
-                            Switch(
-                                checked = gameState.showAdditionalInfo,
-                                onCheckedChange = null
-                            )
-                        }
+                    ToggleButton(
+                        title = "Show Clock",
+                        secondaryText = "",
+                        isChecked = false,
+                        onCheckedChange = { }
                     )
                 }
                 item {
-                    ToggleChip(
-                        modifier = chipModifier,
-                        checked = false,
-                        label = {
-                            Text(
-                                "Keep screen on",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Normal
-                            )
-                        },
-                        secondaryLabel = {
-                            Text(
-                                "While game is running",
-                                fontSize = 10.sp,
-                                color = Color.LightGray
-                            )
-                        },
-                        onCheckedChange = { },
-                        colors = ToggleChipDefaults.toggleChipColors(),
-                        toggleControl = {
-                            Switch(
-                                checked = false,
-                                onCheckedChange = null
-                            )
-                        }
+                    ToggleButton(
+                        title = "Extra Info",
+                        secondaryText = "Beside clock",
+                        isChecked = gameState.showAdditionalInfo,
+                        onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() }
                     )
                 }
+                item {
+                    ToggleButton(
+                        title = "Keep screen on",
+                        secondaryText = "While game is running",
+                        isChecked = false,
+                        onCheckedChange = { }
+                    )
+                }
+                item { Separator() }
                 item {
                     Chip(
                         modifier = chipModifier,
@@ -319,6 +286,17 @@ fun GameActionOverlay(
         )
 
     }
+}
+
+@Composable
+fun Separator() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .height(1.dp)
+            .background(Color.Gray.copy(alpha = 0.5f))
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
