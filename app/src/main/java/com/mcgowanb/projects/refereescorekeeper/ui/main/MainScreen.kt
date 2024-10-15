@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,6 +20,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
@@ -26,6 +28,7 @@ import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.TimeTextDefaults
 import androidx.wear.compose.material.curvedText
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
+import com.mcgowanb.projects.refereescorekeeper.model.GameState
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
@@ -43,128 +46,133 @@ fun MainScreen(
 ) {
     var showOverlay by remember { mutableStateOf(false) }
     val gameState by gameViewModel.uiState.collectAsState()
-
     val scope = rememberCoroutineScope()
     val scalingLazyListState = rememberScalingLazyListState()
 
-    fun formatIntervals(): String {
-        return "%s/%s".format(gameState.elapsedPeriods, gameState.periods)
-    }
-
-    fun formatState(): String {
-        return when (gameState.status) {
-            GameStatus.NOT_STARTED -> "N/S"
-            GameStatus.IN_PROGRESS -> "I/P"
-            GameStatus.PAUSED -> "P/S"
-            GameStatus.H_T -> "H/T"
-            GameStatus.F_T -> "F/T"
-            else -> ""
-        }
-    }
-
-    Box(
-        modifier = Modifier.pointerInput(Unit) {
-            detectVerticalDragGestures { _, dragAmount ->
-                when {
-                    dragAmount < -50 && !showOverlay && !gameTimerViewModel.isRunning.value -> {
-                        showOverlay = true
-                    }
-                }
-            }
-        }
-    ) {
-        Scaffold(
-            timeText = {
-                AnimatedVisibility(
-                    visible = scalingLazyListState.centerItemIndex == 0,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    TimeText(
-                        timeTextStyle = TimeTextDefaults.timeTextStyle(fontSize = 12.sp),
-                        endLinearContent = {
-                            if (gameState.showAdditionalInfo) {
-                                Text(
-                                    text = formatIntervals(),
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Light
-                                )
-                            }
-                        },
-                        endCurvedContent = {
-                            if (gameState.showAdditionalInfo) {
-                                curvedText(
-                                    text = formatIntervals(),
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Light
-                                )
-                            }
-                        },
-                        startLinearContent = {
-                            if (gameState.showAdditionalInfo) {
-                                Text(
-                                    text = formatState(),
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Light
-                                )
-                            }
-                        },
-                        startCurvedContent = {
-                            if (gameState.showAdditionalInfo) {
-                                curvedText(
-                                    text = formatState(),
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.Light
-                                )
-                            }
-                        },
-                    )
-                }
-            }
-        ) {
+    Box(modifier = Modifier.verticalDragHandler { showOverlay = true }) {
+        Scaffold(timeText = { CustomTimeText(gameState, scalingLazyListState) }) {
             RefereeScoreKeeperTheme {
-                Watchface(
+                Watchface(gameViewModel, gameTimerViewModel, vibrationUtility)
+                GameActionOverlayWrapper(
+                    showOverlay,
+                    onClose = {
+                        showOverlay = false
+                        scope.launch { scalingLazyListState.animateScrollToItem(0) }
+                    },
                     gameViewModel,
                     gameTimerViewModel,
-                    vibrationUtility
+                    vibrationUtility,
+                    scalingLazyListState
                 )
-                AnimatedVisibility(
-                    visible = showOverlay,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    GameActionOverlay(
-                        onClose = {
-                            showOverlay = !showOverlay
-                            scope.launch {
-                                scalingLazyListState.animateScrollToItem(0)
-                            }
-                        },
-                        gameViewModel = gameViewModel,
-                        gameTimeViewModel = gameTimerViewModel,
-                        vibrationUtility = vibrationUtility,
-                        scalingLazyListState = scalingLazyListState
-                    )
-                }
             }
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
+@Composable
+private fun BoxScope.GameActionOverlayWrapper(
+    showOverlay: Boolean,
+    onClose: () -> Unit,
+    gameViewModel: GameViewModel,
+    gameTimeViewModel: GameTimeViewModel,
+    vibrationUtility: VibrationUtility,
+    scalingLazyListState: ScalingLazyListState
+) {
+    AnimatedVisibility(
+        visible = showOverlay,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        GameActionOverlay(
+            onClose = onClose,
+            gameViewModel = gameViewModel,
+            gameTimeViewModel = gameTimeViewModel,
+            vibrationUtility = vibrationUtility,
+            scalingLazyListState = scalingLazyListState
+        )
+    }
+}
+
+@Composable
+private fun CustomTimeText(
+    gameState: GameState,
+    scalingLazyListState: ScalingLazyListState
+) {
+    AnimatedVisibility(
+        visible = scalingLazyListState.centerItemIndex == 0,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        TimeText(
+            timeTextStyle = TimeTextDefaults.timeTextStyle(fontSize = 12.sp),
+            startLinearContent = { AdditionalInfoText(gameState.showAdditionalInfo) { formatState(gameState.status) } },
+            startCurvedContent = {
+                if (gameState.showAdditionalInfo) {
+                    curvedText(
+                        text = formatState(gameState.status),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Light
+                    )
+                }
+            },
+            endLinearContent = { AdditionalInfoText(gameState.showAdditionalInfo) { formatIntervals(gameState) } },
+            endCurvedContent = {
+                if (gameState.showAdditionalInfo) {
+                    curvedText(
+                        text = formatIntervals(gameState),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Light
+                    )
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun AdditionalInfoText(showAdditionalInfo: Boolean, content: () -> String) {
+    if (showAdditionalInfo) {
+        Text(
+            text = content(),
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Light
+        )
+    }
+}
+
+private fun Modifier.verticalDragHandler(onDragUp: () -> Unit): Modifier = pointerInput(Unit) {
+    detectVerticalDragGestures { _, dragAmount ->
+        if (dragAmount < -50) onDragUp()
+    }
+}
+
+private fun formatIntervals(gameState: GameState): String =
+    "${gameState.elapsedPeriods}/${gameState.periods}"
+
+private fun formatState(status: GameStatus): String = when (status) {
+    GameStatus.NOT_STARTED -> "N/S"
+    GameStatus.IN_PROGRESS -> "I/P"
+    GameStatus.PAUSED -> "P/S"
+    GameStatus.H_T -> "H/T"
+    GameStatus.F_T -> "F/T"
+    else -> ""
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
 @Preview(device = "id:wearos_small_round", showSystemUi = true)
 @Composable
 private fun MainScreenPreview() {
-    val gvm = GameViewModel(null)
-    gvm.setPeriods(4)
-    gvm.setElapsedPeriods(2)
-    gvm.setStatus(GameStatus.H_T)
-    gvm.showAdditionalInfo(true)
+    val gvm = GameViewModel(null).apply {
+        setPeriods(4)
+        setElapsedPeriods(2)
+        setStatus(GameStatus.H_T)
+        showAdditionalInfo(true)
+    }
 
     MainScreen(
         gameViewModel = gvm,
         gameTimerViewModel = GameTimeViewModel(null, null, null),
         vibrationUtility = VibrationUtility(null)
     )
-
 }
