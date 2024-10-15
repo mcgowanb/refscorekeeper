@@ -43,7 +43,7 @@ fun MainScreen(
     val scalingLazyListState = rememberScalingLazyListState()
 
     Box(modifier = Modifier.verticalDragHandler { showOverlay = true }) {
-        Scaffold(timeText = { TimeInfo(gameState, scalingLazyListState) }) {
+        Scaffold(timeText = { TimeInfo(gameState) }) {
             RefereeScoreKeeperTheme {
                 Watchface(gameViewModel, gameTimerViewModel, vibrationUtility)
                 GameActionOverlayWrapper(
