@@ -101,7 +101,6 @@ private fun MainScreenPreview() {
         setPeriods(4)
         setElapsedPeriods(2)
         setStatus(GameStatus.H_T)
-        showAdditionalInfo(true)
     }
 
     MainScreen(

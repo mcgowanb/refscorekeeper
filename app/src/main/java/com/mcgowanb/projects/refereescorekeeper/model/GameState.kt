@@ -13,7 +13,8 @@ data class GameState(
     @Expose val periods: Int = 2,
     @Expose val elapsedPeriods: Int = 0,
     @Expose val status: GameStatus = GameStatus.NOT_STARTED,
-    @Expose val showAdditionalInfo: Boolean = true
+    @Expose val showAdditionalInfo: Boolean = true,
+    @Expose val showClock: Boolean = true
 ) {
     val totalHomeScoreInt: Int get() = (hGoals * 3) + hPoints
     val totalAwayScoreInt: Int get() = (aGoals * 3) + aPoints

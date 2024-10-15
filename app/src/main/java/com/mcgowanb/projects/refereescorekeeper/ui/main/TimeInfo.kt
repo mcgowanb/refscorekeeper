@@ -19,41 +19,43 @@ import com.mcgowanb.projects.refereescorekeeper.model.GameState
 fun TimeInfo(
     gameState: GameState
 ) {
-    TimeText(
-        timeTextStyle = TimeTextDefaults.timeTextStyle(fontSize = 12.sp),
-        startLinearContent = {
-            AdditionalInfoText(gameState.showAdditionalInfo) {
-                formatState(
-                    gameState.status
-                )
+    if (gameState.showClock) {
+        TimeText(
+            timeTextStyle = TimeTextDefaults.timeTextStyle(fontSize = 12.sp),
+            startLinearContent = {
+                AdditionalInfoText(gameState.showAdditionalInfo) {
+                    formatState(
+                        gameState.status
+                    )
+                }
+            },
+            startCurvedContent = {
+                if (gameState.showAdditionalInfo) {
+                    curvedText(
+                        text = formatState(gameState.status),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Light
+                    )
+                }
+            },
+            endLinearContent = {
+                AdditionalInfoText(gameState.showAdditionalInfo) {
+                    formatIntervals(
+                        gameState
+                    )
+                }
+            },
+            endCurvedContent = {
+                if (gameState.showAdditionalInfo) {
+                    curvedText(
+                        text = formatIntervals(gameState),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Light
+                    )
+                }
             }
-        },
-        startCurvedContent = {
-            if (gameState.showAdditionalInfo) {
-                curvedText(
-                    text = formatState(gameState.status),
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Light
-                )
-            }
-        },
-        endLinearContent = {
-            AdditionalInfoText(gameState.showAdditionalInfo) {
-                formatIntervals(
-                    gameState
-                )
-            }
-        },
-        endCurvedContent = {
-            if (gameState.showAdditionalInfo) {
-                curvedText(
-                    text = formatIntervals(gameState),
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Light
-                )
-            }
-        }
-    )
+        )
+    }
 }
 
 private fun formatIntervals(gameState: GameState): String =

@@ -217,8 +217,8 @@ fun GameActionOverlay(
                     ToggleButton(
                         title = "Show Clock",
                         secondaryText = "",
-                        isChecked = false,
-                        onCheckedChange = { }
+                        isChecked = gameState.showClock,
+                        onCheckedChange = { gameViewModel.toggleShowClock() }
                     )
                 }
                 item {
