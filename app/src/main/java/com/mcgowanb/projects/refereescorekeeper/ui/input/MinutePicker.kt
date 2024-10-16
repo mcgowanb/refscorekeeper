@@ -20,7 +20,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,23 +44,25 @@ import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 fun MinutePicker(
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit,
-    initialMinutes: Int,
+    initialValue: Int,
     range: IntRange,
     vibrationUtility: VibrationUtility,
     title: String,
     visible: Boolean
 ) {
-    var minutes by remember { mutableStateOf(initialMinutes.coerceIn(range)) }
+    var currentValue by remember(initialValue, range) {
+        mutableIntStateOf(initialValue.coerceIn(range))
+    }
 
     fun changeMinutes(direction: Direction) {
-        minutes = when (direction) {
+        currentValue = when (direction) {
             Direction.INCREMENT -> when {
-                minutes < range.last -> minutes + 1
+                currentValue < range.last -> currentValue + 1
                 else -> range.first
             }
 
             Direction.DECREMENT -> when {
-                minutes > range.first -> minutes - 1
+                currentValue > range.first -> currentValue - 1
                 else -> range.last
             }
         }
@@ -107,7 +109,7 @@ fun MinutePicker(
 
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = minutes.toString().padStart(2, '0'),
+                            text = currentValue.toString().padStart(2, '0'),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.Bold,
                             color = WearColors.White
@@ -149,7 +151,7 @@ fun MinutePicker(
                         )
                     }
                     IconButton(
-                        onClick = { onConfirm(minutes) },
+                        onClick = { onConfirm(currentValue) },
                         modifier = Modifier
                             .size(35.dp)
                             .background(color = WearColors.ConfirmGreen, shape = CircleShape)
@@ -174,7 +176,7 @@ fun MinutePickerPreview() {
     MinutePicker(
         onConfirm = {},
         onDismiss = {},
-        initialMinutes = 22,
+        initialValue = 22,
         range = 1..30,
         vibrationUtility = VibrationUtility(null),
         title = "Mins",

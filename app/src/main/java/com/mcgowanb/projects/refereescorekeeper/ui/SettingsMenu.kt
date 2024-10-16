@@ -20,6 +20,7 @@ import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -67,7 +68,7 @@ fun SettingsMenu(
     var confirmationAction by remember { mutableStateOf({}) }
 
     var numberPickerTitle by remember { mutableStateOf("") }
-    var numberPickerInitialValue by remember { mutableStateOf(0) }
+    var numberPickerInitialValue by remember { mutableIntStateOf(0) }
     var numberPickerRange by remember { mutableStateOf(1..30) }
     var numberPickerOnConfirm by remember { mutableStateOf<(Int) -> Unit>({}) }
 
@@ -264,7 +265,7 @@ fun SettingsMenu(
     )
 
     MinutePicker(
-        initialMinutes = numberPickerInitialValue,
+        initialValue = numberPickerInitialValue,
         range = numberPickerRange,
         vibrationUtility = vibrationUtility,
         onConfirm = { selectedValue ->
