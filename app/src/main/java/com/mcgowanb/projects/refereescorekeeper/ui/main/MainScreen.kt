@@ -75,25 +75,16 @@ private fun BoxScope.SettingsMenuWrapper(
     vibrationUtility: VibrationUtility,
     scalingLazyListState: ScalingLazyListState
 ) {
-    AnimatedVisibility(
-        visible = showOverlay,
-        enter = slideInVertically(
-            initialOffsetY = { fullHeight -> fullHeight },
-            animationSpec = tween(durationMillis = 500)
-        ) + fadeIn(animationSpec = tween(durationMillis = 500)),
-        exit = slideOutVertically(
-            targetOffsetY = { fullHeight -> fullHeight },
-            animationSpec = tween(durationMillis = 500)
-        ) + fadeOut(animationSpec = tween(durationMillis = 500))
-    ) {
-        SettingsMenu(
-            onClose = onClose,
-            gameViewModel = gameViewModel,
-            gameTimeViewModel = gameTimeViewModel,
-            vibrationUtility = vibrationUtility,
-            scalingLazyListState = scalingLazyListState
-        )
-    }
+
+    SettingsMenu(
+        onClose = onClose,
+        gameViewModel = gameViewModel,
+        gameTimeViewModel = gameTimeViewModel,
+        vibrationUtility = vibrationUtility,
+        scalingLazyListState = scalingLazyListState,
+        visible = showOverlay
+    )
+
 }
 
 private fun Modifier.verticalDragHandler(onDragUp: () -> Unit): Modifier = pointerInput(Unit) {

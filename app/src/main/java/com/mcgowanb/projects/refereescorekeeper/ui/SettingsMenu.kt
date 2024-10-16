@@ -46,6 +46,7 @@ import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
+import com.mcgowanb.projects.refereescorekeeper.ui.animtaion.SlideUpVertically
 import com.mcgowanb.projects.refereescorekeeper.ui.button.MenuItem
 import com.mcgowanb.projects.refereescorekeeper.ui.button.ToggleButton
 import com.mcgowanb.projects.refereescorekeeper.ui.dialog.ConfirmationDialog
@@ -60,7 +61,8 @@ fun SettingsMenu(
     gameViewModel: GameViewModel,
     gameTimeViewModel: GameTimeViewModel,
     vibrationUtility: VibrationUtility,
-    scalingLazyListState: ScalingLazyListState
+    scalingLazyListState: ScalingLazyListState,
+    visible: Boolean
 ) {
     var showConfirmationDialog by remember { mutableStateOf(false) }
     var showNumberInput by remember { mutableStateOf(false) }
@@ -123,132 +125,135 @@ fun SettingsMenu(
 //        vibrationUtility.vibrateMultiple(VibrationType.RESET, VibrationEffect.DEFAULT_AMPLITUDE)
     }
 
-
-    Scaffold(
-        vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
-        positionIndicator = {
-            PositionIndicator(
-                scalingLazyListState = scalingLazyListState
-            )
-        }
+    SlideUpVertically(
+        visible = visible
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-        ) {
-            ScalingLazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                state = scalingLazyListState,
-                contentPadding = PaddingValues(
-                    top = 40.dp,
-                    start = 10.dp,
-                    end = 10.dp,
-                    bottom = 40.dp
+        Scaffold(
+            vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
+            positionIndicator = {
+                PositionIndicator(
+                    scalingLazyListState = scalingLazyListState
                 )
+            }
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
             ) {
-                item {
-                    MenuItem(
-                        label = "New Game",
-                        onClick = confirmNewGame,
-                        icon = Icons.Rounded.Add,
-                        modifier = chipModifier,
-                        visible = true
+                ScalingLazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    state = scalingLazyListState,
+                    contentPadding = PaddingValues(
+                        top = 40.dp,
+                        start = 10.dp,
+                        end = 10.dp,
+                        bottom = 40.dp
                     )
-                }
-                item {
-                    MenuItem(
-                        label = "Minutes",
-                        value = "${gameTimeViewModel.getPeriodLength()}",
-                        onClick = {
-                            numberPickerInitialValue = gameTimeViewModel.getPeriodLength()
-                            numberPickerRange = 1..30
-                            numberPickerOnConfirm = resetClock
-                            showNumberInput = true
-                            numberPickerTitle = "Mins"
-                        },
-                        icon = Icons.Rounded.Timer,
-                        modifier = chipModifier,
-                        visible = true
+                ) {
+                    item {
+                        MenuItem(
+                            label = "New Game",
+                            onClick = confirmNewGame,
+                            icon = Icons.Rounded.Add,
+                            modifier = chipModifier,
+                            visible = true
+                        )
+                    }
+                    item {
+                        MenuItem(
+                            label = "Minutes",
+                            value = "${gameTimeViewModel.getPeriodLength()}",
+                            onClick = {
+                                numberPickerInitialValue = gameTimeViewModel.getPeriodLength()
+                                numberPickerRange = 1..30
+                                numberPickerOnConfirm = resetClock
+                                showNumberInput = true
+                                numberPickerTitle = "Mins"
+                            },
+                            icon = Icons.Rounded.Timer,
+                            modifier = chipModifier,
+                            visible = true
 
-                    )
-                }
-                item {
-                    MenuItem(
-                        label = "Periods",
-                        value = "${gameState.periods}",
-                        onClick = {
-                            numberPickerInitialValue = gameState.periods
-                            numberPickerRange = 2..4
-                            numberPickerOnConfirm = updatePeriods
-                            showNumberInput = true
-                            numberPickerTitle = "Periods"
-                        },
-                        icon = Icons.AutoMirrored.Rounded.ViewList,
-                        modifier = chipModifier,
-                        visible = true
-                    )
-                }
-                item { Separator() }
-                item {
-                    ToggleButton(
-                        title = "Enable extra time",
-                        secondaryText = "",
-                        isChecked = gameState.hasExtraTime,
-                        onCheckedChange = { gameViewModel.toggleExtraTime() },
-                        visible = true
-                    )
-                }
-                item {
-                    MenuItem(
-                        label = "Extra Time",
-                        value = "${gameTimeViewModel.getExtraTimeLength()}",
-                        onClick = { },
-                        icon = Icons.Rounded.MoreTime,
-                        modifier = chipModifier,
-                        visible = gameState.hasExtraTime
-                    )
-                }
-                item { Separator() }
-                item {
-                    ToggleButton(
-                        title = "Show Clock",
-                        secondaryText = "",
-                        isChecked = gameState.showClock,
-                        onCheckedChange = { gameViewModel.toggleShowClock() },
-                        visible = true
-                    )
-                }
-                item {
-                    ToggleButton(
-                        title = "Extra Info",
-                        secondaryText = "Beside clock",
-                        isChecked = gameState.showAdditionalInfo,
-                        onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
-                        visible = gameState.showClock
-                    )
-                }
-                item {
-                    ToggleButton(
-                        title = "Keep screen on",
-                        secondaryText = "While game is running",
-                        isChecked = false,
-                        onCheckedChange = { },
-                        visible = true
-                    )
-                }
-                item { Separator() }
-                item {
-                    Chip(
-                        modifier = chipModifier,
-                        label = { Text("Close") },
-                        onClick = onClose,
-                        colors = ChipDefaults.primaryChipColors(
-                            backgroundColor = WearColors.DismissRed
-                        ),
-                        icon = { Icon(Icons.Rounded.Close, contentDescription = "Close") }
-                    )
+                        )
+                    }
+                    item {
+                        MenuItem(
+                            label = "Periods",
+                            value = "${gameState.periods}",
+                            onClick = {
+                                numberPickerInitialValue = gameState.periods
+                                numberPickerRange = 2..4
+                                numberPickerOnConfirm = updatePeriods
+                                showNumberInput = true
+                                numberPickerTitle = "Periods"
+                            },
+                            icon = Icons.AutoMirrored.Rounded.ViewList,
+                            modifier = chipModifier,
+                            visible = true
+                        )
+                    }
+                    item { Separator() }
+                    item {
+                        ToggleButton(
+                            title = "Enable extra time",
+                            secondaryText = "",
+                            isChecked = gameState.hasExtraTime,
+                            onCheckedChange = { gameViewModel.toggleExtraTime() },
+                            visible = true
+                        )
+                    }
+                    item {
+                        MenuItem(
+                            label = "Extra Time",
+                            value = "${gameTimeViewModel.getExtraTimeLength()}",
+                            onClick = { },
+                            icon = Icons.Rounded.MoreTime,
+                            modifier = chipModifier,
+                            visible = gameState.hasExtraTime
+                        )
+                    }
+                    item { Separator() }
+                    item {
+                        ToggleButton(
+                            title = "Show Clock",
+                            secondaryText = "",
+                            isChecked = gameState.showClock,
+                            onCheckedChange = { gameViewModel.toggleShowClock() },
+                            visible = true
+                        )
+                    }
+                    item {
+                        ToggleButton(
+                            title = "Extra Info",
+                            secondaryText = "Beside clock",
+                            isChecked = gameState.showAdditionalInfo,
+                            onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
+                            visible = gameState.showClock
+                        )
+                    }
+                    item {
+                        ToggleButton(
+                            title = "Keep screen on",
+                            secondaryText = "While game is running",
+                            isChecked = false,
+                            onCheckedChange = { },
+                            visible = true
+                        )
+                    }
+                    item { Separator() }
+                    item {
+                        Chip(
+                            modifier = chipModifier,
+                            label = { Text("Close") },
+                            onClick = onClose,
+                            colors = ChipDefaults.primaryChipColors(
+                                backgroundColor = WearColors.DismissRed
+                            ),
+                            icon = { Icon(Icons.Rounded.Close, contentDescription = "Close") }
+                        )
+                    }
                 }
             }
         }
@@ -298,6 +303,7 @@ private fun GameActionOverlayPreview() {
         gameViewModel = GameViewModel(null),
         gameTimeViewModel = GameTimeViewModel(null, null, null),
         vibrationUtility = VibrationUtility(null),
-        scalingLazyListState = ScalingLazyListState()
+        scalingLazyListState = ScalingLazyListState(),
+        visible = true
     )
 }
