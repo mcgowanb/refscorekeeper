@@ -11,13 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,6 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.wear.compose.material.Button
+import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
@@ -137,24 +137,27 @@ fun MinutePicker(
                         .fillMaxWidth()
                         .padding(top = 16.dp)
                 ) {
-                    IconButton(
+                    Button(
                         onClick = onDismiss,
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = WearColors.DismissRed,
+                            contentColor = WearColors.White
+                        ),
                         modifier = Modifier
-                            .size(35.dp)
-                            .background(color = WearColors.DismissRed, shape = CircleShape)
+                            .size(ButtonDefaults.DefaultButtonSize)
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Close,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(35.dp)
+                            contentDescription = null
                         )
                     }
-                    IconButton(
+                    Button(
                         onClick = { onConfirm(currentValue) },
-                        modifier = Modifier
-                            .size(35.dp)
-                            .background(color = WearColors.ConfirmGreen, shape = CircleShape)
+                        modifier = Modifier.size(ButtonDefaults.DefaultButtonSize),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = WearColors.ConfirmGreen,
+                            contentColor = WearColors.White
+                        )
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Done,
