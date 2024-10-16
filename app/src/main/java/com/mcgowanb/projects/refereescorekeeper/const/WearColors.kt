@@ -10,5 +10,7 @@ object WearColors {
     val DarkBlue = Color(0xFF3D84FF)
     val AccentBlue = Color(0xFF64B5F6)
     val White = Color(0xFFFFFFFF)
+    val Pink = Color(4292224915)
+    val Purple = Color(4283971208)
 
 }

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ViewList
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.MoreTime
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -150,12 +151,17 @@ fun GameActionOverlay(
                 )
             ) {
                 item {
-                    Chip(
-                        modifier = chipModifier,
-                        label = { Text("New Game") },
+                    MenuItem(
+                        label = "New Game",
                         onClick = confirmNewGame,
-                        colors = ChipDefaults.secondaryChipColors(),
-                        icon = { Icon(Icons.Rounded.Add, contentDescription = "New Game") }
+                        icon = {
+                            Icon(
+                                Icons.Rounded.Add,
+                                contentDescription = "Set period time"
+                            )
+                        },
+                        modifier = chipModifier,
+                        visible = true
                     )
                 }
                 item {
@@ -175,7 +181,9 @@ fun GameActionOverlay(
                                 contentDescription = "Set period time"
                             )
                         },
-                        modifier = chipModifier
+                        modifier = chipModifier,
+                        visible = true
+
                     )
                 }
                 item {
@@ -195,7 +203,18 @@ fun GameActionOverlay(
                                 contentDescription = "Set period time"
                             )
                         },
-                        modifier = chipModifier
+                        modifier = chipModifier,
+                        visible = true
+                    )
+                }
+                item { Separator() }
+                item {
+                    ToggleButton(
+                        title = "Enable extra time",
+                        secondaryText = "",
+                        isChecked = false,
+                        onCheckedChange = { },
+                        visible = true
                     )
                 }
                 item {
@@ -205,11 +224,12 @@ fun GameActionOverlay(
                         onClick = { },
                         icon = {
                             Icon(
-                                Icons.AutoMirrored.Rounded.ViewList,
+                                Icons.Rounded.MoreTime,
                                 contentDescription = "Set period time"
                             )
                         },
-                        modifier = chipModifier
+                        modifier = chipModifier,
+                        visible = true
                     )
                 }
                 item { Separator() }

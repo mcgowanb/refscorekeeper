@@ -2,6 +2,11 @@ package com.mcgowanb.projects.refereescorekeeper.ui.button
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -20,36 +25,54 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
+import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 
 
 @Composable
 fun MenuItem(
     label: String,
-    value: String,
+    value: String? = null,
     onClick: () -> Unit,
     icon: @Composable () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    visible: Boolean
 ) {
-    Chip(
-        modifier = modifier,
-        onClick = onClick,
-        colors = ChipDefaults.secondaryChipColors(),
-        label = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(label)
-                Box(
-                    modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.CenterEnd
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInHorizontally(
+            initialOffsetX = { fullWidth -> fullWidth },
+            animationSpec = tween(durationMillis = 300, easing = EaseInOut)
+        ),
+        exit = slideOutHorizontally(
+            targetOffsetX = { fullWidth -> fullWidth },
+            animationSpec = tween(durationMillis = 300, easing = EaseInOut)
+        )
+    ) {
+        Chip(
+            modifier = modifier,
+            onClick = onClick,
+            colors = ChipDefaults.chipColors(
+                backgroundColor = WearColors.Purple.copy(alpha = 0.5f),
+            ),
+            label = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(value)
+                    Text(label)
+                    Box(
+                        modifier = Modifier.weight(1f),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        if (value != null) {
+                            Text(value)
+                        }
+                    }
                 }
-            }
-        },
-        icon = { icon() }
-    )
+            },
+            icon = { icon() }
+        )
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -66,6 +89,7 @@ private fun MenuItemPreview() {
             label = "Label",
             value = "value",
             onClick = {},
+            visible = true,
             icon = {
                 Icon(
                     Icons.Rounded.Timer,

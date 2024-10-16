@@ -4,19 +4,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,15 +20,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.material.Switch
+import androidx.wear.compose.material.SwitchDefaults
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.ToggleChip
 import androidx.wear.compose.material.ToggleChipDefaults
-import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
-import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
-import com.mcgowanb.projects.refereescorekeeper.ui.GameActionOverlay
-import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
+import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 
 @Composable
 fun ToggleButton(
@@ -79,11 +66,22 @@ fun ToggleButton(
                     color = Color.LightGray
                 )
             },
-            colors = ToggleChipDefaults.toggleChipColors(),
+            colors = ToggleChipDefaults.toggleChipColors(
+                checkedStartBackgroundColor = WearColors.Purple.copy(alpha = 0.5f),
+                checkedEndBackgroundColor = WearColors.Purple,
+                uncheckedStartBackgroundColor = WearColors.Purple.copy(alpha = 0.5f),
+                uncheckedEndBackgroundColor = WearColors.Purple.copy(alpha = 0.5f)
+            ),
             toggleControl = {
                 Switch(
                     checked = isChecked,
-                    onCheckedChange = null
+                    onCheckedChange = null,
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = WearColors.Pink,
+                        checkedTrackColor = WearColors.Pink.copy(alpha = 0.5f),
+                        uncheckedThumbColor = WearColors.Pink,
+                        uncheckedTrackColor = WearColors.Pink.copy(alpha = 0.5f)
+                    )
                 )
             }
         )
