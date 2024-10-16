@@ -212,8 +212,8 @@ fun GameActionOverlay(
                     ToggleButton(
                         title = "Enable extra time",
                         secondaryText = "",
-                        isChecked = false,
-                        onCheckedChange = { },
+                        isChecked = gameState.hasExtraTime,
+                        onCheckedChange = { gameViewModel.toggleExtraTime() },
                         visible = true
                     )
                 }
@@ -229,7 +229,7 @@ fun GameActionOverlay(
                             )
                         },
                         modifier = chipModifier,
-                        visible = true
+                        visible = gameState.hasExtraTime
                     )
                 }
                 item { Separator() }

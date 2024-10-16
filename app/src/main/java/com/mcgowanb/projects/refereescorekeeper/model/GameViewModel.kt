@@ -60,7 +60,8 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
             GameState(
                 showAdditionalInfo = currentState.showAdditionalInfo,
                 periods = currentState.periods,
-                showClock = currentState.showClock
+                showClock = currentState.showClock,
+                hasExtraTime = currentState.hasExtraTime
             )
         }
         saveGameStateToFile()
@@ -143,8 +144,13 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
             .also { saveGameStateToFile() }
     }
 
-    fun toggleShowClock(){
+    fun toggleShowClock() {
         _uiState.update { it.copy(showClock = !it.showClock) }
+            .also { saveGameStateToFile() }
+    }
+
+    fun toggleExtraTime() {
+        _uiState.update { it.copy(hasExtraTime = !it.hasExtraTime) }
             .also { saveGameStateToFile() }
     }
 
