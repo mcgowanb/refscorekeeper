@@ -28,7 +28,7 @@ import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
-import com.mcgowanb.projects.refereescorekeeper.ui.GameActionOverlay
+import com.mcgowanb.projects.refereescorekeeper.ui.SettingsMenu
 import com.mcgowanb.projects.refereescorekeeper.ui.Watchface
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 import kotlinx.coroutines.launch
@@ -86,7 +86,7 @@ private fun BoxScope.GameActionOverlayWrapper(
             animationSpec = tween(durationMillis = 500)
         ) + fadeOut(animationSpec = tween(durationMillis = 500))
     ) {
-        GameActionOverlay(
+        SettingsMenu(
             onClose = onClose,
             gameViewModel = gameViewModel,
             gameTimeViewModel = gameTimeViewModel,

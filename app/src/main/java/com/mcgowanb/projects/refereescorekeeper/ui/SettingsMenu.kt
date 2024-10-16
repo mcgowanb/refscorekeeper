@@ -57,7 +57,7 @@ import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun GameActionOverlay(
+fun SettingsMenu(
     onClose: () -> Unit,
     gameViewModel: GameViewModel,
     gameTimeViewModel: GameTimeViewModel,
@@ -326,7 +326,7 @@ fun Separator() {
 @Composable
 @Preview(device = "id:wearos_small_round", showSystemUi = true)
 private fun GameActionOverlayPreview() {
-    GameActionOverlay(
+    SettingsMenu(
         onClose = {},
         gameViewModel = GameViewModel(null),
         gameTimeViewModel = GameTimeViewModel(null, null, null),
