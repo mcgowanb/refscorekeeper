@@ -12,5 +12,6 @@ object WearColors {
     val White = Color(0xFFFFFFFF)
     val Pink = Color(4292224915)
     val Purple = Color(4283971208)
+    val Black = Color.Black
 
 }

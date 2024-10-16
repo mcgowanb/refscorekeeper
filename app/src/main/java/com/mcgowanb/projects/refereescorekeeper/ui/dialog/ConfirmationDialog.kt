@@ -1,7 +1,19 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.dialog
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
@@ -14,66 +26,72 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.*
+import androidx.wear.compose.material.Icon
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
+import com.mcgowanb.projects.refereescorekeeper.ui.animtaion.SlideLeftToRight
 
 @Composable
 fun ConfirmationDialog(
     confirmationQuestion: String,
+    visible: Boolean,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-    ) {
-        Column(
+    SlideLeftToRight(visible = visible) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .fillMaxSize()
+                .background(Color.Black)
         ) {
-            Text(
-                confirmationQuestion,
-                style = MaterialTheme.typography.title2,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
+                    .align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                IconButton(
-                    onClick = onDismiss,
+                Text(
+                    confirmationQuestion,
+                    style = MaterialTheme.typography.title2,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
-                        .size(35.dp)
-                        .background(color = WearColors.DismissRed, shape = CircleShape)
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Close,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(35.dp)
-                    )
-                }
-                IconButton(
-                    onClick = onConfirm,
-                    modifier = Modifier
-                        .size(35.dp)
-                        .background(color = WearColors.ConfirmGreen, shape = CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Done,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(35.dp)
-                    )
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .size(35.dp)
+                            .background(color = WearColors.DismissRed, shape = CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Close,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(35.dp)
+                        )
+                    }
+                    IconButton(
+                        onClick = onConfirm,
+                        modifier = Modifier
+                            .size(35.dp)
+                            .background(color = WearColors.ConfirmGreen, shape = CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Done,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(35.dp)
+                        )
+                    }
                 }
             }
         }
@@ -84,7 +102,8 @@ fun ConfirmationDialog(
 @Composable
 private fun ConfirmationDialogPreview() {
     ConfirmationDialog(
-        "Reset Game?",
+        confirmationQuestion = "Reset Game?",
+        visible = true,
         {},
         {}
     )

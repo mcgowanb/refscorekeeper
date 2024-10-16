@@ -2,11 +2,6 @@ package com.mcgowanb.projects.refereescorekeeper.ui.button
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +21,7 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.ToggleChip
 import androidx.wear.compose.material.ToggleChipDefaults
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
+import com.mcgowanb.projects.refereescorekeeper.ui.animtaion.SlideRightToLeft
 
 @Composable
 fun ToggleButton(
@@ -35,16 +31,8 @@ fun ToggleButton(
     onCheckedChange: (Boolean) -> Unit,
     visible: Boolean
 ) {
-    AnimatedVisibility(
-        visible = visible,
-        enter = slideInHorizontally(
-            initialOffsetX = { fullWidth -> fullWidth },
-            animationSpec = tween(durationMillis = 300, easing = EaseInOut)
-        ),
-        exit = slideOutHorizontally(
-            targetOffsetX = { fullWidth -> fullWidth },
-            animationSpec = tween(durationMillis = 300, easing = EaseInOut)
-        )
+    SlideRightToLeft(
+        visible = visible
     ) {
         ToggleChip(
             modifier = Modifier

@@ -276,39 +276,28 @@ fun SettingsMenu(
         }
     }
 
-    AnimatedVisibility(
+    ConfirmationDialog(
+        confirmationQuestion = confirmationTitle,
         visible = showConfirmationDialog,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        ConfirmationDialog(
-            confirmationQuestion = confirmationTitle,
-            onConfirm = {
-                confirmationAction()
-                showConfirmationDialog = false
-            },
-            onDismiss = { showConfirmationDialog = false }
-        )
-    }
+        onConfirm = {
+            confirmationAction()
+            showConfirmationDialog = false
+        },
+        onDismiss = { showConfirmationDialog = false }
+    )
 
-    AnimatedVisibility(
+    MinutePicker(
+        initialMinutes = numberPickerInitialValue,
+        range = numberPickerRange,
+        vibrationUtility = vibrationUtility,
+        onConfirm = { selectedValue ->
+            numberPickerOnConfirm(selectedValue)
+            showNumberInput = false
+        },
+        onDismiss = { showNumberInput = false },
+        title = numberPickerTitle,
         visible = showNumberInput,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        MinutePicker(
-            initialMinutes = numberPickerInitialValue,
-            range = numberPickerRange,
-            vibrationUtility = vibrationUtility,
-            onConfirm = { selectedValue ->
-                numberPickerOnConfirm(selectedValue)
-                showNumberInput = false
-            },
-            onDismiss = { showNumberInput = false },
-            title = numberPickerTitle
-        )
-
-    }
+    )
 }
 
 @Composable

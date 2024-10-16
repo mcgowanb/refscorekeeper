@@ -26,6 +26,7 @@ import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
+import com.mcgowanb.projects.refereescorekeeper.ui.animtaion.SlideRightToLeft
 
 
 @Composable
@@ -37,16 +38,8 @@ fun MenuItem(
     modifier: Modifier = Modifier,
     visible: Boolean
 ) {
-    AnimatedVisibility(
-        visible = visible,
-        enter = slideInHorizontally(
-            initialOffsetX = { fullWidth -> fullWidth },
-            animationSpec = tween(durationMillis = 300, easing = EaseInOut)
-        ),
-        exit = slideOutHorizontally(
-            targetOffsetX = { fullWidth -> fullWidth },
-            animationSpec = tween(durationMillis = 300, easing = EaseInOut)
-        )
+    SlideRightToLeft(
+        visible = visible
     ) {
         Chip(
             modifier = modifier,
@@ -70,7 +63,11 @@ fun MenuItem(
                     }
                 }
             },
-            icon = { icon() }
+            icon = {
+                Box(contentAlignment = Alignment.Center) {
+                    icon()
+                }
+            }
         )
     }
 }
