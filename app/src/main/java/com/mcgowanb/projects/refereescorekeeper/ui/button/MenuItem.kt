@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ViewList
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Chip
@@ -34,7 +36,7 @@ fun MenuItem(
     label: String,
     value: String? = null,
     onClick: () -> Unit,
-    icon: @Composable () -> Unit,
+    icon: ImageVector,
     modifier: Modifier = Modifier,
     visible: Boolean
 ) {
@@ -65,7 +67,11 @@ fun MenuItem(
             },
             icon = {
                 Box(contentAlignment = Alignment.Center) {
-                    icon()
+                    Icon(
+                        icon,
+                        contentDescription = "",
+                        tint = WearColors.Pink
+                    )
                 }
             }
         )
@@ -87,12 +93,7 @@ private fun MenuItemPreview() {
             value = "value",
             onClick = {},
             visible = true,
-            icon = {
-                Icon(
-                    Icons.Rounded.Timer,
-                    contentDescription = "Set period time"
-                )
-            },
+            icon = Icons.AutoMirrored.Rounded.ViewList,
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .padding(vertical = 2.dp)

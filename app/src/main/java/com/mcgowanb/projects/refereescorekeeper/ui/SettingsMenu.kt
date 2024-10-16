@@ -4,9 +4,6 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -154,12 +151,7 @@ fun SettingsMenu(
                     MenuItem(
                         label = "New Game",
                         onClick = confirmNewGame,
-                        icon = {
-                            Icon(
-                                Icons.Rounded.Add,
-                                contentDescription = "Set period time"
-                            )
-                        },
+                        icon = Icons.Rounded.Add,
                         modifier = chipModifier,
                         visible = true
                     )
@@ -175,12 +167,7 @@ fun SettingsMenu(
                             showNumberInput = true
                             numberPickerTitle = "Mins"
                         },
-                        icon = {
-                            Icon(
-                                Icons.Rounded.Timer,
-                                contentDescription = "Set period time"
-                            )
-                        },
+                        icon = Icons.Rounded.Timer,
                         modifier = chipModifier,
                         visible = true
 
@@ -197,12 +184,7 @@ fun SettingsMenu(
                             showNumberInput = true
                             numberPickerTitle = "Periods"
                         },
-                        icon = {
-                            Icon(
-                                Icons.AutoMirrored.Rounded.ViewList,
-                                contentDescription = "Set period time"
-                            )
-                        },
+                        icon = Icons.AutoMirrored.Rounded.ViewList,
                         modifier = chipModifier,
                         visible = true
                     )
@@ -222,12 +204,7 @@ fun SettingsMenu(
                         label = "Extra Time",
                         value = "${gameTimeViewModel.getExtraTimeLength()}",
                         onClick = { },
-                        icon = {
-                            Icon(
-                                Icons.Rounded.MoreTime,
-                                contentDescription = "Set period time"
-                            )
-                        },
+                        icon = Icons.Rounded.MoreTime,
                         modifier = chipModifier,
                         visible = gameState.hasExtraTime
                     )

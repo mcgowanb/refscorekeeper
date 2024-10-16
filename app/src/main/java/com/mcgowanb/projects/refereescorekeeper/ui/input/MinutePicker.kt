@@ -1,7 +1,6 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.input
 
 import android.os.Build
-import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +36,7 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.enums.Direction
+import com.mcgowanb.projects.refereescorekeeper.ui.animtaion.SlideLeftToRight
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -47,7 +47,8 @@ fun MinutePicker(
     initialMinutes: Int,
     range: IntRange,
     vibrationUtility: VibrationUtility,
-    title: String
+    title: String,
+    visible: Boolean
 ) {
     var minutes by remember { mutableStateOf(initialMinutes.coerceIn(range)) }
 
@@ -57,6 +58,7 @@ fun MinutePicker(
                 minutes < range.last -> minutes + 1
                 else -> range.first
             }
+
             Direction.DECREMENT -> when {
                 minutes > range.first -> minutes - 1
                 else -> range.last
@@ -65,99 +67,100 @@ fun MinutePicker(
         vibrationUtility.click()
     }
 
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+    SlideLeftToRight(visible = visible) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
         ) {
-            Row(
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = title,
-                    fontSize = 14.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 0.dp)
-            ) {
-                Chip(
-                    onClick = { changeMinutes(Direction.DECREMENT) },
-                    colors = ChipDefaults.chipColors(backgroundColor = Color.Transparent),
-                    label = { Text("") },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Rounded.KeyboardArrowDown,
-                            contentDescription = "Decrease",
-                            tint = Color.White,
-                            modifier = Modifier.size(45.dp)
-                        )
-                    }
-                )
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(
+                ) {
                     Text(
-                        text = minutes.toString().padStart(2, '0'),
-                        fontSize = 36.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF3C82F6)
+                        text = title,
+                        fontSize = 14.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 0.dp)
+                ) {
+                    Chip(
+                        onClick = { changeMinutes(Direction.DECREMENT) },
+                        colors = ChipDefaults.chipColors(backgroundColor = Color.Transparent),
+                        label = { Text("") },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Rounded.KeyboardArrowDown,
+                                contentDescription = "Decrease",
+                                tint = WearColors.Pink,
+                                modifier = Modifier.size(45.dp)
+                            )
+                        }
+                    )
 
-                Chip(
-                    onClick = { changeMinutes(Direction.INCREMENT) },
-                    colors = ChipDefaults.chipColors(backgroundColor = Color.Transparent),
-                    label = { Text("") },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Rounded.KeyboardArrowUp,
-                            contentDescription = "Increase",
-                            tint = Color.White,
-                            modifier = Modifier.size(55.dp)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = minutes.toString().padStart(2, '0'),
+                            fontSize = 36.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = WearColors.White
                         )
                     }
-                )
-            }
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-            ) {
-                IconButton(
-                    onClick = onDismiss,
-                    modifier = Modifier
-                        .size(35.dp)
-                        .background(color = WearColors.DismissRed, shape = CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Close,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(35.dp)
+                    Chip(
+                        onClick = { changeMinutes(Direction.INCREMENT) },
+                        colors = ChipDefaults.chipColors(backgroundColor = Color.Transparent),
+                        label = { Text("") },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Rounded.KeyboardArrowUp,
+                                contentDescription = "Increase",
+                                tint = WearColors.Pink,
+                                modifier = Modifier.size(55.dp)
+                            )
+                        }
                     )
                 }
-                IconButton(
-                    onClick = { onConfirm(minutes) },
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
-                        .size(35.dp)
-                        .background(color = WearColors.ConfirmGreen, shape = CircleShape)
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Done,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(35.dp)
-                    )
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .size(35.dp)
+                            .background(color = WearColors.DismissRed, shape = CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Close,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(35.dp)
+                        )
+                    }
+                    IconButton(
+                        onClick = { onConfirm(minutes) },
+                        modifier = Modifier
+                            .size(35.dp)
+                            .background(color = WearColors.ConfirmGreen, shape = CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Done,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(35.dp)
+                        )
+                    }
                 }
             }
         }
@@ -171,9 +174,10 @@ fun MinutePickerPreview() {
     MinutePicker(
         onConfirm = {},
         onDismiss = {},
-        initialMinutes = 25,
+        initialMinutes = 22,
         range = 1..30,
         vibrationUtility = VibrationUtility(null),
-        title = "Mins"
+        title = "Mins",
+        visible = true
     )
 }

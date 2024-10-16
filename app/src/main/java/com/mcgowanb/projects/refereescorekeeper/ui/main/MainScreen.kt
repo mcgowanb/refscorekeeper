@@ -49,7 +49,7 @@ fun MainScreen(
         Scaffold(timeText = { TimeInfo(gameState) }) {
             RefereeScoreKeeperTheme {
                 Watchface(gameViewModel, gameTimerViewModel, vibrationUtility)
-                GameActionOverlayWrapper(
+                SettingsMenuWrapper(
                     showOverlay,
                     onClose = {
                         showOverlay = false
@@ -67,7 +67,7 @@ fun MainScreen(
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-private fun BoxScope.GameActionOverlayWrapper(
+private fun BoxScope.SettingsMenuWrapper(
     showOverlay: Boolean,
     onClose: () -> Unit,
     gameViewModel: GameViewModel,
