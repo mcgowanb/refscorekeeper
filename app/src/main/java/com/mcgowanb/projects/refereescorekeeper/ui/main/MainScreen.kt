@@ -2,15 +2,8 @@ package com.mcgowanb.projects.refereescorekeeper.ui.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.wear.compose.foundation.lazy.ScalingLazyListState
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Scaffold
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
@@ -49,42 +41,20 @@ fun MainScreen(
         Scaffold(timeText = { TimeInfo(gameState) }) {
             RefereeScoreKeeperTheme {
                 Watchface(gameViewModel, gameTimerViewModel, vibrationUtility)
-                SettingsMenuWrapper(
-                    showOverlay,
+                SettingsMenu(
+                    visible = showOverlay,
                     onClose = {
                         showOverlay = false
                         scope.launch { scalingLazyListState.animateScrollToItem(0) }
                     },
-                    gameViewModel,
-                    gameTimerViewModel,
-                    vibrationUtility,
-                    scalingLazyListState
+                    gameViewModel = gameViewModel,
+                    gameTimeViewModel = gameTimerViewModel,
+                    vibrationUtility = vibrationUtility,
+                    scalingLazyListState = scalingLazyListState
                 )
             }
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-private fun BoxScope.SettingsMenuWrapper(
-    showOverlay: Boolean,
-    onClose: () -> Unit,
-    gameViewModel: GameViewModel,
-    gameTimeViewModel: GameTimeViewModel,
-    vibrationUtility: VibrationUtility,
-    scalingLazyListState: ScalingLazyListState
-) {
-
-    SettingsMenu(
-        onClose = onClose,
-        gameViewModel = gameViewModel,
-        gameTimeViewModel = gameTimeViewModel,
-        vibrationUtility = vibrationUtility,
-        scalingLazyListState = scalingLazyListState,
-        visible = showOverlay
-    )
-
 }
 
 private fun Modifier.verticalDragHandler(onDragUp: () -> Unit): Modifier = pointerInput(Unit) {
