@@ -113,7 +113,7 @@ class GameTimeViewModel(
         // soundUtility?.playSound(R.raw.whistle)
     }
 
-    private fun stopTimer() {
+    fun stopTimer() {
         timerJob?.cancel()
         _isRunning.value = false
         saveTimerState()

@@ -108,7 +108,7 @@ class MainActivity : ComponentActivity() {
 
                 currentGameStatus == GameStatus.F_T -> {
                     if (gameTimerViewModel.isRunning.value) {
-                        gameTimerViewModel.zeroClock()
+                        gameTimerViewModel.stopTimer()
                     }
                 }
 
