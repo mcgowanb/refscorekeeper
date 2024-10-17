@@ -36,7 +36,7 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.enums.Direction
-import com.mcgowanb.projects.refereescorekeeper.ui.animtaion.SlideLeftToRight
+import com.mcgowanb.projects.refereescorekeeper.ui.animation.SlideLeftToRight
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
 @RequiresApi(Build.VERSION_CODES.S)

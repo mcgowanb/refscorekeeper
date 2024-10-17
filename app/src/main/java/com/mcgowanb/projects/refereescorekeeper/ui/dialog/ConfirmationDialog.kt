@@ -1,10 +1,5 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.dialog
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,11 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +25,7 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
-import com.mcgowanb.projects.refereescorekeeper.ui.animtaion.SlideLeftToRight
+import com.mcgowanb.projects.refereescorekeeper.ui.animation.SlideLeftToRight
 
 @Composable
 fun ConfirmationDialog(

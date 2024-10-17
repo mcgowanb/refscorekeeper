@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.ui.animtaion
+package com.mcgowanb.projects.refereescorekeeper.ui.animation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOut
@@ -23,7 +23,7 @@ fun SlideLeftToRight(
             targetOffsetX = { fullWidth -> -fullWidth },
             animationSpec = tween(durationMillis = 300, easing = EaseInOut)
         )
-    ){
+    ) {
         content()
     }
 }
