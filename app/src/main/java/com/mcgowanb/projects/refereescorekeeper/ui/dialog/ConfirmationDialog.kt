@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material.Button
+import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
@@ -66,30 +68,34 @@ fun ConfirmationDialog(
                         .fillMaxWidth()
                         .padding(top = 16.dp)
                 ) {
-                    IconButton(
+                    Button(
                         onClick = onDismiss,
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = WearColors.DismissRed,
+                            contentColor = WearColors.White
+                        ),
                         modifier = Modifier
-                            .size(35.dp)
-                            .background(color = WearColors.DismissRed, shape = CircleShape)
+                            .size(ButtonDefaults.DefaultButtonSize)
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Close,
                             contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(35.dp)
+                            tint = Color.White
                         )
                     }
-                    IconButton(
+                    Button(
                         onClick = onConfirm,
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = WearColors.ConfirmGreen,
+                            contentColor = WearColors.White
+                        ),
                         modifier = Modifier
-                            .size(35.dp)
-                            .background(color = WearColors.ConfirmGreen, shape = CircleShape)
+                            .size(ButtonDefaults.DefaultButtonSize)
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Done,
                             contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(35.dp)
+                            tint = Color.White
                         )
                     }
                 }

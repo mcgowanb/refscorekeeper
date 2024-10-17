@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.rounded.ViewList
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.MoreTime
+import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -91,7 +92,7 @@ fun SettingsMenu(
     }
 
     val confirmNewGame: () -> Unit = {
-        confirmationTitle = "New Game"
+        confirmationTitle = "New Game?"
         confirmationAction = resetGame
         showConfirmationDialog = !showConfirmationDialog
     }
@@ -156,7 +157,7 @@ fun SettingsMenu(
                         MenuItem(
                             label = "New Game",
                             onClick = confirmNewGame,
-                            icon = Icons.Rounded.Add,
+                            icon = Icons.Rounded.RestartAlt,
                             modifier = chipModifier,
                             visible = true
                         )
@@ -170,7 +171,7 @@ fun SettingsMenu(
                                 numberPickerRange = 1..30
                                 numberPickerOnConfirm = resetClock
                                 showNumberInput = true
-                                numberPickerTitle = "Mins"
+                                numberPickerTitle = "Minutes"
                             },
                             icon = Icons.Rounded.Timer,
                             modifier = chipModifier,
