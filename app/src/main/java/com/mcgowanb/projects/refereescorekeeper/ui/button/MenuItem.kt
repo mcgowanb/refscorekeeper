@@ -38,7 +38,9 @@ fun MenuItem(
     onClick: () -> Unit,
     icon: ImageVector,
     modifier: Modifier = Modifier,
-    visible: Boolean
+    visible: Boolean,
+    backgroundColor: Color = WearColors.Purple.copy(alpha = 0.5f),
+    iconTint: Color = WearColors.Pink
 ) {
     SlideRightToLeft(
         visible = visible
@@ -47,7 +49,7 @@ fun MenuItem(
             modifier = modifier,
             onClick = onClick,
             colors = ChipDefaults.chipColors(
-                backgroundColor = WearColors.Purple.copy(alpha = 0.5f),
+                backgroundColor = backgroundColor,
             ),
             label = {
                 Row(
@@ -70,7 +72,7 @@ fun MenuItem(
                     Icon(
                         icon,
                         contentDescription = "",
-                        tint = WearColors.Pink
+                        tint = iconTint
                     )
                 }
             }

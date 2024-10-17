@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ViewList
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.MoreTime
 import androidx.compose.material.icons.rounded.RestartAlt
@@ -245,14 +244,14 @@ fun SettingsMenu(
                     }
                     item { Separator() }
                     item {
-                        Chip(
-                            modifier = chipModifier,
-                            label = { Text("Close") },
+                        MenuItem(
+                            label = "Close",
                             onClick = onClose,
-                            colors = ChipDefaults.primaryChipColors(
-                                backgroundColor = WearColors.DismissRed
-                            ),
-                            icon = { Icon(Icons.Rounded.Close, contentDescription = "Close") }
+                            icon = Icons.Rounded.Close,
+                            modifier = chipModifier,
+                            visible = true,
+                            backgroundColor = WearColors.DismissRed,
+                            iconTint = WearColors.White
                         )
                     }
                 }
