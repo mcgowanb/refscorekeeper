@@ -311,9 +311,11 @@ fun Separator() {
 @Composable
 @Preview(device = "id:wearos_small_round", showSystemUi = true)
 private fun GameActionOverlayPreview() {
+    val gameViewModel = GameViewModel(null)
+    gameViewModel.setStatus(GameStatus.F_T)
     SettingsMenu(
         onClose = {},
-        gameViewModel = GameViewModel(null),
+        gameViewModel = gameViewModel,
         gameTimeViewModel = GameTimeViewModel(null, null, null),
         vibrationUtility = VibrationUtility(null),
         scalingLazyListState = ScalingLazyListState(),
