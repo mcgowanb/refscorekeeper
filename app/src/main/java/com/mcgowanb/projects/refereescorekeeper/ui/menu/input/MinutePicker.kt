@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.ui.input
+package com.mcgowanb.projects.refereescorekeeper.ui.menu.input
 
 import android.os.Build
 import androidx.annotation.RequiresApi

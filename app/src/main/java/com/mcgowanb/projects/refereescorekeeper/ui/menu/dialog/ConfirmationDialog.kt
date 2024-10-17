@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.ui.dialog
+package com.mcgowanb.projects.refereescorekeeper.ui.menu.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

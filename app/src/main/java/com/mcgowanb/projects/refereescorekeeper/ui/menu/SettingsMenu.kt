@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.ui
+package com.mcgowanb.projects.refereescorekeeper.ui.menu
 
 import android.os.Build
 import android.os.VibrationEffect
@@ -45,10 +45,10 @@ import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.ui.animation.SlideUpVertically
-import com.mcgowanb.projects.refereescorekeeper.ui.button.MenuItem
-import com.mcgowanb.projects.refereescorekeeper.ui.button.ToggleButton
-import com.mcgowanb.projects.refereescorekeeper.ui.dialog.ConfirmationDialog
-import com.mcgowanb.projects.refereescorekeeper.ui.input.MinutePicker
+import com.mcgowanb.projects.refereescorekeeper.ui.menu.button.MenuItem
+import com.mcgowanb.projects.refereescorekeeper.ui.menu.button.ToggleButton
+import com.mcgowanb.projects.refereescorekeeper.ui.menu.dialog.ConfirmationDialog
+import com.mcgowanb.projects.refereescorekeeper.ui.menu.input.MinutePicker
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 import kotlinx.coroutines.launch
 

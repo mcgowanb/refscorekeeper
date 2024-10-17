@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.ui.button
+package com.mcgowanb.projects.refereescorekeeper.ui.menu.button
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -6,20 +6,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.RotateLeft
-import androidx.compose.material.icons.automirrored.rounded.StarHalf
-import androidx.compose.material.icons.rounded.RotateLeft
-import androidx.compose.material.icons.rounded.SportsScore
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Button
@@ -27,8 +21,6 @@ import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
-import com.mcgowanb.projects.refereescorekeeper.model.GameAction
-import com.mcgowanb.projects.refereescorekeeper.model.Setting
 
 @Composable
 fun GameActionButton(
@@ -58,8 +50,7 @@ fun GameActionButton(
                 modifier = Modifier
                     .padding(start = 10.dp)
                     .fillMaxSize()
-                    .weight(2f)
-                    ,
+                    .weight(2f),
                 imageVector = icon,
                 contentDescription = "",
                 tint = iconColor
