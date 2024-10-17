@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.automirrored.rounded.ViewList
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.MoreTime
+import androidx.compose.material.icons.rounded.ReceiptLong
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
@@ -43,7 +45,9 @@ import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
+import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
+import com.mcgowanb.projects.refereescorekeeper.model.GameState
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.ui.animtaion.SlideUpVertically
@@ -159,6 +163,15 @@ fun SettingsMenu(
                             icon = Icons.Rounded.RestartAlt,
                             modifier = chipModifier,
                             visible = true
+                        )
+                    }
+                    item {
+                        MenuItem(
+                            label = "Game Report",
+                            onClick = {},
+                            icon = Icons.AutoMirrored.Rounded.ReceiptLong,
+                            modifier = chipModifier,
+                            visible = gameState.status == GameStatus.F_T
                         )
                     }
                     item {
