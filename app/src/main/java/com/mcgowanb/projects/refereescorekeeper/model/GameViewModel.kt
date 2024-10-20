@@ -17,6 +17,9 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
     private val _uiState = MutableStateFlow(GameState())
     val uiState: StateFlow<GameState> = _uiState.asStateFlow()
 
+    private var scoreEventCallback: ((Team, Int, Int) -> Unit)? = null
+
+
     private val fileName = "game_state.json"
 
     init {
@@ -24,6 +27,10 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
             val loadedState = loadGameStateFromFile()
             _uiState.value = loadedState ?: GameState()
         }
+    }
+
+    fun setScoreEventCallback(callback: (Team, Int, Int) -> Unit) {
+        scoreEventCallback = callback
     }
 
     fun onAction(action: ScoreAction) {
@@ -52,6 +59,7 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
                 aGoals = (_uiState.value.aGoals + goals).coerceAtLeast(0)
             )
         }
+        scoreEventCallback?.invoke(team, points, goals)
         saveGameStateToFile()
     }
 

@@ -14,9 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.gson.GsonBuilder
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
+import com.mcgowanb.projects.refereescorekeeper.enums.Team
 import com.mcgowanb.projects.refereescorekeeper.factory.ViewModelFactory
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
+import com.mcgowanb.projects.refereescorekeeper.model.MatchReportViewModel
 import com.mcgowanb.projects.refereescorekeeper.ui.main.MainScreen
 import com.mcgowanb.projects.refereescorekeeper.utility.FileHandlerUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.SoundUtility
@@ -28,6 +30,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private lateinit var gameViewModel: GameViewModel
     private lateinit var gameTimerViewModel: GameTimeViewModel
+    private lateinit var matchReportViewModel: MatchReportViewModel
     private lateinit var vibratorManager: VibratorManager
     private lateinit var vibrationUtility: VibrationUtility
     private lateinit var wakeLock: PowerManager.WakeLock
@@ -47,6 +50,7 @@ class MainActivity : ComponentActivity() {
         val factory = ViewModelFactory(fileHandlerUtility, vibrationUtility, soundUtility)
         gameTimerViewModel = ViewModelProvider(this, factory)[GameTimeViewModel::class.java]
         gameViewModel = ViewModelProvider(this, factory)[GameViewModel::class.java]
+        matchReportViewModel = ViewModelProvider(this, factory)[MatchReportViewModel::class.java]
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
@@ -56,15 +60,34 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        gameViewModel.setScoreEventCallback { team, points, goals ->
+            lifecycleScope.launch {
+                addMatchReportEvent(team, points, goals)
+            }
+        }
+
         installSplashScreen()
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
             MainScreen(
-                gameTimerViewModel,
-                gameViewModel,
-                vibrationUtility
+                gameTimerViewModel = gameTimerViewModel,
+                gameViewModel = gameViewModel,
+                vibrationUtility = vibrationUtility,
+                matchReportViewModel = matchReportViewModel
             )
         }
+    }
+
+    private fun addMatchReportEvent(team: Team, points: Int, goals: Int) {
+
+        val message = when {
+            goals > 0 -> "$team goal, $goals added"
+            goals < 0 -> "$team goal reversed, ${-goals} deducted"
+            points > 0 -> "$team point, $points added"
+            points < 0 -> "$team point reversed, ${-points} deducted"
+            else -> "No change in score for $team team"
+        }
+        matchReportViewModel.addEvent(message)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

@@ -19,6 +19,7 @@ import androidx.wear.compose.material.Scaffold
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
+import com.mcgowanb.projects.refereescorekeeper.model.MatchReportViewModel
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
 import com.mcgowanb.projects.refereescorekeeper.ui.Watchface
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.SettingsMenu
@@ -30,6 +31,7 @@ import kotlinx.coroutines.launch
 fun MainScreen(
     gameTimerViewModel: GameTimeViewModel,
     gameViewModel: GameViewModel,
+    matchReportViewModel: MatchReportViewModel,
     vibrationUtility: VibrationUtility
 ) {
     var showOverlay by remember { mutableStateOf(false) }
@@ -49,6 +51,7 @@ fun MainScreen(
                     },
                     gameViewModel = gameViewModel,
                     gameTimeViewModel = gameTimerViewModel,
+                    matchReportViewModel = matchReportViewModel,
                     vibrationUtility = vibrationUtility,
                     scalingLazyListState = scalingLazyListState
                 )
@@ -76,6 +79,7 @@ private fun MainScreenPreview() {
     MainScreen(
         gameViewModel = gvm,
         gameTimerViewModel = GameTimeViewModel(null, null, null),
-        vibrationUtility = VibrationUtility(null)
+        vibrationUtility = VibrationUtility(null),
+        matchReportViewModel = MatchReportViewModel(null)
     )
 }

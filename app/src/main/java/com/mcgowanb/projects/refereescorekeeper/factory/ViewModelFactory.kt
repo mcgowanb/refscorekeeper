@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
+import com.mcgowanb.projects.refereescorekeeper.model.MatchReportViewModel
 import com.mcgowanb.projects.refereescorekeeper.utility.FileHandlerUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.SoundUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
@@ -25,6 +26,10 @@ class ViewModelFactory(
 
             modelClass.isAssignableFrom(GameViewModel::class.java) -> {
                 GameViewModel(fileHandler) as T
+            }
+
+            modelClass.isAssignableFrom(MatchReportViewModel::class.java) -> {
+                MatchReportViewModel(fileHandler) as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class")

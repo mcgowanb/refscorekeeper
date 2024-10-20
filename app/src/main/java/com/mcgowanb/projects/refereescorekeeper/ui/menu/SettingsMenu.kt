@@ -44,6 +44,7 @@ import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
+import com.mcgowanb.projects.refereescorekeeper.model.MatchReportViewModel
 import com.mcgowanb.projects.refereescorekeeper.ui.animation.SlideUpVertically
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.button.MenuItem
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.button.ToggleButton
@@ -58,6 +59,7 @@ fun SettingsMenu(
     onClose: () -> Unit,
     gameViewModel: GameViewModel,
     gameTimeViewModel: GameTimeViewModel,
+    matchReportViewModel: MatchReportViewModel,
     vibrationUtility: VibrationUtility,
     scalingLazyListState: ScalingLazyListState,
     visible: Boolean
@@ -84,6 +86,7 @@ fun SettingsMenu(
     val resetGame: () -> Unit = {
         gameViewModel.onAction(ScoreAction.Reset)
         gameTimeViewModel.resetTimer()
+        matchReportViewModel.resetReport()
         vibrationUtility.vibrateMultiple(VibrationType.CRESCENDO)
         onClose()
     }
@@ -311,6 +314,7 @@ private fun GameActionOverlayPreview() {
         onClose = {},
         gameViewModel = gameViewModel,
         gameTimeViewModel = GameTimeViewModel(null, null, null),
+        matchReportViewModel = MatchReportViewModel(null),
         vibrationUtility = VibrationUtility(null),
         scalingLazyListState = ScalingLazyListState(),
         visible = true
