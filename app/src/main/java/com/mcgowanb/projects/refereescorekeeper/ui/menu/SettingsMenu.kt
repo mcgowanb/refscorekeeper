@@ -66,6 +66,7 @@ fun SettingsMenu(
 ) {
     var showConfirmationDialog by remember { mutableStateOf(false) }
     var showNumberInput by remember { mutableStateOf(false) }
+    var showReport by remember { mutableStateOf(false) }
     var confirmationTitle by remember { mutableStateOf("") }
     var confirmationAction by remember { mutableStateOf({}) }
 
@@ -75,6 +76,7 @@ fun SettingsMenu(
     var numberPickerOnConfirm by remember { mutableStateOf<(Int) -> Unit>({}) }
 
     val gameState by gameViewModel.uiState.collectAsState()
+    val matchReportState by matchReportViewModel.uiState.collectAsState()
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -165,7 +167,9 @@ fun SettingsMenu(
                     item {
                         MenuItem(
                             label = "Game Report",
-                            onClick = {},
+                            onClick = {
+                                      showReport = !showReport
+                            },
                             icon = Icons.AutoMirrored.Rounded.ReceiptLong,
                             modifier = chipModifier,
                             visible = gameState.status == GameStatus.F_T
@@ -290,6 +294,12 @@ fun SettingsMenu(
         onDismiss = { showNumberInput = false },
         title = numberPickerTitle,
         visible = showNumberInput,
+    )
+
+    MatchReport(visible = showReport,
+        events = matchReportState.events,
+        closeButtonModifier = chipModifier,
+        onClose = { showReport = !showReport  }
     )
 }
 
