@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +28,7 @@ import androidx.wear.compose.material.VignettePosition
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.ui.animation.SlideUpVertically
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.button.MenuItem
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -36,6 +39,15 @@ fun MatchReport(
     closeButtonModifier: Modifier
 ) {
     val scalingLazyListState = rememberScalingLazyListState()
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(visible) {
+        if (visible) {
+            scope.launch {
+                scalingLazyListState.animateScrollToItem(0)
+            }
+        }
+    }
 
     SlideUpVertically(
         visible = visible

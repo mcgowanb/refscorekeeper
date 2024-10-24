@@ -38,16 +38,22 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     val scalingLazyListState = rememberScalingLazyListState()
 
-    Box(modifier = Modifier.verticalDragHandler { showOverlay = true }) {
+    val scrollToTop = {
+        scope.launch {
+            scalingLazyListState.animateScrollToItem(0)
+        }
+    }
+
+    Box(modifier = Modifier.verticalDragHandler {
+        showOverlay = true
+        scrollToTop()
+    }) {
         Scaffold(timeText = { TimeInfo(gameState) }) {
             RefereeScoreKeeperTheme {
                 Watchface(gameViewModel, gameTimerViewModel, vibrationUtility)
                 SettingsMenu(
                     visible = showOverlay,
-                    onClose = {
-                        showOverlay = false
-                        scope.launch { scalingLazyListState.animateScrollToItem(0) }
-                    },
+                    onClose = { showOverlay = false },
                     gameViewModel = gameViewModel,
                     gameTimeViewModel = gameTimerViewModel,
                     matchReportViewModel = matchReportViewModel,
