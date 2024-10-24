@@ -80,11 +80,12 @@ class MainActivity : ComponentActivity() {
 
     private fun addMatchReportEvent(team: Team, points: Int, goals: Int, scoreFormat: String) {
         val time = gameTimeViewModel.formattedElapsedTime.value
+        val period = formatGameIntervals(gameViewModel.getModel())
         val message = when {
-            goals > 0 -> "$time\n$team goal, $goals added: \n$scoreFormat"
-            goals < 0 -> "$time\n$team goal reversed, ${-goals} deducted: \n$scoreFormat"
-            points > 0 -> "$time\n$team point, $points added: \n$scoreFormat"
-            points < 0 -> "$time\n$team point reversed, ${-points} deducted: \n$scoreFormat"
+            goals > 0 -> "P($period) $time\n$team goal, $goals added: \n$scoreFormat"
+            goals < 0 -> "P($period) $time\n$team goal reversed, ${-goals} deducted: \n$scoreFormat"
+            points > 0 -> "P($period) $time\n$team point, $points added: \n$scoreFormat"
+            points < 0 -> "P($period) $time\n$team point reversed, ${-points} deducted: \n$scoreFormat"
             else -> ""
         }
         if (message.isNotEmpty()) {
@@ -154,8 +155,18 @@ class MainActivity : ComponentActivity() {
         val periods = gameViewModel.getPeriods();
         val elapsedPeriods = gameViewModel.getElapsedPeriods()
         if (elapsedPeriods == periods) {
+            val ftScore =
+                "--------------------\n" +
+                        "Full time score: HOME: ${gameViewModel.getHomeScore()}, AWAY: ${gameViewModel.getAwayScore()}" +
+                        "\n--------------------"
+            matchReportViewModel.addEvent(ftScore)
             gameViewModel.setStatus(GameStatus.F_T)
         } else {
+            val halfTimeScore =
+                "--------------------\n" +
+                        "Half time score: HOME: ${gameViewModel.getHomeScore()}, AWAY: ${gameViewModel.getAwayScore()}" +
+                        "\n--------------------"
+            matchReportViewModel.addEvent(halfTimeScore)
             gameViewModel.setStatus(GameStatus.H_T)
         }
     }
