@@ -7,15 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
@@ -53,7 +51,7 @@ fun MatchReport(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(WearColors.DarkGray)
+                    .background(WearColors.Black)
             ) {
                 ScalingLazyColumn(
                     modifier = Modifier.fillMaxWidth(),
@@ -67,18 +65,22 @@ fun MatchReport(
                     )
                 ) {
                     items(events.size) { event ->
-                        ListItem(
-                            colors = ListItemDefaults.colors(
-                                containerColor = WearColors.DarkGray
-                            ),
-                            headlineContent = {
-                                Text(
-                                    text = events[event],
-                                    overflow = TextOverflow.Ellipsis,
-                                    color = WearColors.White
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.9f)
+                                .padding(vertical = 4.dp)
+                                .background(
+                                    color = WearColors.Purple.copy(alpha = 0.5f),
+                                    shape = RoundedCornerShape(12.dp)
                                 )
-                            }
-                        )
+                                .padding(horizontal = 12.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = events[event],
+                                color = WearColors.White,
+                                style = androidx.wear.compose.material.MaterialTheme.typography.body1,
+                            )
+                        }
                     }
                     item {
                         MenuItem(
@@ -107,5 +109,11 @@ private fun MatchReportPreview() {
         onClose = {},
         visible = true,
         closeButtonModifier = Modifier,
-        events = listOf("HOME goal, 1 added with some more text and even more text that goes off screen", "that", "other"))
+        events = listOf(
+            "HOME goal, 1 added: \n01:00 : 00:00",
+            "AWAY point, 1 added: \n01:00 : 00:01",
+            "AWAY point, 1 added: \n01:00 : 00:02",
+            "AWAY point, 1 added: \n01:00 : 00:03"
+        )
+    )
 }

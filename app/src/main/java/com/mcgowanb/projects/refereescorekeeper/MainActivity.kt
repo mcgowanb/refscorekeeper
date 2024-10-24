@@ -60,9 +60,9 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        gameViewModel.setScoreEventCallback { team, points, goals ->
+        gameViewModel.setScoreEventCallback { team, points, goals, scoreFormat ->
             lifecycleScope.launch {
-                addMatchReportEvent(team, points, goals)
+                addMatchReportEvent(team, points, goals, scoreFormat)
             }
         }
 
@@ -78,13 +78,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun addMatchReportEvent(team: Team, points: Int, goals: Int) {
+    private fun addMatchReportEvent(team: Team, points: Int, goals: Int, scoreFormat: String) {
 
         val message = when {
-            goals > 0 -> "$team goal, $goals added"
-            goals < 0 -> "$team goal reversed, ${-goals} deducted"
-            points > 0 -> "$team point, $points added"
-            points < 0 -> "$team point reversed, ${-points} deducted"
+            goals > 0 -> "$team goal, $goals added: \n$scoreFormat"
+            goals < 0 -> "$team goal reversed, ${-goals} deducted: \n$scoreFormat"
+            points > 0 -> "$team point, $points added: \n$scoreFormat"
+            points < 0 -> "$team point reversed, ${-points} deducted: \n$scoreFormat"
             else -> "No change in score for $team team"
         }
         matchReportViewModel.addEvent(message)
