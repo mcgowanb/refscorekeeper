@@ -81,6 +81,12 @@ fun SettingsMenu(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    val scrollToTop = {
+        scope.launch {
+            scalingLazyListState.animateScrollToItem(0)
+        }
+    }
+
     val chipModifier = Modifier
         .fillMaxWidth(0.9f)
         .padding(vertical = 2.dp)
@@ -168,7 +174,8 @@ fun SettingsMenu(
                         MenuItem(
                             label = "Game Report",
                             onClick = {
-                                      showReport = !showReport
+                                showReport = !showReport
+                                scrollToTop()
                             },
                             icon = Icons.AutoMirrored.Rounded.ReceiptLong,
                             modifier = chipModifier,
@@ -299,7 +306,7 @@ fun SettingsMenu(
     MatchReport(visible = showReport,
         events = matchReportState.events,
         closeButtonModifier = chipModifier,
-        onClose = { showReport = !showReport  }
+        onClose = { showReport = !showReport }
     )
 }
 
