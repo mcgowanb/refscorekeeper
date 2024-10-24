@@ -21,7 +21,6 @@ import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.MatchReportViewModel
 import com.mcgowanb.projects.refereescorekeeper.theme.RefereeScoreKeeperTheme
-import com.mcgowanb.projects.refereescorekeeper.ui.Watchface
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.SettingsMenu
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 import kotlinx.coroutines.launch

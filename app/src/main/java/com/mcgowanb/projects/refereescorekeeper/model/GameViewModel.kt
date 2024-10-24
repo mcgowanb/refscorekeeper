@@ -33,6 +33,18 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
         scoreEventCallback = callback
     }
 
+    fun getModel(): GameState {
+        return _uiState.value
+    }
+
+    fun getHomeScore(): String {
+        return _uiState.value.homeScore
+    }
+
+    fun getAwayScore(): String {
+        return _uiState.value.awayScore
+    }
+
     fun onAction(action: ScoreAction) {
         when (action) {
             is ScoreAction.AddHomePoint -> updateScore(Team.HOME, points = 1)

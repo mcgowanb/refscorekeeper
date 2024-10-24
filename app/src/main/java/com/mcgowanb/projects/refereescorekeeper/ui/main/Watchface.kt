@@ -1,4 +1,4 @@
-package com.mcgowanb.projects.refereescorekeeper.ui
+package com.mcgowanb.projects.refereescorekeeper.ui.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -19,10 +19,6 @@ import androidx.compose.ui.unit.dp
 import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
-import com.mcgowanb.projects.refereescorekeeper.ui.main.ScoreActionBox
-import com.mcgowanb.projects.refereescorekeeper.ui.main.ScoreDisplayBox
-import com.mcgowanb.projects.refereescorekeeper.ui.main.Stopwatch
-import com.mcgowanb.projects.refereescorekeeper.ui.main.TotalPointsBox
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 
 @RequiresApi(Build.VERSION_CODES.S)

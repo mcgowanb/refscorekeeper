@@ -13,6 +13,8 @@ import androidx.wear.compose.material.TimeTextDefaults
 import androidx.wear.compose.material.curvedText
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.model.GameState
+import com.mcgowanb.projects.refereescorekeeper.utility.FormatUtility
+import com.mcgowanb.projects.refereescorekeeper.utility.FormatUtility.Companion.formatGameIntervals
 
 @Composable
 @RequiresApi(Build.VERSION_CODES.S)
@@ -40,7 +42,7 @@ fun TimeInfo(
             },
             endLinearContent = {
                 AdditionalInfoText(gameState.showAdditionalInfo) {
-                    formatIntervals(
+                    formatGameIntervals(
                         gameState
                     )
                 }
@@ -48,7 +50,7 @@ fun TimeInfo(
             endCurvedContent = {
                 if (gameState.showAdditionalInfo) {
                     curvedText(
-                        text = formatIntervals(gameState),
+                        text = formatGameIntervals(gameState),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Light
                     )
@@ -57,9 +59,6 @@ fun TimeInfo(
         )
     }
 }
-
-private fun formatIntervals(gameState: GameState): String =
-    "${gameState.elapsedPeriods}/${gameState.periods}"
 
 private fun formatState(status: GameStatus): String = when (status) {
     GameStatus.NOT_STARTED -> "N/S"
