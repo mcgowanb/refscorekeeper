@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 @RequiresApi(Build.VERSION_CODES.S)
 class MainActivity : ComponentActivity() {
     private lateinit var gameViewModel: GameViewModel
-    private lateinit var gameTimerViewModel: GameTimeViewModel
+    private lateinit var gameTimeViewModel: GameTimeViewModel
     private lateinit var matchReportViewModel: MatchReportViewModel
     private lateinit var vibratorManager: VibratorManager
     private lateinit var vibrationUtility: VibrationUtility
@@ -48,13 +48,13 @@ class MainActivity : ComponentActivity() {
         val fileHandlerUtility = FileHandlerUtility(this.applicationContext, gson)
 
         val factory = ViewModelFactory(fileHandlerUtility, vibrationUtility, soundUtility)
-        gameTimerViewModel = ViewModelProvider(this, factory)[GameTimeViewModel::class.java]
+        gameTimeViewModel = ViewModelProvider(this, factory)[GameTimeViewModel::class.java]
         gameViewModel = ViewModelProvider(this, factory)[GameViewModel::class.java]
         matchReportViewModel = ViewModelProvider(this, factory)[MatchReportViewModel::class.java]
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        gameTimerViewModel.setOnPeriodEndCallback {
+        gameTimeViewModel.setOnPeriodEndCallback {
             lifecycleScope.launch {
                 handlePeriodEnd()
             }
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
             MainScreen(
-                gameTimerViewModel = gameTimerViewModel,
+                gameTimerViewModel = gameTimeViewModel,
                 gameViewModel = gameViewModel,
                 vibrationUtility = vibrationUtility,
                 matchReportViewModel = matchReportViewModel
@@ -79,15 +79,17 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun addMatchReportEvent(team: Team, points: Int, goals: Int, scoreFormat: String) {
-
+        val time = gameTimeViewModel.formattedElapsedTime.value
         val message = when {
-            goals > 0 -> "$team goal, $goals added: \n$scoreFormat"
-            goals < 0 -> "$team goal reversed, ${-goals} deducted: \n$scoreFormat"
-            points > 0 -> "$team point, $points added: \n$scoreFormat"
-            points < 0 -> "$team point reversed, ${-points} deducted: \n$scoreFormat"
-            else -> "No change in score for $team team"
+            goals > 0 -> "$time\n$team goal, $goals added: \n$scoreFormat"
+            goals < 0 -> "$time\n$team goal reversed, ${-goals} deducted: \n$scoreFormat"
+            points > 0 -> "$time\n$team point, $points added: \n$scoreFormat"
+            points < 0 -> "$time\n$team point reversed, ${-points} deducted: \n$scoreFormat"
+            else -> ""
         }
-        matchReportViewModel.addEvent(message)
+        if (message.isNotEmpty()) {
+            matchReportViewModel.addEvent(message)
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -108,43 +110,42 @@ class MainActivity : ComponentActivity() {
     private fun toggleTimer(): Boolean {
         lifecycleScope.launch {
             val currentGameStatus = gameViewModel.getGameStatus()
-            val isRunning = gameTimerViewModel.isRunning.first()
+            val isRunning = gameTimeViewModel.isRunning.first()
 
             when {
                 currentGameStatus == GameStatus.NOT_STARTED -> {
                     gameViewModel.startGame()
-                    gameTimerViewModel.toggleIsRunning()
+                    gameTimeViewModel.toggleIsRunning()
                 }
 
                 currentGameStatus == GameStatus.PAUSED -> {
-                    gameTimerViewModel.toggleIsRunning()
+                    gameTimeViewModel.toggleIsRunning()
                     gameViewModel.toggleGameStatus()
                 }
 
                 currentGameStatus == GameStatus.H_T -> {
-                    if (!gameTimerViewModel.isRunning.value) {
+                    if (!gameTimeViewModel.isRunning.value) {
                         gameViewModel.toggleGameStatus()
                         gameViewModel.incrementElapsedPeriod()
                     }
-                    gameTimerViewModel.toggleIsRunning()
+                    gameTimeViewModel.toggleIsRunning()
                 }
 
                 currentGameStatus == GameStatus.F_T -> {
-                    if (gameTimerViewModel.isRunning.value) {
-                        gameTimerViewModel.stopTimer()
+                    if (gameTimeViewModel.isRunning.value) {
+                        gameTimeViewModel.stopTimer()
                     }
                 }
 
-                !isRunning && gameTimerViewModel.isOvertime.first() -> {
+                !isRunning && gameTimeViewModel.isOvertime.first() -> {
                     gameViewModel.incrementElapsedPeriod()
                 }
 
                 else -> {
-                    gameTimerViewModel.toggleIsRunning()
+                    gameTimeViewModel.toggleIsRunning()
                     gameViewModel.toggleGameStatus()
                 }
             }
-            vibrationUtility.toggleTimer(gameTimerViewModel.isRunning.first())
         }
         return true
     }

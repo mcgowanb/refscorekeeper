@@ -29,9 +29,13 @@ class GameTimeViewModel(
     private var _etLength = 10
 
     private val _remainingTime = MutableStateFlow(_gameLengthInSeconds)
+    private val _elapsedTime = MutableStateFlow(0)
 
     private val _formattedTime = MutableStateFlow(formatTime(_gameLengthInSeconds))
     val formattedTime: StateFlow<String> = _formattedTime.asStateFlow()
+
+    private val _formattedElapsedTime = MutableStateFlow(formatTime(0))
+    val formattedElapsedTime: StateFlow<String> = _formattedElapsedTime.asStateFlow()
 
     private val _isRunning = MutableStateFlow(false)
     val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
@@ -89,6 +93,7 @@ class GameTimeViewModel(
                     val remainingMillis =
                         (initialRemainingTime - (currentTime - startTime)).coerceAtLeast(0)
                     _remainingTime.value = (remainingMillis / 1000.0).roundToInt()
+                    _elapsedTime.value = _gameLengthInSeconds - _remainingTime.value
                     if (_remainingTime.value <= 0) {
                         _isOvertime.value = true
                         onRegularTimeFinished()
@@ -97,9 +102,11 @@ class GameTimeViewModel(
                 } else {
                     _overtimeSeconds.value =
                         ((currentTime - overtimeStartTime) / 1000.0).roundToInt()
+                    _elapsedTime.value = _gameLengthInSeconds + _overtimeSeconds.value
                 }
                 _formattedTime.value =
                     formatTime(if (_isOvertime.value) _overtimeSeconds.value else _remainingTime.value)
+                _formattedElapsedTime.value = formatTime(_elapsedTime.value)
                 saveTimerState()
             }
         }
