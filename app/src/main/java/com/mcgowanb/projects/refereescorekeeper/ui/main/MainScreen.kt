@@ -33,7 +33,7 @@ fun MainScreen(
     matchReportViewModel: MatchReportViewModel,
     vibrationUtility: VibrationUtility
 ) {
-    var showOverlay by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
     val gameState by gameViewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val scalingLazyListState = rememberScalingLazyListState()
@@ -52,8 +52,8 @@ fun MainScreen(
             RefereeScoreKeeperTheme {
                 Watchface(gameViewModel, gameTimerViewModel, vibrationUtility)
                 SettingsMenu(
-                    visible = showOverlay,
-                    onClose = { showOverlay = false },
+                    visible = showMenu,
+                    onClose = { showMenu = false },
                     gameViewModel = gameViewModel,
                     gameTimeViewModel = gameTimerViewModel,
                     matchReportViewModel = matchReportViewModel,

@@ -257,9 +257,9 @@ fun SettingsMenu(
                     item {
                         ToggleButton(
                             title = "Keep screen on",
-                            secondaryText = "While game is running",
-                            isChecked = false,
-                            onCheckedChange = { },
+                            secondaryText = "",
+                            isChecked = gameState.keepScreenOn,
+                            onCheckedChange = { gameViewModel.toggleScreenOn() },
                             visible = true
                         )
                     }

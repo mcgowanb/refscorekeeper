@@ -21,6 +21,7 @@ import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.MatchReportViewModel
 import com.mcgowanb.projects.refereescorekeeper.ui.main.MainScreen
 import com.mcgowanb.projects.refereescorekeeper.utility.FileHandlerUtility
+import com.mcgowanb.projects.refereescorekeeper.utility.FormatUtility.Companion.formatGameIntervals
 import com.mcgowanb.projects.refereescorekeeper.utility.SoundUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
 import kotlinx.coroutines.flow.first
@@ -52,8 +53,6 @@ class MainActivity : ComponentActivity() {
         gameViewModel = ViewModelProvider(this, factory)[GameViewModel::class.java]
         matchReportViewModel = ViewModelProvider(this, factory)[MatchReportViewModel::class.java]
 
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
         gameTimeViewModel.setOnPeriodEndCallback {
             lifecycleScope.launch {
                 handlePeriodEnd()
@@ -66,6 +65,18 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        gameViewModel.setScreenOnCallback { isOn ->
+            lifecycleScope.launch {
+                updateKeepScreenOn(isOn)
+            }
+        }
+
+        lifecycleScope.launch {
+            gameViewModel.uiState.collect { state ->
+                updateKeepScreenOn(state.keepScreenOn)
+            }
+        }
+
         installSplashScreen()
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
@@ -75,6 +86,14 @@ class MainActivity : ComponentActivity() {
                 vibrationUtility = vibrationUtility,
                 matchReportViewModel = matchReportViewModel
             )
+        }
+    }
+
+    private fun updateKeepScreenOn(enabled: Boolean) {
+        if (enabled) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 

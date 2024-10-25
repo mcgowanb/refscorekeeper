@@ -18,6 +18,7 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
     val uiState: StateFlow<GameState> = _uiState.asStateFlow()
 
     private var scoreEventCallback: ((Team, Int, Int, String) -> Unit)? = null
+    private var screenOnCallback: ((Boolean) -> Unit)? = null
 
 
     private val fileName = "game_state.json"
@@ -31,6 +32,10 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
 
     fun setScoreEventCallback(callback: (Team, Int, Int, String) -> Unit) {
         scoreEventCallback = callback
+    }
+
+    fun setScreenOnCallback(callback: (Boolean) -> Unit) {
+        screenOnCallback = callback
     }
 
     fun getModel(): GameState {
@@ -173,6 +178,12 @@ class GameViewModel(private val fileHandler: FileHandlerUtility?) : ViewModel() 
     fun toggleExtraTime() {
         _uiState.update { it.copy(hasExtraTime = !it.hasExtraTime) }
             .also { saveGameStateToFile() }
+    }
+
+    fun toggleScreenOn() {
+        _uiState.update { it.copy(keepScreenOn = !it.keepScreenOn) }
+            .also { saveGameStateToFile() }
+        screenOnCallback?.invoke(uiState.value.keepScreenOn)
     }
 
     fun isGameComplete(): Boolean {
