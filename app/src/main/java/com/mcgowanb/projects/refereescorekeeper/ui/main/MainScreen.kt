@@ -44,10 +44,20 @@ fun MainScreen(
         }
     }
 
-    Box(modifier = Modifier.verticalDragHandler {
-        showOverlay = true
-        scrollToTop()
-    }) {
+    Box(
+        modifier = Modifier.verticalDragHandler(
+            onDragUp = {
+                showMenu = true
+                scrollToTop()
+            },
+            onDragDown = {
+                if (showMenu) {
+                    showMenu = false
+                    scrollToTop()
+                }
+            }
+        )
+    ) {
         Scaffold(timeText = { TimeInfo(gameState) }) {
             RefereeScoreKeeperTheme {
                 Watchface(gameViewModel, gameTimerViewModel, vibrationUtility)
@@ -65,9 +75,15 @@ fun MainScreen(
     }
 }
 
-private fun Modifier.verticalDragHandler(onDragUp: () -> Unit): Modifier = pointerInput(Unit) {
+private fun Modifier.verticalDragHandler(
+    onDragUp: () -> Unit,
+    onDragDown: () -> Unit
+): Modifier = pointerInput(Unit) {
     detectVerticalDragGestures { _, dragAmount ->
-        if (dragAmount < -50) onDragUp()
+        when {
+            dragAmount < -50 -> onDragUp()
+            dragAmount > 50 -> onDragDown()
+        }
     }
 }
 

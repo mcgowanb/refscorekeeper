@@ -2,7 +2,6 @@ package com.mcgowanb.projects.refereescorekeeper.ui.menu
 
 import android.os.Build
 import android.os.VibrationEffect
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
+import androidx.compose.material.icons.automirrored.rounded.RotateLeft
 import androidx.compose.material.icons.automirrored.rounded.ViewList
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.MoreTime
@@ -99,6 +99,14 @@ fun SettingsMenu(
         onClose()
     }
 
+    val resetDefaults: () -> Unit = {
+        gameViewModel.onAction(ScoreAction.Reset)
+        matchReportViewModel.resetReport()
+        gameTimeViewModel.resetTimer(30)
+        vibrationUtility.vibrateMultiple(VibrationType.CRESCENDO)
+        onClose()
+    }
+
     val confirmNewGame: () -> Unit = {
         confirmationTitle = "New Game?"
         confirmationAction = resetGame
@@ -108,30 +116,12 @@ fun SettingsMenu(
     val resetClock: (Int) -> Unit = { selectedMinutes ->
         onClose()
         gameTimeViewModel.setPeriodLength(selectedMinutes)
-        scope.launch {
-            Toast.makeText(
-                context,
-                "$selectedMinutes minutes updated successfully",
-                Toast.LENGTH_SHORT
-            )
-                .show()
-        }
-//        vibrationUtility.vibrateMultiple(VibrationType.RESET, VibrationEffect.DEFAULT_AMPLITUDE)
     }
 
     val updatePeriods: (Int) -> Unit = { selectedPeriods ->
         onClose()
         gameViewModel.setPeriods(selectedPeriods)
-        scope.launch {
-            Toast.makeText(
-                context,
-                "$selectedPeriods halves updated successfully",
-                Toast.LENGTH_SHORT
-            )
-                .show()
-        }
         vibrationUtility.vibrateOnce(50, VibrationEffect.DEFAULT_AMPLITUDE)
-//        vibrationUtility.vibrateMultiple(VibrationType.RESET, VibrationEffect.DEFAULT_AMPLITUDE)
     }
 
     SlideUpVertically(
@@ -211,6 +201,15 @@ fun SettingsMenu(
                                 numberPickerTitle = "Periods"
                             },
                             icon = Icons.AutoMirrored.Rounded.ViewList,
+                            modifier = chipModifier,
+                            visible = true
+                        )
+                    }
+                    item {
+                        MenuItem(
+                            label = "Defaults",
+                            onClick = resetDefaults,
+                            icon = Icons.AutoMirrored.Rounded.RotateLeft,
                             modifier = chipModifier,
                             visible = true
                         )

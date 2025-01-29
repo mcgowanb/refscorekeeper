@@ -166,6 +166,13 @@ class MainActivity : ComponentActivity() {
                     gameViewModel.toggleGameStatus()
                 }
             }
+//
+//            Toast.makeText(
+//                applicationContext,
+//                "${gameViewModel.getGameStatus()} : ${gameViewModel.getElapsedPeriods()}/${gameViewModel.getPeriods()}",
+//                Toast.LENGTH_SHORT
+//            ).show()
+            vibrationUtility.toggleTimer(gameTimeViewModel.isRunning.first())
         }
         return true
     }

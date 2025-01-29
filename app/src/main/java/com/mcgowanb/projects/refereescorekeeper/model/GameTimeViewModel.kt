@@ -126,9 +126,10 @@ class GameTimeViewModel(
         saveTimerState()
     }
 
-    fun resetTimer() {
+    fun resetTimer(length: Int? = null) {
         stopTimer()
-        _gameLengthInSeconds = _mutableGameLength * 60
+        _gameLengthInSeconds =
+            if (length == null) _mutableGameLength else _defaultGameLengthInMinutes * 60
         _remainingTime.value = _gameLengthInSeconds
         _formattedTime.value = formatTime(_gameLengthInSeconds)
         _isOvertime.value = false
