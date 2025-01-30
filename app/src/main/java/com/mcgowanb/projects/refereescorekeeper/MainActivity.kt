@@ -4,9 +4,11 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.VibratorManager
-import android.view.KeyEvent
 import android.view.WindowManager
+import android.window.OnBackInvokedCallback
+import android.window.OnBackInvokedDispatcher
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -35,6 +37,9 @@ class MainActivity : ComponentActivity() {
     private lateinit var vibratorManager: VibratorManager
     private lateinit var vibrationUtility: VibrationUtility
     private lateinit var wakeLock: PowerManager.WakeLock
+
+    private lateinit var onBackPressedCallback: OnBackPressedCallback
+    private lateinit var onBackInvokedCallback: OnBackInvokedCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +83,8 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        setupBackHandling()
+
         installSplashScreen()
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent {
@@ -87,6 +94,34 @@ class MainActivity : ComponentActivity() {
                 vibrationUtility = vibrationUtility,
                 matchReportViewModel = matchReportViewModel
             )
+        }
+    }
+
+    private fun setupBackHandling() {
+        // For Android 33 (Tiramisu) and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            onBackInvokedCallback = OnBackInvokedCallback {
+                handleBackPress()
+            }
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                onBackInvokedCallback
+            )
+        }
+
+        // For older versions and as a fallback
+        onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleBackPress()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+    }
+
+    private fun handleBackPress() {
+        //        Log.d("MainActivity", "On Keydown $keyCode $event");
+        lifecycleScope.launch {
+            toggleTimer()
         }
     }
 
@@ -110,21 +145,6 @@ class MainActivity : ComponentActivity() {
         }
         if (message.isNotEmpty()) {
             matchReportViewModel.addEvent(message)
-        }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return handlePhysicalButtonEvent(keyCode, event)
-    }
-
-    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-        return true
-    }
-
-    private fun handlePhysicalButtonEvent(keyCode: Int, event: KeyEvent?): Boolean {
-        return when (keyCode) {
-            KeyEvent.KEYCODE_BACK -> toggleTimer()
-            else -> super.onKeyDown(keyCode, event)
         }
     }
 
