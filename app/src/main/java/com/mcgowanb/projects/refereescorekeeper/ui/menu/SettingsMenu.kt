@@ -21,7 +21,6 @@ import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -29,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
@@ -42,6 +40,7 @@ import com.mcgowanb.projects.refereescorekeeper.action.ScoreAction
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
 import com.mcgowanb.projects.refereescorekeeper.enums.GameStatus
 import com.mcgowanb.projects.refereescorekeeper.enums.VibrationType
+import com.mcgowanb.projects.refereescorekeeper.model.DialogState
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.MatchReportViewModel
@@ -51,7 +50,6 @@ import com.mcgowanb.projects.refereescorekeeper.ui.menu.button.ToggleButton
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.dialog.ConfirmationDialog
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.input.MinutePicker
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
-import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -64,71 +62,31 @@ fun SettingsMenu(
     scalingLazyListState: ScalingLazyListState,
     visible: Boolean
 ) {
-    var showConfirmationDialog by remember { mutableStateOf(false) }
-    var showNumberInput by remember { mutableStateOf(false) }
-    var showReport by remember { mutableStateOf(false) }
-    var confirmationTitle by remember { mutableStateOf("") }
-    var confirmationSubText by remember { mutableStateOf("") }
-    var confirmationAction by remember { mutableStateOf({}) }
-
-    var numberPickerTitle by remember { mutableStateOf("") }
-    var numberPickerInitialValue by remember { mutableIntStateOf(0) }
-    var numberPickerRange by remember { mutableStateOf(1..30) }
-    var numberPickerOnConfirm by remember { mutableStateOf<(Int) -> Unit>({}) }
-
+    var dialogState by remember { mutableStateOf<DialogState>(DialogState.Hidden) }
     val gameState by gameViewModel.uiState.collectAsState()
     val matchReportState by matchReportViewModel.uiState.collectAsState()
-
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
-    val scrollToTop = {
-        scope.launch {
-            scalingLazyListState.animateScrollToItem(0)
+    val chipModifier = remember {
+        Modifier
+            .fillMaxWidth(0.9f)
+            .padding(vertical = 2.dp)
+    }
+
+    val resetGame = remember {
+        { gameLength: Int? ->
+            gameViewModel.onAction(ScoreAction.Reset)
+            matchReportViewModel.resetReport()
+            gameTimeViewModel.resetTimer(gameLength)
+            vibrationUtility.vibrateMultiple(VibrationType.CRESCENDO)
+            onClose()
         }
     }
 
-    val chipModifier = Modifier
-        .fillMaxWidth(0.9f)
-        .padding(vertical = 2.dp)
-
-    val resetGame: (gameLength: Int?) -> Unit = { gameLength ->
-        gameViewModel.onAction(ScoreAction.Reset)
-        matchReportViewModel.resetReport()
-        gameTimeViewModel.resetTimer(gameLength)
-        vibrationUtility.vibrateMultiple(VibrationType.CRESCENDO)
-        onClose()
-    }
-
-    val confirmNewGame: (title: String, subtext: String?, action: () -> Unit) -> Unit =
-        { title, subtext, action ->
-            confirmationTitle = title
-            confirmationSubText = subtext ?: ""
-            confirmationAction = action
-            showConfirmationDialog = !showConfirmationDialog
-        }
-
-    val resetClock: (Int) -> Unit = { selectedMinutes ->
-        onClose()
-        gameTimeViewModel.setPeriodLength(selectedMinutes * 60)
-    }
-
-    val updatePeriods: (Int) -> Unit = { selectedPeriods ->
-        onClose()
-        gameViewModel.setPeriods(selectedPeriods)
-        vibrationUtility.vibrateOnce(50, VibrationEffect.DEFAULT_AMPLITUDE)
-    }
-
-    SlideUpVertically(
-        visible = visible
-    ) {
+    SlideUpVertically(visible = visible) {
         Scaffold(
             vignette = { Vignette(vignettePosition = VignettePosition.TopAndBottom) },
-            positionIndicator = {
-                PositionIndicator(
-                    scalingLazyListState = scalingLazyListState
-                )
-            }
+            positionIndicator = { PositionIndicator(scalingLazyListState = scalingLazyListState) }
         ) {
             Box(
                 modifier = Modifier
@@ -146,75 +104,103 @@ fun SettingsMenu(
                         bottom = 40.dp
                     )
                 ) {
-                    item {
-                        MenuItem(
-                            label = "Game Report",
-                            onClick = {
-                                showReport = !showReport
-                                scrollToTop()
-                            },
-                            icon = Icons.AutoMirrored.Rounded.ReceiptLong,
-                            modifier = chipModifier,
-                            visible = gameState.status == GameStatus.F_T
-                        )
+                    // Game Report (only shown when game is finished)
+                    if (gameState.status == GameStatus.F_T) {
+                        item {
+                            MenuItem(
+                                label = "Game Report",
+                                onClick = { dialogState = DialogState.Report },
+                                icon = Icons.AutoMirrored.Rounded.ReceiptLong,
+                                modifier = chipModifier,
+                                visible = true
+                            )
+                        }
                     }
+
+                    // New Game
                     item {
                         MenuItem(
                             label = "New Game",
-                            onClick = { confirmNewGame("New Game?", null, { resetGame(null) }) },
+                            onClick = {
+                                dialogState = DialogState.Confirmation(
+                                    title = "New Game?",
+                                    onConfirm = { resetGame(null) }
+                                )
+                            },
                             icon = Icons.Rounded.RestartAlt,
                             modifier = chipModifier,
                             visible = true
                         )
                     }
+
+                    // Minutes
                     item {
                         MenuItem(
                             label = "Minutes",
                             value = "${gameTimeViewModel.getPeriodLength() / 60}",
                             onClick = {
-                                numberPickerInitialValue = gameTimeViewModel.getPeriodLength()
-                                numberPickerRange = 1..30
-                                numberPickerOnConfirm = resetClock
-                                showNumberInput = true
-                                numberPickerTitle = "Minutes"
+                                dialogState = DialogState.NumberPicker(
+                                    title = "Minutes",
+                                    initialValue = gameTimeViewModel.getPeriodLength() / 60,
+                                    range = 1..30,
+                                    onConfirm = { minutes ->
+                                        onClose()
+                                        gameTimeViewModel.setPeriodLength(minutes * 60)
+                                    }
+                                )
                             },
                             icon = Icons.Rounded.Timer,
                             modifier = chipModifier,
                             visible = true
-
                         )
                     }
+
+                    // Periods
                     item {
                         MenuItem(
                             label = "Periods",
                             value = "${gameState.periods}",
                             onClick = {
-                                numberPickerInitialValue = gameState.periods
-                                numberPickerRange = 2..4
-                                numberPickerOnConfirm = updatePeriods
-                                showNumberInput = true
-                                numberPickerTitle = "Periods"
+                                dialogState = DialogState.NumberPicker(
+                                    title = "Periods",
+                                    initialValue = gameState.periods,
+                                    range = 2..4,
+                                    onConfirm = { periods ->
+                                        onClose()
+                                        gameViewModel.setPeriods(periods)
+                                        vibrationUtility.vibrateOnce(
+                                            50,
+                                            VibrationEffect.DEFAULT_AMPLITUDE
+                                        )
+                                    }
+                                )
                             },
                             icon = Icons.AutoMirrored.Rounded.ViewList,
                             modifier = chipModifier,
                             visible = true
                         )
                     }
+
+                    // Defaults
                     item {
                         MenuItem(
                             label = "Defaults",
                             onClick = {
-                                confirmNewGame(
-                                    "Reset to defaults?",
-                                    "All settings will reset to defaults"
-                                ) { resetGame(30) }
+                                dialogState = DialogState.Confirmation(
+                                    title = "Reset to defaults?",
+                                    subText = "All settings will reset to defaults",
+                                    onConfirm = { resetGame(30) }
+                                )
                             },
                             icon = Icons.AutoMirrored.Rounded.RotateLeft,
                             modifier = chipModifier,
                             visible = true
                         )
                     }
+
                     item { Separator() }
+
+                    // Extra Time Settings
                     item {
                         ToggleButton(
                             title = "Enable extra time",
@@ -224,17 +210,23 @@ fun SettingsMenu(
                             visible = true
                         )
                     }
-                    item {
-                        MenuItem(
-                            label = "Extra Time",
-                            value = "${gameTimeViewModel.getExtraTimeLength()}",
-                            onClick = { },
-                            icon = Icons.Rounded.MoreTime,
-                            modifier = chipModifier,
-                            visible = gameState.hasExtraTime
-                        )
+
+                    if (gameState.hasExtraTime) {
+                        item {
+                            MenuItem(
+                                label = "Extra Time",
+                                value = "${gameTimeViewModel.getExtraTimeLength()}",
+                                onClick = { },
+                                icon = Icons.Rounded.MoreTime,
+                                modifier = chipModifier,
+                                visible = true
+                            )
+                        }
                     }
+
                     item { Separator() }
+
+                    // Display Settings
                     item {
                         ToggleButton(
                             title = "Show Clock",
@@ -244,15 +236,19 @@ fun SettingsMenu(
                             visible = true
                         )
                     }
-                    item {
-                        ToggleButton(
-                            title = "Extra Info",
-                            secondaryText = "Beside clock",
-                            isChecked = gameState.showAdditionalInfo,
-                            onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
-                            visible = gameState.showClock
-                        )
+
+                    if (gameState.showClock) {
+                        item {
+                            ToggleButton(
+                                title = "Extra Info",
+                                secondaryText = "Beside clock",
+                                isChecked = gameState.showAdditionalInfo,
+                                onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
+                                visible = true
+                            )
+                        }
                     }
+
                     item {
                         ToggleButton(
                             title = "Keep screen on",
@@ -262,7 +258,10 @@ fun SettingsMenu(
                             visible = true
                         )
                     }
+
                     item { Separator() }
+
+                    // Close Button
                     item {
                         MenuItem(
                             label = "Close",
@@ -279,39 +278,52 @@ fun SettingsMenu(
         }
     }
 
-    ConfirmationDialog(
-        confirmationQuestion = confirmationTitle,
-        subText = confirmationSubText,
-        visible = showConfirmationDialog,
-        onConfirm = {
-            confirmationAction()
-            showConfirmationDialog = false
-        },
-        onDismiss = { showConfirmationDialog = false }
-    )
+    // Handle Dialogs
+    when (val currentDialog = dialogState) {
+        is DialogState.Confirmation -> {
+            ConfirmationDialog(
+                confirmationQuestion = currentDialog.title,
+                subText = currentDialog.subText,
+                visible = true,
+                onConfirm = {
+                    currentDialog.onConfirm()
+                    dialogState = DialogState.Hidden
+                },
+                onDismiss = { dialogState = DialogState.Hidden }
+            )
+        }
 
-    MinutePicker(
-        initialValue = numberPickerInitialValue,
-        range = numberPickerRange,
-        vibrationUtility = vibrationUtility,
-        onConfirm = { selectedValue ->
-            numberPickerOnConfirm(selectedValue)
-            showNumberInput = false
-        },
-        onDismiss = { showNumberInput = false },
-        title = numberPickerTitle,
-        visible = showNumberInput,
-    )
+        is DialogState.NumberPicker -> {
+            MinutePicker(
+                initialValue = currentDialog.initialValue,
+                range = currentDialog.range,
+                vibrationUtility = vibrationUtility,
+                onConfirm = { selectedValue ->
+                    currentDialog.onConfirm(selectedValue)
+                    dialogState = DialogState.Hidden
+                },
+                onDismiss = { dialogState = DialogState.Hidden },
+                title = currentDialog.title,
+                visible = true
+            )
+        }
 
-    MatchReport(visible = showReport,
-        events = matchReportState.events,
-        closeButtonModifier = chipModifier,
-        onClose = { showReport = !showReport }
-    )
+        is DialogState.Report -> {
+            MatchReport(
+                visible = true,
+                events = matchReportState.events,
+                closeButtonModifier = chipModifier,
+                onClose = { dialogState = DialogState.Hidden }
+            )
+        }
+
+        DialogState.Hidden -> { /* No dialog shown */
+        }
+    }
 }
 
 @Composable
-fun Separator() {
+private fun Separator() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
