@@ -68,6 +68,7 @@ fun SettingsMenu(
     var showNumberInput by remember { mutableStateOf(false) }
     var showReport by remember { mutableStateOf(false) }
     var confirmationTitle by remember { mutableStateOf("") }
+    var confirmationSubText by remember { mutableStateOf("") }
     var confirmationAction by remember { mutableStateOf({}) }
 
     var numberPickerTitle by remember { mutableStateOf("") }
@@ -91,31 +92,25 @@ fun SettingsMenu(
         .fillMaxWidth(0.9f)
         .padding(vertical = 2.dp)
 
-    val resetGame: () -> Unit = {
+    val resetGame: (gameLength: Int?) -> Unit = { gameLength ->
         gameViewModel.onAction(ScoreAction.Reset)
-        gameTimeViewModel.resetTimer()
         matchReportViewModel.resetReport()
+        gameTimeViewModel.resetTimer(gameLength)
         vibrationUtility.vibrateMultiple(VibrationType.CRESCENDO)
         onClose()
     }
 
-    val resetDefaults: () -> Unit = {
-        gameViewModel.onAction(ScoreAction.Reset)
-        matchReportViewModel.resetReport()
-        gameTimeViewModel.resetTimer(30)
-        vibrationUtility.vibrateMultiple(VibrationType.CRESCENDO)
-        onClose()
-    }
-
-    val confirmNewGame: () -> Unit = {
-        confirmationTitle = "New Game?"
-        confirmationAction = resetGame
-        showConfirmationDialog = !showConfirmationDialog
-    }
+    val confirmNewGame: (title: String, subtext: String?, action: () -> Unit) -> Unit =
+        { title, subtext, action ->
+            confirmationTitle = title
+            confirmationSubText = subtext ?: ""
+            confirmationAction = action
+            showConfirmationDialog = !showConfirmationDialog
+        }
 
     val resetClock: (Int) -> Unit = { selectedMinutes ->
         onClose()
-        gameTimeViewModel.setPeriodLength(selectedMinutes)
+        gameTimeViewModel.setPeriodLength(selectedMinutes * 60)
     }
 
     val updatePeriods: (Int) -> Unit = { selectedPeriods ->
@@ -153,15 +148,6 @@ fun SettingsMenu(
                 ) {
                     item {
                         MenuItem(
-                            label = "New Game",
-                            onClick = confirmNewGame,
-                            icon = Icons.Rounded.RestartAlt,
-                            modifier = chipModifier,
-                            visible = true
-                        )
-                    }
-                    item {
-                        MenuItem(
                             label = "Game Report",
                             onClick = {
                                 showReport = !showReport
@@ -174,8 +160,17 @@ fun SettingsMenu(
                     }
                     item {
                         MenuItem(
+                            label = "New Game",
+                            onClick = { confirmNewGame("New Game?", null, { resetGame(null) }) },
+                            icon = Icons.Rounded.RestartAlt,
+                            modifier = chipModifier,
+                            visible = true
+                        )
+                    }
+                    item {
+                        MenuItem(
                             label = "Minutes",
-                            value = "${gameTimeViewModel.getPeriodLength()}",
+                            value = "${gameTimeViewModel.getPeriodLength() / 60}",
                             onClick = {
                                 numberPickerInitialValue = gameTimeViewModel.getPeriodLength()
                                 numberPickerRange = 1..30
@@ -208,7 +203,12 @@ fun SettingsMenu(
                     item {
                         MenuItem(
                             label = "Defaults",
-                            onClick = resetDefaults,
+                            onClick = {
+                                confirmNewGame(
+                                    "Reset to defaults?",
+                                    "All settings will reset to defaults"
+                                ) { resetGame(30) }
+                            },
                             icon = Icons.AutoMirrored.Rounded.RotateLeft,
                             modifier = chipModifier,
                             visible = true
@@ -281,6 +281,7 @@ fun SettingsMenu(
 
     ConfirmationDialog(
         confirmationQuestion = confirmationTitle,
+        subText = confirmationSubText,
         visible = showConfirmationDialog,
         onConfirm = {
             confirmationAction()

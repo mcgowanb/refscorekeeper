@@ -30,6 +30,7 @@ import com.mcgowanb.projects.refereescorekeeper.ui.animation.SlideLeftToRight
 @Composable
 fun ConfirmationDialog(
     confirmationQuestion: String,
+    subText: String?,
     visible: Boolean,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
@@ -52,14 +53,24 @@ fun ConfirmationDialog(
                     style = MaterialTheme.typography.title2,
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 24.dp)
+                    modifier = Modifier.padding(bottom = 5.dp)
                 )
+
+                if (!subText.isNullOrEmpty()) {
+                    Text(
+                        text = subText,
+                        style = MaterialTheme.typography.caption2,
+                        color = Color.White.copy(alpha = 0.8f),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 5.dp)
+                    )
+                }
 
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp)
+                        .padding(top = 5.dp)
                 ) {
                     Button(
                         onClick = onDismiss,
@@ -101,9 +112,11 @@ fun ConfirmationDialog(
 @Composable
 private fun ConfirmationDialogPreview() {
     ConfirmationDialog(
-        confirmationQuestion = "Reset Game?",
+        confirmationQuestion = "Defaults?",
+        subText = "",
         visible = true,
         {},
         {}
     )
 }
+//reset to defaults does not reset the number of periods to 2, it stays at whatever it was

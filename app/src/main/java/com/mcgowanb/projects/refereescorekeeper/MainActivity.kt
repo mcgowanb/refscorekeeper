@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
         gameViewModel = ViewModelProvider(this, factory)[GameViewModel::class.java]
         matchReportViewModel = ViewModelProvider(this, factory)[MatchReportViewModel::class.java]
 
+        //this is a callback event that is emitted from the model when the timer runs out
         gameTimeViewModel.setOnPeriodEndCallback {
             lifecycleScope.launch {
                 handlePeriodEnd()
@@ -178,6 +179,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun handlePeriodEnd() {
+        //this should be done when overtime stops
         val periods = gameViewModel.getPeriods();
         val elapsedPeriods = gameViewModel.getElapsedPeriods()
         if (elapsedPeriods == periods) {
