@@ -22,7 +22,7 @@ import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
-import com.mcgowanb.projects.refereescorekeeper.ui.animation.SlideRightToLeft
+import com.mcgowanb.projects.refereescorekeeper.ui.animation.MenuItemAnimation
 
 
 @Composable
@@ -36,7 +36,7 @@ fun MenuItem(
     backgroundColor: Color = WearColors.Purple.copy(alpha = 0.5f),
     iconTint: Color = WearColors.Pink
 ) {
-    SlideRightToLeft(
+    MenuItemAnimation(
         visible = visible
     ) {
         Chip(

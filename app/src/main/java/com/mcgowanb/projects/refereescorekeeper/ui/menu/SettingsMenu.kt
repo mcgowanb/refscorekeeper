@@ -211,17 +211,15 @@ fun SettingsMenu(
                         )
                     }
 
-                    if (gameState.hasExtraTime) {
-                        item {
-                            MenuItem(
-                                label = "Extra Time",
-                                value = "${gameTimeViewModel.getExtraTimeLength()}",
-                                onClick = { },
-                                icon = Icons.Rounded.MoreTime,
-                                modifier = chipModifier,
-                                visible = true
-                            )
-                        }
+                    item {
+                        MenuItem(
+                            label = "Extra Time",
+                            value = "${gameTimeViewModel.getExtraTimeLength()}",
+                            onClick = { },
+                            icon = Icons.Rounded.MoreTime,
+                            modifier = chipModifier,
+                            visible = gameState.hasExtraTime
+                        )
                     }
 
                     item { Separator() }
@@ -237,16 +235,14 @@ fun SettingsMenu(
                         )
                     }
 
-                    if (gameState.showClock) {
-                        item {
-                            ToggleButton(
-                                title = "Extra Info",
-                                secondaryText = "Beside clock",
-                                isChecked = gameState.showAdditionalInfo,
-                                onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
-                                visible = true
-                            )
-                        }
+                    item {
+                        ToggleButton(
+                            title = "Extra Info",
+                            secondaryText = "Beside clock",
+                            isChecked = gameState.showAdditionalInfo,
+                            onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
+                            visible = gameState.showClock
+                        )
                     }
 
                     item {

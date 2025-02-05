@@ -21,7 +21,7 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.ToggleChip
 import androidx.wear.compose.material.ToggleChipDefaults
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
-import com.mcgowanb.projects.refereescorekeeper.ui.animation.SlideRightToLeft
+import com.mcgowanb.projects.refereescorekeeper.ui.animation.MenuItemAnimation
 
 @Composable
 fun ToggleButton(
@@ -31,7 +31,7 @@ fun ToggleButton(
     onCheckedChange: (Boolean) -> Unit,
     visible: Boolean
 ) {
-    SlideRightToLeft(
+    MenuItemAnimation(
         visible = visible
     ) {
         ToggleChip(
