@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
@@ -44,12 +43,14 @@ import com.mcgowanb.projects.refereescorekeeper.model.DialogState
 import com.mcgowanb.projects.refereescorekeeper.model.GameTimeViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.GameViewModel
 import com.mcgowanb.projects.refereescorekeeper.model.MatchReportViewModel
+import com.mcgowanb.projects.refereescorekeeper.model.Separator
 import com.mcgowanb.projects.refereescorekeeper.ui.animation.SlideUpVertically
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.button.MenuItem
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.button.ToggleButton
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.dialog.ConfirmationDialog
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.input.MinutePicker
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -78,7 +79,9 @@ fun SettingsMenu(
             gameViewModel.onAction(ScoreAction.Reset)
             matchReportViewModel.resetReport()
             gameTimeViewModel.resetTimer(gameLength)
-            vibrationUtility.vibrateMultiple(VibrationType.CRESCENDO)
+            scope.launch {
+                vibrationUtility.vibrateMultiple(VibrationType.CRESCENDO)
+            }
             onClose()
         }
     }
@@ -115,218 +118,207 @@ fun SettingsMenu(
                                 visible = true
                             )
                         }
-                    }
 
-                    // New Game
-                    item {
-                        MenuItem(
-                            label = "New Game",
-                            onClick = {
-                                dialogState = DialogState.Confirmation(
-                                    title = "New Game?",
-                                    onConfirm = { resetGame(null) }
-                                )
-                            },
-                            icon = Icons.Rounded.RestartAlt,
-                            modifier = chipModifier,
-                            visible = true
-                        )
-                    }
+                        // New Game
+                        item {
+                            MenuItem(
+                                label = "New Game",
+                                onClick = {
+                                    dialogState = DialogState.Confirmation(
+                                        title = "New Game?",
+                                        onConfirm = { resetGame(null) }
+                                    )
+                                },
+                                icon = Icons.Rounded.RestartAlt,
+                                modifier = chipModifier,
+                                visible = true
+                            )
+                        }
 
-                    // Minutes
-                    item {
-                        MenuItem(
-                            label = "Minutes",
-                            value = "${gameTimeViewModel.getPeriodLength() / 60}",
-                            onClick = {
-                                dialogState = DialogState.NumberPicker(
-                                    title = "Minutes",
-                                    initialValue = gameTimeViewModel.getPeriodLength() / 60,
-                                    range = 1..30,
-                                    onConfirm = { minutes ->
-                                        onClose()
-                                        gameTimeViewModel.setPeriodLength(minutes * 60)
-                                    }
-                                )
-                            },
-                            icon = Icons.Rounded.Timer,
-                            modifier = chipModifier,
-                            visible = true
-                        )
-                    }
+                        // Minutes
+                        item {
+                            MenuItem(
+                                label = "Minutes",
+                                value = "${gameTimeViewModel.getPeriodLength() / 60}",
+                                onClick = {
+                                    dialogState = DialogState.NumberPicker(
+                                        title = "Minutes",
+                                        initialValue = gameTimeViewModel.getPeriodLength() / 60,
+                                        range = 1..30,
+                                        onConfirm = { minutes ->
+                                            onClose()
+                                            gameTimeViewModel.setPeriodLength(minutes * 60)
+                                        }
+                                    )
+                                },
+                                icon = Icons.Rounded.Timer,
+                                modifier = chipModifier,
+                                visible = true
+                            )
+                        }
 
-                    // Periods
-                    item {
-                        MenuItem(
-                            label = "Periods",
-                            value = "${gameState.periods}",
-                            onClick = {
-                                dialogState = DialogState.NumberPicker(
-                                    title = "Periods",
-                                    initialValue = gameState.periods,
-                                    range = 2..4,
-                                    onConfirm = { periods ->
-                                        onClose()
-                                        gameViewModel.setPeriods(periods)
-                                        vibrationUtility.vibrateOnce(
-                                            50,
-                                            VibrationEffect.DEFAULT_AMPLITUDE
-                                        )
-                                    }
-                                )
-                            },
-                            icon = Icons.AutoMirrored.Rounded.ViewList,
-                            modifier = chipModifier,
-                            visible = true
-                        )
-                    }
+                        // Periods
+                        item {
+                            MenuItem(
+                                label = "Periods",
+                                value = "${gameState.periods}",
+                                onClick = {
+                                    dialogState = DialogState.NumberPicker(
+                                        title = "Periods",
+                                        initialValue = gameState.periods,
+                                        range = 2..4,
+                                        onConfirm = { periods ->
+                                            onClose()
+                                            gameViewModel.setPeriods(periods)
+                                            vibrationUtility.vibrateOnce(
+                                                50,
+                                                VibrationEffect.DEFAULT_AMPLITUDE
+                                            )
+                                        }
+                                    )
+                                },
+                                icon = Icons.AutoMirrored.Rounded.ViewList,
+                                modifier = chipModifier,
+                                visible = true
+                            )
+                        }
 
-                    // Defaults
-                    item {
-                        MenuItem(
-                            label = "Defaults",
-                            onClick = {
-                                dialogState = DialogState.Confirmation(
-                                    title = "Reset to defaults?",
-                                    subText = "All settings will reset to defaults",
-                                    onConfirm = { resetGame(30) }
-                                )
-                            },
-                            icon = Icons.AutoMirrored.Rounded.RotateLeft,
-                            modifier = chipModifier,
-                            visible = true
-                        )
-                    }
+                        // Defaults
+                        item {
+                            MenuItem(
+                                label = "Defaults",
+                                onClick = {
+                                    dialogState = DialogState.Confirmation(
+                                        title = "Reset to defaults?",
+                                        subText = "All settings will reset to defaults",
+                                        onConfirm = { resetGame(30) }
+                                    )
+                                },
+                                icon = Icons.AutoMirrored.Rounded.RotateLeft,
+                                modifier = chipModifier,
+                                visible = true
+                            )
+                        }
 
-                    item { Separator() }
+                        item { Separator() }
 
-                    // Extra Time Settings
-                    item {
-                        ToggleButton(
-                            title = "Enable extra time",
-                            secondaryText = "",
-                            isChecked = gameState.hasExtraTime,
-                            onCheckedChange = { gameViewModel.toggleExtraTime() },
-                            visible = true
-                        )
-                    }
+                        // Extra Time Settings
+                        item {
+                            ToggleButton(
+                                title = "Enable extra time",
+                                secondaryText = "",
+                                isChecked = gameState.hasExtraTime,
+                                onCheckedChange = { gameViewModel.toggleExtraTime() },
+                                visible = true
+                            )
+                        }
 
-                    item {
-                        MenuItem(
-                            label = "Extra Time",
-                            value = "${gameTimeViewModel.getExtraTimeLength()}",
-                            onClick = { },
-                            icon = Icons.Rounded.MoreTime,
-                            modifier = chipModifier,
-                            visible = gameState.hasExtraTime
-                        )
-                    }
+                        item {
+                            MenuItem(
+                                label = "Extra Time",
+                                value = "${gameTimeViewModel.getExtraTimeLength()}",
+                                onClick = { },
+                                icon = Icons.Rounded.MoreTime,
+                                modifier = chipModifier,
+                                visible = gameState.hasExtraTime
+                            )
+                        }
 
-                    item { Separator() }
+                        item { Separator() }
 
-                    // Display Settings
-                    item {
-                        ToggleButton(
-                            title = "Show Clock",
-                            secondaryText = "",
-                            isChecked = gameState.showClock,
-                            onCheckedChange = { gameViewModel.toggleShowClock() },
-                            visible = true
-                        )
-                    }
+                        // Display Settings
+                        item {
+                            ToggleButton(
+                                title = "Show Clock",
+                                secondaryText = "",
+                                isChecked = gameState.showClock,
+                                onCheckedChange = { gameViewModel.toggleShowClock() },
+                                visible = true
+                            )
+                        }
 
-                    item {
-                        ToggleButton(
-                            title = "Extra Info",
-                            secondaryText = "Beside clock",
-                            isChecked = gameState.showAdditionalInfo,
-                            onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
-                            visible = gameState.showClock
-                        )
-                    }
+                        item {
+                            ToggleButton(
+                                title = "Extra Info",
+                                secondaryText = "Beside clock",
+                                isChecked = gameState.showAdditionalInfo,
+                                onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
+                                visible = gameState.showClock
+                            )
+                        }
 
-                    item {
-                        ToggleButton(
-                            title = "Keep screen on",
-                            secondaryText = "",
-                            isChecked = gameState.keepScreenOn,
-                            onCheckedChange = { gameViewModel.toggleScreenOn() },
-                            visible = true
-                        )
-                    }
+                        item {
+                            ToggleButton(
+                                title = "Keep screen on",
+                                secondaryText = "",
+                                isChecked = gameState.keepScreenOn,
+                                onCheckedChange = { gameViewModel.toggleScreenOn() },
+                                visible = true
+                            )
+                        }
 
-                    item { Separator() }
+                        item { Separator() }
 
-                    // Close Button
-                    item {
-                        MenuItem(
-                            label = "Close",
-                            onClick = onClose,
-                            icon = Icons.Rounded.Close,
-                            modifier = chipModifier,
-                            visible = true,
-                            backgroundColor = WearColors.DismissRed,
-                            iconTint = WearColors.White
-                        )
+                        // Close Button
+                        item {
+                            MenuItem(
+                                label = "Close",
+                                onClick = onClose,
+                                icon = Icons.Rounded.Close,
+                                modifier = chipModifier,
+                                visible = true,
+                                backgroundColor = WearColors.DismissRed,
+                                iconTint = WearColors.White
+                            )
+                        }
                     }
                 }
             }
         }
+
+        // Handle Dialogs
+        when (val currentDialog = dialogState) {
+            is DialogState.Confirmation -> {
+                ConfirmationDialog(
+                    confirmationQuestion = currentDialog.title,
+                    subText = currentDialog.subText,
+                    visible = true,
+                    onConfirm = {
+                        currentDialog.onConfirm()
+                        dialogState = DialogState.Hidden
+                    },
+                    onDismiss = { dialogState = DialogState.Hidden }
+                )
+            }
+
+            is DialogState.NumberPicker -> {
+                MinutePicker(
+                    initialValue = currentDialog.initialValue,
+                    range = currentDialog.range,
+                    vibrationUtility = vibrationUtility,
+                    onConfirm = { selectedValue ->
+                        currentDialog.onConfirm(selectedValue)
+                        dialogState = DialogState.Hidden
+                    },
+                    onDismiss = { dialogState = DialogState.Hidden },
+                    title = currentDialog.title,
+                    visible = true
+                )
+            }
+
+            is DialogState.Report -> {
+                MatchReport(
+                    visible = true,
+                    events = matchReportState.events,
+                    closeButtonModifier = chipModifier,
+                    onClose = { dialogState = DialogState.Hidden }
+                )
+            }
+
+            DialogState.Hidden -> { /* No dialog shown */
+            }
+        }
     }
-
-    // Handle Dialogs
-    when (val currentDialog = dialogState) {
-        is DialogState.Confirmation -> {
-            ConfirmationDialog(
-                confirmationQuestion = currentDialog.title,
-                subText = currentDialog.subText,
-                visible = true,
-                onConfirm = {
-                    currentDialog.onConfirm()
-                    dialogState = DialogState.Hidden
-                },
-                onDismiss = { dialogState = DialogState.Hidden }
-            )
-        }
-
-        is DialogState.NumberPicker -> {
-            MinutePicker(
-                initialValue = currentDialog.initialValue,
-                range = currentDialog.range,
-                vibrationUtility = vibrationUtility,
-                onConfirm = { selectedValue ->
-                    currentDialog.onConfirm(selectedValue)
-                    dialogState = DialogState.Hidden
-                },
-                onDismiss = { dialogState = DialogState.Hidden },
-                title = currentDialog.title,
-                visible = true
-            )
-        }
-
-        is DialogState.Report -> {
-            MatchReport(
-                visible = true,
-                events = matchReportState.events,
-                closeButtonModifier = chipModifier,
-                onClose = { dialogState = DialogState.Hidden }
-            )
-        }
-
-        DialogState.Hidden -> { /* No dialog shown */
-        }
-    }
-}
-
-@Composable
-private fun Separator() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .height(1.dp)
-            .background(Color.Gray.copy(alpha = 0.5f))
-    )
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
