@@ -64,9 +64,24 @@ fun SettingsMenu(
     visible: Boolean
 ) {
     var dialogState by remember { mutableStateOf<DialogState>(DialogState.Hidden) }
+    var lastConfirmationState by remember { mutableStateOf<DialogState.Confirmation?>(null) }
+    var lastNumberState by remember { mutableStateOf<DialogState.NumberPicker?>(null) }
     val gameState by gameViewModel.uiState.collectAsState()
     val matchReportState by matchReportViewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
+
+    when (val currentDialog = dialogState) {
+        is DialogState.Confirmation -> {
+            lastConfirmationState = currentDialog
+        }
+
+        is DialogState.NumberPicker -> {
+            lastNumberState = currentDialog
+        }
+
+        else -> { /* other dialog types */
+        }
+    }
 
     val chipModifier = remember {
         Modifier
@@ -278,11 +293,11 @@ fun SettingsMenu(
     ConfirmationDialog(
         confirmationQuestion = when (val state = dialogState) {
             is DialogState.Confirmation -> state.title
-            else -> ""
+            else -> lastConfirmationState?.title ?: ""
         },
         subText = when (val state = dialogState) {
             is DialogState.Confirmation -> state.subText
-            else -> ""
+            else -> lastConfirmationState?.subText ?: ""
         },
         visible = dialogState is DialogState.Confirmation,
         onConfirm = {
@@ -315,7 +330,7 @@ fun SettingsMenu(
         onDismiss = { dialogState = DialogState.Hidden },
         title = when (val state = dialogState) {
             is DialogState.NumberPicker -> state.title
-            else -> ""
+            else -> lastNumberState?.title ?: ""
         },
         visible = dialogState is DialogState.NumberPicker
     )
