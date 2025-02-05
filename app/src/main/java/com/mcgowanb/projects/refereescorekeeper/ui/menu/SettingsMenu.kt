@@ -108,169 +108,167 @@ fun SettingsMenu(
                     )
                 ) {
                     // Game Report (only shown when game is finished)
-                    if (gameState.status == GameStatus.F_T) {
-                        item {
-                            MenuItem(
-                                label = "Game Report",
-                                onClick = { dialogState = DialogState.Report },
-                                icon = Icons.AutoMirrored.Rounded.ReceiptLong,
-                                modifier = chipModifier,
-                                visible = true
-                            )
-                        }
+                    item {
+                        MenuItem(
+                            label = "Game Report",
+                            onClick = { dialogState = DialogState.Report },
+                            icon = Icons.AutoMirrored.Rounded.ReceiptLong,
+                            modifier = chipModifier,
+                            visible = gameState.status == GameStatus.F_T
+                        )
+                    }
 
-                        // New Game
-                        item {
-                            MenuItem(
-                                label = "New Game",
-                                onClick = {
-                                    dialogState = DialogState.Confirmation(
-                                        title = "New Game?",
-                                        onConfirm = { resetGame(null) }
-                                    )
-                                },
-                                icon = Icons.Rounded.RestartAlt,
-                                modifier = chipModifier,
-                                visible = true
-                            )
-                        }
+                    // New Game
+                    item {
+                        MenuItem(
+                            label = "New Game",
+                            onClick = {
+                                dialogState = DialogState.Confirmation(
+                                    title = "New Game?",
+                                    onConfirm = { resetGame(null) }
+                                )
+                            },
+                            icon = Icons.Rounded.RestartAlt,
+                            modifier = chipModifier,
+                            visible = true
+                        )
+                    }
 
-                        // Minutes
-                        item {
-                            MenuItem(
-                                label = "Minutes",
-                                value = "${gameTimeViewModel.getPeriodLength() / 60}",
-                                onClick = {
-                                    dialogState = DialogState.NumberPicker(
-                                        title = "Minutes",
-                                        initialValue = gameTimeViewModel.getPeriodLength() / 60,
-                                        range = 1..30,
-                                        onConfirm = { minutes ->
-                                            onClose()
-                                            gameTimeViewModel.setPeriodLength(minutes * 60)
-                                        }
-                                    )
-                                },
-                                icon = Icons.Rounded.Timer,
-                                modifier = chipModifier,
-                                visible = true
-                            )
-                        }
+                    // Minutes
+                    item {
+                        MenuItem(
+                            label = "Minutes",
+                            value = "${gameTimeViewModel.getPeriodLength() / 60}",
+                            onClick = {
+                                dialogState = DialogState.NumberPicker(
+                                    title = "Minutes",
+                                    initialValue = gameTimeViewModel.getPeriodLength() / 60,
+                                    range = 1..30,
+                                    onConfirm = { minutes ->
+                                        onClose()
+                                        gameTimeViewModel.setPeriodLength(minutes * 60)
+                                    }
+                                )
+                            },
+                            icon = Icons.Rounded.Timer,
+                            modifier = chipModifier,
+                            visible = true
+                        )
+                    }
 
-                        // Periods
-                        item {
-                            MenuItem(
-                                label = "Periods",
-                                value = "${gameState.periods}",
-                                onClick = {
-                                    dialogState = DialogState.NumberPicker(
-                                        title = "Periods",
-                                        initialValue = gameState.periods,
-                                        range = 2..4,
-                                        onConfirm = { periods ->
-                                            onClose()
-                                            gameViewModel.setPeriods(periods)
-                                            vibrationUtility.vibrateOnce(
-                                                50,
-                                                VibrationEffect.DEFAULT_AMPLITUDE
-                                            )
-                                        }
-                                    )
-                                },
-                                icon = Icons.AutoMirrored.Rounded.ViewList,
-                                modifier = chipModifier,
-                                visible = true
-                            )
-                        }
+                    // Periods
+                    item {
+                        MenuItem(
+                            label = "Periods",
+                            value = "${gameState.periods}",
+                            onClick = {
+                                dialogState = DialogState.NumberPicker(
+                                    title = "Periods",
+                                    initialValue = gameState.periods,
+                                    range = 2..4,
+                                    onConfirm = { periods ->
+                                        onClose()
+                                        gameViewModel.setPeriods(periods)
+                                        vibrationUtility.vibrateOnce(
+                                            50,
+                                            VibrationEffect.DEFAULT_AMPLITUDE
+                                        )
+                                    }
+                                )
+                            },
+                            icon = Icons.AutoMirrored.Rounded.ViewList,
+                            modifier = chipModifier,
+                            visible = true
+                        )
+                    }
 
-                        // Defaults
-                        item {
-                            MenuItem(
-                                label = "Defaults",
-                                onClick = {
-                                    dialogState = DialogState.Confirmation(
-                                        title = "Reset to defaults?",
-                                        subText = "All settings will reset to defaults",
-                                        onConfirm = { resetGame(30) }
-                                    )
-                                },
-                                icon = Icons.AutoMirrored.Rounded.RotateLeft,
-                                modifier = chipModifier,
-                                visible = true
-                            )
-                        }
+                    // Defaults
+                    item {
+                        MenuItem(
+                            label = "Defaults",
+                            onClick = {
+                                dialogState = DialogState.Confirmation(
+                                    title = "Reset to defaults?",
+                                    subText = "All settings will reset to defaults",
+                                    onConfirm = { resetGame(30) }
+                                )
+                            },
+                            icon = Icons.AutoMirrored.Rounded.RotateLeft,
+                            modifier = chipModifier,
+                            visible = true
+                        )
+                    }
 
-                        item { Separator() }
+                    item { Separator() }
 
-                        // Extra Time Settings
-                        item {
-                            ToggleButton(
-                                title = "Enable extra time",
-                                secondaryText = "",
-                                isChecked = gameState.hasExtraTime,
-                                onCheckedChange = { gameViewModel.toggleExtraTime() },
-                                visible = true
-                            )
-                        }
+                    // Extra Time Settings
+                    item {
+                        ToggleButton(
+                            title = "Enable extra time",
+                            secondaryText = "",
+                            isChecked = gameState.hasExtraTime,
+                            onCheckedChange = { gameViewModel.toggleExtraTime() },
+                            visible = true
+                        )
+                    }
 
-                        item {
-                            MenuItem(
-                                label = "Extra Time",
-                                value = "${gameTimeViewModel.getExtraTimeLength()}",
-                                onClick = { },
-                                icon = Icons.Rounded.MoreTime,
-                                modifier = chipModifier,
-                                visible = gameState.hasExtraTime
-                            )
-                        }
+                    item {
+                        MenuItem(
+                            label = "Extra Time",
+                            value = "${gameTimeViewModel.getExtraTimeLength()}",
+                            onClick = { },
+                            icon = Icons.Rounded.MoreTime,
+                            modifier = chipModifier,
+                            visible = gameState.hasExtraTime
+                        )
+                    }
 
-                        item { Separator() }
+                    item { Separator() }
 
-                        // Display Settings
-                        item {
-                            ToggleButton(
-                                title = "Show Clock",
-                                secondaryText = "",
-                                isChecked = gameState.showClock,
-                                onCheckedChange = { gameViewModel.toggleShowClock() },
-                                visible = true
-                            )
-                        }
+                    // Display Settings
+                    item {
+                        ToggleButton(
+                            title = "Show Clock",
+                            secondaryText = "",
+                            isChecked = gameState.showClock,
+                            onCheckedChange = { gameViewModel.toggleShowClock() },
+                            visible = true
+                        )
+                    }
 
-                        item {
-                            ToggleButton(
-                                title = "Extra Info",
-                                secondaryText = "Beside clock",
-                                isChecked = gameState.showAdditionalInfo,
-                                onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
-                                visible = gameState.showClock
-                            )
-                        }
+                    item {
+                        ToggleButton(
+                            title = "Extra Info",
+                            secondaryText = "Beside clock",
+                            isChecked = gameState.showAdditionalInfo,
+                            onCheckedChange = { gameViewModel.toggleShowAdditionalInfo() },
+                            visible = gameState.showClock
+                        )
+                    }
 
-                        item {
-                            ToggleButton(
-                                title = "Keep screen on",
-                                secondaryText = "",
-                                isChecked = gameState.keepScreenOn,
-                                onCheckedChange = { gameViewModel.toggleScreenOn() },
-                                visible = true
-                            )
-                        }
+                    item {
+                        ToggleButton(
+                            title = "Keep screen on",
+                            secondaryText = "",
+                            isChecked = gameState.keepScreenOn,
+                            onCheckedChange = { gameViewModel.toggleScreenOn() },
+                            visible = true
+                        )
+                    }
 
-                        item { Separator() }
+                    item { Separator() }
 
-                        // Close Button
-                        item {
-                            MenuItem(
-                                label = "Close",
-                                onClick = onClose,
-                                icon = Icons.Rounded.Close,
-                                modifier = chipModifier,
-                                visible = true,
-                                backgroundColor = WearColors.DismissRed,
-                                iconTint = WearColors.White
-                            )
-                        }
+                    // Close Button
+                    item {
+                        MenuItem(
+                            label = "Close",
+                            onClick = onClose,
+                            icon = Icons.Rounded.Close,
+                            modifier = chipModifier,
+                            visible = true,
+                            backgroundColor = WearColors.DismissRed,
+                            iconTint = WearColors.White
+                        )
                     }
                 }
             }
