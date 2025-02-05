@@ -275,50 +275,59 @@ fun SettingsMenu(
                 }
             }
         }
-
-        // Handle Dialogs
-        when (val currentDialog = dialogState) {
-            is DialogState.Confirmation -> {
-                ConfirmationDialog(
-                    confirmationQuestion = currentDialog.title,
-                    subText = currentDialog.subText,
-                    visible = true,
-                    onConfirm = {
-                        currentDialog.onConfirm()
-                        dialogState = DialogState.Hidden
-                    },
-                    onDismiss = { dialogState = DialogState.Hidden }
-                )
-            }
-
-            is DialogState.NumberPicker -> {
-                MinutePicker(
-                    initialValue = currentDialog.initialValue,
-                    range = currentDialog.range,
-                    vibrationUtility = vibrationUtility,
-                    onConfirm = { selectedValue ->
-                        currentDialog.onConfirm(selectedValue)
-                        dialogState = DialogState.Hidden
-                    },
-                    onDismiss = { dialogState = DialogState.Hidden },
-                    title = currentDialog.title,
-                    visible = true
-                )
-            }
-
-            is DialogState.Report -> {
-                MatchReport(
-                    visible = true,
-                    events = matchReportState.events,
-                    closeButtonModifier = chipModifier,
-                    onClose = { dialogState = DialogState.Hidden }
-                )
-            }
-
-            DialogState.Hidden -> { /* No dialog shown */
-            }
-        }
     }
+
+    ConfirmationDialog(
+        confirmationQuestion = when (val state = dialogState) {
+            is DialogState.Confirmation -> state.title
+            else -> ""
+        },
+        subText = when (val state = dialogState) {
+            is DialogState.Confirmation -> state.subText
+            else -> ""
+        },
+        visible = dialogState is DialogState.Confirmation,
+        onConfirm = {
+            when (val state = dialogState) {
+                is DialogState.Confirmation -> state.onConfirm()
+                else -> {}
+            }
+            dialogState = DialogState.Hidden
+        },
+        onDismiss = { dialogState = DialogState.Hidden }
+    )
+
+    MinutePicker(
+        initialValue = when (val state = dialogState) {
+            is DialogState.NumberPicker -> state.initialValue
+            else -> 0
+        },
+        range = when (val state = dialogState) {
+            is DialogState.NumberPicker -> state.range
+            else -> 1..30
+        },
+        vibrationUtility = vibrationUtility,
+        onConfirm = { selectedValue ->
+            when (val state = dialogState) {
+                is DialogState.NumberPicker -> state.onConfirm(selectedValue)
+                else -> {}
+            }
+            dialogState = DialogState.Hidden
+        },
+        onDismiss = { dialogState = DialogState.Hidden },
+        title = when (val state = dialogState) {
+            is DialogState.NumberPicker -> state.title
+            else -> ""
+        },
+        visible = dialogState is DialogState.NumberPicker
+    )
+
+    MatchReport(
+        visible = dialogState is DialogState.Report,
+        events = matchReportState.events,
+        closeButtonModifier = chipModifier,
+        onClose = { dialogState = DialogState.Hidden }
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
