@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Chip
@@ -29,9 +30,9 @@ import com.mcgowanb.projects.refereescorekeeper.ui.animation.MenuItemAnimation
 fun MenuItem(
     label: String,
     value: String? = null,
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     icon: ImageVector,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     visible: Boolean,
     backgroundColor: Color = WearColors.Purple.copy(alpha = 0.5f),
     iconTint: Color = WearColors.Pink
@@ -50,25 +51,27 @@ fun MenuItem(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(label)
+                    ButtonLabel(
+                        text = label,
+                        visible = true
+                    )
                     Box(
                         modifier = Modifier.weight(1f),
                         contentAlignment = Alignment.CenterEnd
                     ) {
-                        if (value != null) {
-                            Text(value)
-                        }
+                        ButtonLabel(
+                            text = value,
+                            visible = value != null
+                        )
                     }
                 }
             },
             icon = {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        icon,
-                        contentDescription = "",
-                        tint = iconTint
-                    )
-                }
+                Icon(
+                    icon,
+                    contentDescription = "",
+                    tint = iconTint
+                )
             }
         )
     }
