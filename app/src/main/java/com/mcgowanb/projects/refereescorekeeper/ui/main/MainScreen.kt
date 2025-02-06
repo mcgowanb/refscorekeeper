@@ -81,8 +81,8 @@ private fun Modifier.verticalDragHandler(
 ): Modifier = pointerInput(Unit) {
     detectVerticalDragGestures { _, dragAmount ->
         when {
-            dragAmount < -50 -> onDragUp()
-            dragAmount > 50 -> onDragDown()
+            dragAmount < -20 -> onDragUp()
+            dragAmount > 20 -> onDragDown()
         }
     }
 }
