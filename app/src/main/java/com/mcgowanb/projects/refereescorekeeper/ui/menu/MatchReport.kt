@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
@@ -26,6 +27,7 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import com.mcgowanb.projects.refereescorekeeper.const.WearColors
+import com.mcgowanb.projects.refereescorekeeper.model.Separator
 import com.mcgowanb.projects.refereescorekeeper.ui.animation.SlideUpVertically
 import com.mcgowanb.projects.refereescorekeeper.ui.menu.button.MenuItem
 import kotlinx.coroutines.launch
@@ -36,6 +38,7 @@ fun MatchReport(
     visible: Boolean,
     events: List<String>,
     onClose: () -> Unit,
+    clearReport: () -> Unit,
     closeButtonModifier: Modifier
 ) {
     val scalingLazyListState = rememberScalingLazyListState()
@@ -95,16 +98,38 @@ fun MatchReport(
                         }
                     }
                     item {
+                        Separator(
+                            visible = events.isNotEmpty()
+                        )
+                    }
+                    item {
+                        MenuItem(
+                            label = "Clear",
+                            onClick = clearReport,
+                            icon = Icons.Rounded.Delete,
+                            modifier = closeButtonModifier,
+                            visible = events.isNotEmpty(),
+                            backgroundColor = WearColors.DismissRed,
+                            iconTint = WearColors.White
+                        )
+                    }
+                    item {
+                        Separator(
+                            visible = events.isNotEmpty()
+                        )
+                    }
+                    item {
                         MenuItem(
                             label = "Close",
                             onClick = onClose,
                             icon = Icons.Rounded.Close,
                             modifier = closeButtonModifier,
                             visible = true,
-                            backgroundColor = WearColors.DismissRed,
+                            backgroundColor = WearColors.Purple,
                             iconTint = WearColors.White
                         )
                     }
+                    item { Separator() }
                 }
             }
         }
@@ -121,11 +146,12 @@ private fun MatchReportPreview() {
         onClose = {},
         visible = true,
         closeButtonModifier = Modifier,
+        clearReport = {},
         events = listOf(
-            "HOME goal, 1 added: \n01:00 : 00:00",
-            "AWAY point, 1 added: \n01:00 : 00:01",
-            "AWAY point, 1 added: \n01:00 : 00:02",
-            "AWAY point, 1 added: \n01:00 : 00:03"
+//            "HOME goal, 1 added: \n01:00 : 00:00",
+//            "AWAY point, 1 added: \n01:00 : 00:01",
+//            "AWAY point, 1 added: \n01:00 : 00:02",
+//            "AWAY point, 1 added: \n01:00 : 00:03"
         )
     )
 }

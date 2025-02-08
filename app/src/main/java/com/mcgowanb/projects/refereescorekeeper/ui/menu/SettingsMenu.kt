@@ -279,7 +279,7 @@ fun SettingsMenu(
                             icon = Icons.Rounded.Close,
                             modifier = chipModifier,
                             visible = true,
-                            backgroundColor = WearColors.DismissRed,
+                            backgroundColor = WearColors.Purple,
                             iconTint = WearColors.White
                         )
                     }
@@ -337,7 +337,11 @@ fun SettingsMenu(
         visible = dialogState is DialogState.Report,
         events = matchReportState.events,
         closeButtonModifier = chipModifier,
-        onClose = { dialogState = DialogState.Hidden }
+        onClose = { dialogState = DialogState.Hidden },
+        clearReport = {
+            matchReportViewModel.resetReport()
+            dialogState = DialogState.Hidden
+        }
     )
 }
 

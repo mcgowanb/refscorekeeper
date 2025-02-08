@@ -9,14 +9,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.mcgowanb.projects.refereescorekeeper.ui.animation.MenuItemAnimation
 
 @Composable
-fun Separator() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .height(1.dp)
-            .background(Color.Gray.copy(alpha = 0.5f))
-    )
+fun Separator(visible: Boolean = true) {
+    MenuItemAnimation(
+        visible = visible
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+                .height(1.dp)
+                .background(Color.Gray.copy(alpha = 0.5f))
+        )
+    }
 }
