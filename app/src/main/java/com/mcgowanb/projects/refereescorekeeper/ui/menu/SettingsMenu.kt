@@ -1,7 +1,6 @@
 package com.mcgowanb.projects.refereescorekeeper.ui.menu
 
 import android.os.Build
-import android.os.VibrationEffect
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -163,10 +162,7 @@ fun SettingsMenu(
                                     onConfirm = { minutes ->
                                         onClose()
                                         gameTimeViewModel.setPeriodLength(minutes)
-                                        vibrationUtility.vibrateOnce(
-                                            50,
-                                            VibrationEffect.DEFAULT_AMPLITUDE
-                                        )
+                                        vibrationUtility.doubleClick()
                                     }
                                 )
                             },
@@ -189,10 +185,7 @@ fun SettingsMenu(
                                     onConfirm = { periods ->
                                         onClose()
                                         gameViewModel.setPeriods(periods)
-                                        vibrationUtility.vibrateOnce(
-                                            50,
-                                            VibrationEffect.DEFAULT_AMPLITUDE
-                                        )
+                                        vibrationUtility.doubleClick()
                                     }
                                 )
                             },

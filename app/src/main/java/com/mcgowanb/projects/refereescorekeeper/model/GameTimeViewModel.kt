@@ -24,21 +24,22 @@ class GameTimeViewModel(
     private val vibrationUtility: VibrationUtility?,
     private val soundUtility: SoundUtility?
 ) : ViewModel() {
-    private val _defaultGameLengthInMinutes = 30
-    private var _mutableGameLength = _defaultGameLengthInMinutes
-    private var _gameLengthInSeconds = _mutableGameLength * 60
     private val _etLength = 10
     private val fileName = "timer_state.json"
 
+    private val defaultMinutes = 30
+    private val defaultSeconds = defaultMinutes * 60
+
+    //    This and GameState should be merged
     private val initialState = TimerState(
-        remainingTime = _gameLengthInSeconds,
+        remainingTime = defaultMinutes,
         isRunning = false,
-        formattedTime = formatTime(_gameLengthInSeconds),
+        formattedTime = formatTime(defaultSeconds),
         formattedElapsedTime = formatTime(0),
         isOvertime = false,
         overtimeSeconds = 0,
         currentPeriod = 0,
-        defaultMinutes = _defaultGameLengthInMinutes
+        defaultMinutes = defaultMinutes
     )
 
     private val _uiState = MutableStateFlow(initialState)
@@ -61,17 +62,6 @@ class GameTimeViewModel(
         }
     }
 
-    fun zeroClock() {
-        stopTimer()
-        _uiState.update { currentState ->
-            currentState.copy(
-                remainingTime = 0,
-                formattedTime = formatTime(0)
-            )
-        }
-        saveTimerState()
-    }
-
     fun setOnPeriodEndCallback(callback: () -> Unit) {
         onPeriodEndCallback = callback
     }
@@ -84,7 +74,7 @@ class GameTimeViewModel(
             _uiState.update {
                 it.copy(
                     currentPeriod = 1,
-                    remainingTime = _gameLengthInSeconds
+                    remainingTime = it.periodLengthInSeconds
                 )
             }
         }
@@ -97,7 +87,7 @@ class GameTimeViewModel(
             val overtimeStartTime = startTime + initialRemainingTime
 
             while (true) {
-                delay(100)
+                delay(1000)
                 val currentTime = System.currentTimeMillis()
 
                 if (!_uiState.value.isOvertime) {
@@ -126,7 +116,7 @@ class GameTimeViewModel(
             when (currentState.currentPeriod) {
                 1 -> currentState.copy(
                     currentPeriod = 2,
-                    remainingTime = _gameLengthInSeconds,
+                    remainingTime = currentState.periodLengthInSeconds,
                     isOvertime = false,
                     overtimeSeconds = 0
                 )
@@ -154,7 +144,7 @@ class GameTimeViewModel(
             } else {
                 currentState.remainingTime
             }
-            val elapsedTime = _gameLengthInSeconds - currentState.remainingTime
+            val elapsedTime = currentState.periodLengthInSeconds - currentState.remainingTime
 
             currentState.copy(
                 formattedTime = formatTime(timeToDisplay),
@@ -171,15 +161,18 @@ class GameTimeViewModel(
 
     fun resetTimer(length: Int? = null) {
         stopTimer()
-        _mutableGameLength = length ?: _defaultGameLengthInMinutes
-        _gameLengthInSeconds = _mutableGameLength * 60
-
         _uiState.update {
-            val remainingSeconds = it.defaultMinutes * 60
+            val remainingMinutes = length ?: it.defaultMinutes
+            val remainingSeconds = remainingMinutes * 60
             it.copy(
-                defaultMinutes = it.defaultMinutes,
                 remainingTime = remainingSeconds,
-                formattedTime = formatTime(remainingSeconds)
+                isRunning = false,
+                formattedTime = formatTime(remainingSeconds),
+                formattedElapsedTime = formatTime(0),
+                isOvertime = false,
+                defaultMinutes = remainingMinutes,
+                overtimeSeconds = 0,
+                currentPeriod = 0
             )
         }
         saveTimerState()
@@ -200,10 +193,9 @@ class GameTimeViewModel(
     private fun loadTimerState() {
         val savedState = fileHandler?.loadState(fileName, TimerState::class.java)
         if (savedState != null) {
-            _mutableGameLength = savedState.defaultMinutes
-            _gameLengthInSeconds = _mutableGameLength * 60
-
-            if (!savedState.isOvertime && savedState.remainingTime > 0 && savedState.remainingTime <= _gameLengthInSeconds) {
+            if (!savedState.isOvertime && savedState.remainingTime > 0
+                && savedState.remainingTime <= savedState.periodLengthInSeconds
+            ) {
                 _uiState.value = savedState
                 if (savedState.isRunning) {
                     startTimer()

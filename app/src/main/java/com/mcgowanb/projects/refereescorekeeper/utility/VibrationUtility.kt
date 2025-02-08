@@ -17,6 +17,7 @@ class VibrationUtility(
     private val vibrator: Vibrator? = vibratorManager?.defaultVibrator
     val amplitude = DEFAULT_AMPLITUDE
     val doubleBlip = longArrayOf(0, 50, 50, 50)
+    val tripleBlip = longArrayOf(0, 50, 50, 50, 50, 50, 50)
     val quadBlip = longArrayOf(0, 50, 50, 50, 50, 50, 50, 50, 50)
     val resetBlip = longArrayOf(0, 50, 50, 50, 300, 50, 50, 50, 300, 50, 50, 50, 300, 50, 50, 50)
     val halfTimeBlip = longArrayOf(0, 300, 900, 300, 900, 1200)
@@ -58,7 +59,7 @@ class VibrationUtility(
             VibrationType.ADD_SCORE -> vibrator?.vibrate(createOneShot(50, amplitude))
             VibrationType.SUBTRACT_SCORE -> vibrator?.vibrate(createWaveform(doubleBlip, amplitude))
             VibrationType.RESET -> vibrator?.vibrate(createWaveform(resetBlip, amplitude))
-            VibrationType.HALF_TIME -> vibrator?.vibrate(createWaveform(halfTimeBlip, amplitude))
+            VibrationType.HALF_TIME -> vibrator?.vibrate(createWaveform(tripleBlip, amplitude))
             VibrationType.TIME -> vibrator?.vibrate(createWaveform(quadBlip, amplitude))
             VibrationType.CRESCENDO -> vibrateCrescendo()
             VibrationType.SOS -> vibrateSOS()
