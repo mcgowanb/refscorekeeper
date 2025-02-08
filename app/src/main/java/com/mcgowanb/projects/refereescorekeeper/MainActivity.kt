@@ -24,7 +24,6 @@ import com.mcgowanb.projects.refereescorekeeper.utility.FileHandlerUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.FormatUtility.Companion.formatGameIntervals
 import com.mcgowanb.projects.refereescorekeeper.utility.SoundUtility
 import com.mcgowanb.projects.refereescorekeeper.utility.VibrationUtility
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -137,7 +136,7 @@ class MainActivity : ComponentActivity() {
         scoreFormat: String
     ): String? {
         val (gameTimeViewModel, gameViewModel) = viewModels
-        val time = gameTimeViewModel.formattedElapsedTime.value
+        val time = gameTimeViewModel.uiState.value.formattedElapsedTime
         val period = formatGameIntervals(gameViewModel.getModel())
 
         return when {
@@ -152,7 +151,7 @@ class MainActivity : ComponentActivity() {
     private suspend fun toggleTimer(): Boolean {
         val (gameTimeViewModel, gameViewModel) = viewModels
         val currentGameStatus = gameViewModel.getGameStatus()
-        val isRunning = gameTimeViewModel.isRunning.first()
+        val isRunning = gameTimeViewModel.isRunning()
 
         when {
             currentGameStatus == GameStatus.NOT_STARTED -> {
@@ -166,18 +165,18 @@ class MainActivity : ComponentActivity() {
             }
 
             currentGameStatus == GameStatus.H_T -> {
-                if (!gameTimeViewModel.isRunning.value) {
+                if (!gameTimeViewModel.isRunning()) {
                     gameViewModel.toggleGameStatus()
                     gameViewModel.incrementElapsedPeriod()
                 }
                 gameTimeViewModel.toggleIsRunning()
             }
 
-            currentGameStatus == GameStatus.F_T && gameTimeViewModel.isRunning.value -> {
+            currentGameStatus == GameStatus.F_T && gameTimeViewModel.isRunning() -> {
                 gameTimeViewModel.stopTimer()
             }
 
-            !isRunning && gameTimeViewModel.isOvertime.first() -> {
+            !isRunning && gameTimeViewModel.isOvertime() -> {
                 gameViewModel.incrementElapsedPeriod()
             }
 
@@ -187,7 +186,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        vibrationUtility.toggleTimer(gameTimeViewModel.isRunning.first())
+        vibrationUtility.toggleTimer(gameTimeViewModel.isRunning())
         return true
     }
 

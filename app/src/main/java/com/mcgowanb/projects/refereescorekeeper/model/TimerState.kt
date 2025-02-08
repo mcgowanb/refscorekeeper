@@ -8,11 +8,15 @@ data class TimerState(
     @Expose
     val isRunning: Boolean,
     @Expose
-    val lastPausedTime: Long = 0,
+    val formattedTime: String,
     @Expose
-    val defaultMinutes: Int,
+    val formattedElapsedTime: String,
     @Expose
     val isOvertime: Boolean,
     @Expose
-    val overtimeSeconds: Int
+    val overtimeSeconds: Int,
+    @Expose
+    val currentPeriod: Int,
+    @Expose
+    val defaultMinutes: Int
 )

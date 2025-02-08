@@ -31,8 +31,7 @@ fun Stopwatch(
     gameTimeViewModel: GameTimeViewModel,
     gameViewModel: GameViewModel
 ) {
-    val remainingTime by gameTimeViewModel.formattedTime.collectAsState()
-    val isOvertime by gameTimeViewModel.isOvertime.collectAsState()
+    val gameTimeState by gameTimeViewModel.uiState.collectAsState()
     val gameState by gameViewModel.uiState.collectAsState()
 
     Box(
@@ -65,9 +64,9 @@ fun Stopwatch(
                     .weight(2f)
                     .fillMaxWidth(),
                 fontSize = 16.sp,
-                text = remainingTime,
+                text = gameTimeState.formattedTime,
                 textAlign = TextAlign.Center,
-                color = if (isOvertime) WearColors.DismissRed else Color.White
+                color = if (gameTimeState.isOvertime) WearColors.DismissRed else Color.White
             )
             repeat(2) { index ->
                 Spacer(

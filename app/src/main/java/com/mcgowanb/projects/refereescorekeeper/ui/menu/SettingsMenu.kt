@@ -68,6 +68,7 @@ fun SettingsMenu(
     var lastNumberState by remember { mutableStateOf<DialogState.NumberPicker?>(null) }
     val gameState by gameViewModel.uiState.collectAsState()
     val matchReportState by matchReportViewModel.uiState.collectAsState()
+    val gameTimeState by gameTimeViewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
 
     when (val currentDialog = dialogState) {
@@ -153,15 +154,19 @@ fun SettingsMenu(
                     item {
                         MenuItem(
                             label = "Minutes",
-                            value = "${gameTimeViewModel.getPeriodLength() / 60}",
+                            value = "${gameTimeState.defaultMinutes}",
                             onClick = {
                                 dialogState = DialogState.NumberPicker(
                                     title = "Minutes",
-                                    initialValue = gameTimeViewModel.getPeriodLength() / 60,
+                                    initialValue = gameTimeState.defaultMinutes,
                                     range = 1..30,
                                     onConfirm = { minutes ->
                                         onClose()
-                                        gameTimeViewModel.setPeriodLength(minutes * 60)
+                                        gameTimeViewModel.setPeriodLength(minutes)
+                                        vibrationUtility.vibrateOnce(
+                                            50,
+                                            VibrationEffect.DEFAULT_AMPLITUDE
+                                        )
                                     }
                                 )
                             },

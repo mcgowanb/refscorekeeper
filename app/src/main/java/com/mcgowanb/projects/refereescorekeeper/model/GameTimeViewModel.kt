@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -26,51 +27,48 @@ class GameTimeViewModel(
     private val _defaultGameLengthInMinutes = 30
     private var _mutableGameLength = _defaultGameLengthInMinutes
     private var _gameLengthInSeconds = _mutableGameLength * 60
-    private var _etLength = 10
+    private val _etLength = 10
+    private val fileName = "timer_state.json"
 
-    private val _remainingTime = MutableStateFlow(_gameLengthInSeconds)
-    private val _elapsedTime = MutableStateFlow(0)
+    private val initialState = TimerState(
+        remainingTime = _gameLengthInSeconds,
+        isRunning = false,
+        formattedTime = formatTime(_gameLengthInSeconds),
+        formattedElapsedTime = formatTime(0),
+        isOvertime = false,
+        overtimeSeconds = 0,
+        currentPeriod = 0,
+        defaultMinutes = _defaultGameLengthInMinutes
+    )
 
-    private val _formattedTime = MutableStateFlow(formatTime(_gameLengthInSeconds))
-    val formattedTime: StateFlow<String> = _formattedTime.asStateFlow()
-
-    private val _formattedElapsedTime = MutableStateFlow(formatTime(0))
-    val formattedElapsedTime: StateFlow<String> = _formattedElapsedTime.asStateFlow()
-
-    private val _isRunning = MutableStateFlow(false)
-    val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
+    private val _uiState = MutableStateFlow(initialState)
+    val uiState: StateFlow<TimerState> = _uiState.asStateFlow()
 
     private var timerJob: Job? = null
-
-    private val _fileName = "timer_state.json"
-
-    private val _isOvertime = MutableStateFlow(false)
-    val isOvertime: StateFlow<Boolean> = _isOvertime.asStateFlow()
-
-    private val _overtimeSeconds = MutableStateFlow(0)
-
     private var onPeriodEndCallback: (() -> Unit)? = null
 
-
     init {
-        loadTimerState()
+        viewModelScope.launch {
+            loadTimerState()
+        }
     }
 
     fun toggleIsRunning() {
-        if (_isOvertime.value) {
-            resetTimer()
-        } else {
-            if (_isRunning.value) {
-                stopTimer()
-            } else {
-                startTimer()
-            }
+        when {
+            _uiState.value.isOvertime -> resetTimer()
+            _uiState.value.isRunning -> stopTimer()
+            else -> startTimer()
         }
     }
 
     fun zeroClock() {
         stopTimer()
-        _formattedTime.value = formatTime(0)
+        _uiState.update { currentState ->
+            currentState.copy(
+                remainingTime = 0,
+                formattedTime = formatTime(0)
+            )
+        }
         saveTimerState()
     }
 
@@ -81,59 +79,109 @@ class GameTimeViewModel(
     private fun startTimer() {
         if (timerJob?.isActive == true) return
 
-        _isRunning.value = true
+        // Start first period if not started
+        if (_uiState.value.currentPeriod == 0) {
+            _uiState.update {
+                it.copy(
+                    currentPeriod = 1,
+                    remainingTime = _gameLengthInSeconds
+                )
+            }
+        }
+
+        _uiState.update { it.copy(isRunning = true) }
+
         timerJob = viewModelScope.launch {
             val startTime = System.currentTimeMillis()
-            val initialRemainingTime = _remainingTime.value * 1000L // Convert to milliseconds
+            val initialRemainingTime = _uiState.value.remainingTime * 1000L
             val overtimeStartTime = startTime + initialRemainingTime
+
             while (true) {
-                delay(100) // Update every 100ms for a balance between smoothness and efficiency
+                delay(100)
                 val currentTime = System.currentTimeMillis()
-                if (!_isOvertime.value) {
+
+                if (!_uiState.value.isOvertime) {
                     val remainingMillis =
                         (initialRemainingTime - (currentTime - startTime)).coerceAtLeast(0)
-                    _remainingTime.value = (remainingMillis / 1000.0).roundToInt()
-                    _elapsedTime.value = _gameLengthInSeconds - _remainingTime.value
-                    if (_remainingTime.value <= 0) {
-                        _isOvertime.value = true
-                        onRegularTimeFinished()
-                        onPeriodEndCallback?.invoke()
+                    val remainingSeconds = (remainingMillis / 1000.0).roundToInt()
+
+                    _uiState.update { it.copy(remainingTime = remainingSeconds) }
+
+                    if (remainingSeconds <= 0) {
+                        handlePeriodEnd()
                     }
                 } else {
-                    _overtimeSeconds.value =
-                        ((currentTime - overtimeStartTime) / 1000.0).roundToInt()
-                    _elapsedTime.value = _gameLengthInSeconds + _overtimeSeconds.value
+                    val overtimeSeconds = ((currentTime - overtimeStartTime) / 1000.0).roundToInt()
+                    _uiState.update { it.copy(overtimeSeconds = overtimeSeconds) }
                 }
-                _formattedTime.value =
-                    formatTime(if (_isOvertime.value) _overtimeSeconds.value else _remainingTime.value)
-                _formattedElapsedTime.value = formatTime(_elapsedTime.value)
+
+                updateDisplayTimes()
                 saveTimerState()
             }
         }
     }
 
-    private fun onRegularTimeFinished() {
+    private fun handlePeriodEnd() {
+        _uiState.update { currentState ->
+            when (currentState.currentPeriod) {
+                1 -> currentState.copy(
+                    currentPeriod = 2,
+                    remainingTime = _gameLengthInSeconds,
+                    isOvertime = false,
+                    overtimeSeconds = 0
+                )
+
+                2 -> currentState.copy(
+                    isOvertime = true,
+                    overtimeSeconds = 0
+                )
+
+                else -> currentState
+            }
+        }
+
         vibrationUtility?.vibrateMultiple(
             VibrationType.HALF_TIME,
             VibrationEffect.DEFAULT_AMPLITUDE
         )
-        // soundUtility?.playSound(R.raw.whistle)
+        onPeriodEndCallback?.invoke()
+    }
+
+    private fun updateDisplayTimes() {
+        _uiState.update { currentState ->
+            val timeToDisplay = if (currentState.isOvertime) {
+                currentState.overtimeSeconds
+            } else {
+                currentState.remainingTime
+            }
+            val elapsedTime = _gameLengthInSeconds - currentState.remainingTime
+
+            currentState.copy(
+                formattedTime = formatTime(timeToDisplay),
+                formattedElapsedTime = formatTime(elapsedTime)
+            )
+        }
     }
 
     fun stopTimer() {
         timerJob?.cancel()
-        _isRunning.value = false
+        _uiState.update { it.copy(isRunning = false) }
         saveTimerState()
     }
 
     fun resetTimer(length: Int? = null) {
         stopTimer()
-        _gameLengthInSeconds =
-            if (length == null) _mutableGameLength else _defaultGameLengthInMinutes * 60
-        _remainingTime.value = _gameLengthInSeconds
-        _formattedTime.value = formatTime(_gameLengthInSeconds)
-        _isOvertime.value = false
-        _overtimeSeconds.value = 0
+        _mutableGameLength = length ?: _defaultGameLengthInMinutes
+        _gameLengthInSeconds = _mutableGameLength * 60
+
+        _uiState.update {
+            val remainingSeconds = it.defaultMinutes * 60
+            it.copy(
+                defaultMinutes = it.defaultMinutes,
+                remainingTime = remainingSeconds,
+                formattedTime = formatTime(remainingSeconds)
+            )
+        }
         saveTimerState()
     }
 
@@ -144,63 +192,43 @@ class GameTimeViewModel(
     }
 
     private fun saveTimerState() {
-        val timerState = TimerState(
-            remainingTime = _remainingTime.value,
-            isRunning = _isRunning.value,
-            lastPausedTime = System.currentTimeMillis(),
-            defaultMinutes = _mutableGameLength,
-            isOvertime = _isOvertime.value,
-            overtimeSeconds = _overtimeSeconds.value
-        )
-        fileHandler?.saveState(timerState, _fileName)
-    }
-
-    private fun loadTimerState() {
-        val timerState = fileHandler?.loadState(_fileName, TimerState::class.java)
-        if (timerState != null) {
-            _mutableGameLength = timerState.defaultMinutes
-            _gameLengthInSeconds = _mutableGameLength * 60
-            _isOvertime.value = timerState.isOvertime
-            _overtimeSeconds.value = timerState.overtimeSeconds
-
-            if (!_isOvertime.value && timerState.remainingTime > 0 && timerState.remainingTime <= _gameLengthInSeconds) {
-                _remainingTime.value = timerState.remainingTime
-                _formattedTime.value = formatTime(timerState.remainingTime)
-            } else if (_isOvertime.value) {
-                _formattedTime.value = formatTime(_overtimeSeconds.value)
-            } else {
-                initializeDefaultGame()
-            }
-
-            _isRunning.value = timerState.isRunning
-            if (timerState.isRunning) {
-                startTimer()
-            }
-        } else {
-            initializeDefaultGame()
+        viewModelScope.launch {
+            fileHandler?.saveState(_uiState.value, fileName)
         }
     }
 
-    private fun initializeDefaultGame() {
-        _mutableGameLength = _defaultGameLengthInMinutes
-        _gameLengthInSeconds = _mutableGameLength * 60
-        _remainingTime.value = _gameLengthInSeconds
-        _formattedTime.value = formatTime(_gameLengthInSeconds)
-        _isRunning.value = false
+    private fun loadTimerState() {
+        val savedState = fileHandler?.loadState(fileName, TimerState::class.java)
+        if (savedState != null) {
+            _mutableGameLength = savedState.defaultMinutes
+            _gameLengthInSeconds = _mutableGameLength * 60
+
+            if (!savedState.isOvertime && savedState.remainingTime > 0 && savedState.remainingTime <= _gameLengthInSeconds) {
+                _uiState.value = savedState
+                if (savedState.isRunning) {
+                    startTimer()
+                }
+            } else if (savedState.isOvertime) {
+                _uiState.value = savedState
+                if (savedState.isRunning) {
+                    startTimer()
+                }
+            }
+        }
+        // If savedState is null, we keep the initialState that was set during initialization
     }
 
-    fun getPeriodLength(): Int {
-        return _mutableGameLength
-    }
-
-    fun getExtraTimeLength(): Int {
-        return _etLength
-    }
+    fun getExtraTimeLength(): Int = _etLength
 
     fun setPeriodLength(periodLength: Int) {
-        _mutableGameLength = periodLength
-        _gameLengthInSeconds = _mutableGameLength * 60
+        _uiState.update {
+            it.copy(defaultMinutes = periodLength)
+        }
         saveTimerState()
         resetTimer()
     }
+
+    fun isRunning(): Boolean = _uiState.value.isRunning
+
+    fun isOvertime(): Boolean = _uiState.value.isOvertime
 }
