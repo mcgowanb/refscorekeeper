@@ -19,4 +19,7 @@ data class TimerState(
     val currentPeriod: Int,
     @Expose
     val defaultMinutes: Int
-)
+) {
+    val periodSeconds: Int
+        get() = defaultMinutes * 60
+}

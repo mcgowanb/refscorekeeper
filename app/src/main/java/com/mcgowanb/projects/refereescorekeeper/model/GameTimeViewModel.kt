@@ -27,19 +27,19 @@ class GameTimeViewModel(
     private val _etLength = 10
     private val fileName = "timer_state.json"
 
-    private val defaultMinutes = 30
-    private val defaultSeconds = defaultMinutes * 60
+    private val defaultPeriodMinutes = 30
+    private val defaultSeconds = defaultPeriodMinutes * 60
 
     //    This and GameState should be merged
     private val initialState = TimerState(
-        remainingTime = defaultMinutes,
+        remainingTime = defaultPeriodMinutes,
         isRunning = false,
         formattedTime = formatTime(defaultSeconds),
         formattedElapsedTime = formatTime(0),
         isOvertime = false,
         overtimeSeconds = 0,
         currentPeriod = 0,
-        defaultMinutes = defaultMinutes
+        defaultMinutes = defaultPeriodMinutes
     )
 
     private val _uiState = MutableStateFlow(initialState)
@@ -74,7 +74,7 @@ class GameTimeViewModel(
             _uiState.update {
                 it.copy(
                     currentPeriod = 1,
-                    remainingTime = it.periodLengthInSeconds
+                    remainingTime = it.periodSeconds
                 )
             }
         }
@@ -116,7 +116,7 @@ class GameTimeViewModel(
             when (currentState.currentPeriod) {
                 1 -> currentState.copy(
                     currentPeriod = 2,
-                    remainingTime = currentState.periodLengthInSeconds,
+                    remainingTime = currentState.periodSeconds,
                     isOvertime = false,
                     overtimeSeconds = 0
                 )
@@ -144,7 +144,7 @@ class GameTimeViewModel(
             } else {
                 currentState.remainingTime
             }
-            val elapsedTime = currentState.periodLengthInSeconds - currentState.remainingTime
+            val elapsedTime = currentState.periodSeconds - currentState.remainingTime
 
             currentState.copy(
                 formattedTime = formatTime(timeToDisplay),
@@ -194,7 +194,7 @@ class GameTimeViewModel(
         val savedState = fileHandler?.loadState(fileName, TimerState::class.java)
         if (savedState != null) {
             if (!savedState.isOvertime && savedState.remainingTime > 0
-                && savedState.remainingTime <= savedState.periodLengthInSeconds
+                && savedState.remainingTime <= savedState.periodSeconds
             ) {
                 _uiState.value = savedState
                 if (savedState.isRunning) {
